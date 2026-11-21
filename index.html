@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>32 Entregas — V1</title>
+  <style>
+    :root {
+      --amarelo: #F5B800;
+      --amarelo-claro: #FFD23F;
+      --preto: #111111;
+      --borda: 3px solid #111111;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      padding: 16px;
+      background-color: var(--amarelo);
+      color: var(--preto);
+    }
+
+    .container {
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: var(--amarelo-claro);
+      border: var(--borda);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      box-shadow: 4px 4px 0px var(--preto);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.6rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+    }
+
+    header p {
+      margin: 4px 0 0;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .card {
+      background: var(--amarelo-claro);
+      border: var(--borda);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+      box-shadow: 4px 4px 0px var(--preto);
+    }
+
+    .card h2 {
+      margin: 0 0 10px;
+      font-size: 1.05rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    label {
+      display: block;
+      font-weight: 800;
+      font-size: 0.88rem;
+      margin-top: 8px;
+      margin-bottom: 4px;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid var(--preto);
+      border-radius: 8px;
+      background: #FFF3B0;
+      color: var(--preto);
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 2px dashed var(--preto);
+    }
+
+    .item-row:last-child {
+      border-bottom: none;
+    }
+
+    .item-info {
+      font-weight: 800;
+      font-size: 0.92rem;
+    }
+
+    .item-preco {
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .btn {
+      padding: 8px 12px;
+      border: 2px solid var(--preto);
+      border-radius: 8px;
+      background: var(--preto);
+      color: var(--amarelo);
+      font-weight: 900;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+
+    .btn-acao {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      font-size: 1rem;
+      background: var(--preto);
+      color: var(--amarelo);
+    }
+
+    .btn-limpar {
+      background: transparent;
+      color: var(--preto);
+      margin-top: 6px;
+    }
+
+    .resumo-box {
+      background: #FFF3B0;
+      border: 2px solid var(--preto);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>32 ENTREGAS</h1>
+      <p>Comércio local • Retirada e entrega (Bike, Moto e Carro)</p>
+    </header>
+
+    <div class="card">
+      <h2>1. Onde tirar a mercadoria</h2>
+      <label for="lojaSelect">Escolha o estabelecimento</label>
+      <select id="lojaSelect" onchange="carregarCatalogo()">
+        <option value="farmacia">Farmácia de Bairro (Retirada no
