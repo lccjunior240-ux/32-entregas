@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>32 Entregas &amp; 32 Bike — Teste em Campo</title>
+  <title>32 Entregas &amp; 32 Bike — Pedido e Aceite</title>
   <style>
     :root {
       --azul-marinho: #0B1F3A;
@@ -224,6 +224,16 @@
       color: var(--branco);
     }
 
+    .btn-dinamica {
+      background: var(--branco);
+      color: var(--azul-marinho);
+    }
+
+    .btn-dinamica.ativa {
+      background: var(--amarelo);
+      color: var(--preto);
+    }
+
     .caixa-resumo {
       margin-top: 10px;
       padding: 11px;
@@ -259,6 +269,12 @@
       font-weight: 900;
       margin-bottom: 6px;
     }
+
+    .bloco-acerto {
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 2px dashed var(--preto);
+    }
   </style>
 </head>
 <body>
@@ -284,7 +300,7 @@
 
       <div class="titulo-topo">
         <h1>32 ENTREGAS</h1>
-        <p>Teste na rua • 80% / 20%</p>
+        <p>32 Bike &amp; Despacho • 80% / 20%</p>
       </div>
     </header>
 
@@ -297,47 +313,55 @@
     </div>
 
     <div class="card">
-      <h2>1. Simular / Lançar Entrega</h2>
+      <h2>1. Pedido de Entrega</h2>
 
       <label for="o-que-pega">O que vai levar?</label>
-      <input type="text" id="o-que-pega" placeholder="Ex: Encomenda / Peça / Sacola" />
+      <input type="text" id="o-que-pega" placeholder="Ex: Caixa com peça / Sacola / Encomenda" />
 
       <label for="onde-pega">Onde pega?</label>
-      <input type="text" id="onde-pega" placeholder="Ex: Ponto de saída / Rua e número" />
+      <input type="text" id="onde-pega" placeholder="Ex: Oficina / Comércio / Rua e número" />
 
       <label for="onde-leva">Onde entrega?</label>
-      <input type="text" id="onde-leva" placeholder="Ex: Ponto de destino / Rua e número" />
+      <input type="text" id="onde-leva" placeholder="Ex: Retífica / Cliente / Endereço de destino" />
 
-      <label for="modal-chamado">Modal e taxa</label>
-      <select id="modal-chamado" onchange="atualizarPrevia()">
-        <option value="32 Bike|6.00" selected>32 Bike — R$ 6,00</option>
-        <option value="Moto|10.00">Moto — R$ 10,00</option>
-        <option value="Carro|15.00">Carro — R$ 15,00</option>
+      <label for="modal-pedido">Modal</label>
+      <select id="modal-pedido" onchange="atualizarPreviaPedido()">
+        <option value="32 Bike" selected>32 Bike</option>
+        <option value="Moto">Moto</option>
+        <option value="Carro">Carro</option>
       </select>
 
-      <label for="quem-aceita">Quem assume a entrega</label>
-      <select id="quem-aceita">
-        <option value="32 Bike (Entregador Bike)">32 Bike (Entregador Bike)</option>
-        <option value="Entregador 32 Entregas">Entregador 32 Entregas</option>
-        <option value="Parceiro disponível">Parceiro disponível</option>
+      <label for="valor-base">Valor da entrega (de R$ 10 a R$ 60)</label>
+      <select id="valor-base" onchange="atualizarPreviaPedido()">
+        <option value="10" selected>R$ 10,00</option>
+        <option value="15">R$ 15,00</option>
+        <option value="20">R$ 20,00</option>
+        <option value="25">R$ 25,00</option>
+        <option value="30">R$ 30,00</option>
+        <option value="35">R$ 35,00</option>
+        <option value="40">R$ 40,00</option>
+        <option value="45">R$ 45,00</option>
+        <option value="50">R$ 50,00</option>
+        <option value="55">R$ 55,00</option>
+        <option value="60">R$ 60,00</option>
       </select>
 
-      <label for="pagamento-chamado">Pagamento</label>
-      <select id="pagamento-chamado">
+      <label for="pagamento-pedido">Pagamento</label>
+      <select id="pagamento-pedido">
         <option value="Pix (53999089980)">Pix (53999089980)</option>
         <option value="Acerto na retirada">Acerto na retirada</option>
         <option value="Acerto na entrega">Acerto na entrega</option>
       </select>
 
-      <button type="button" class="btn btn-azul" onclick="chegarChamado()">DISPARAR CHAMADO (ALARME)</button>
+      <button type="button" class="btn btn-azul" onclick="enviarChamado()">ENVIAR CHAMADO (COM ALARME)</button>
       <button type="button" class="btn btn-verde" onclick="copiarPix()">COPIAR CHAVE PIX: 53999089980</button>
 
-      <div id="previa-box" class="caixa-resumo">Preencha os campos para ver o valor e o repasse (80% / 20%).</div>
+      <div id="previa-pedido" class="caixa-resumo">Preencha os dados para enviar o chamado.</div>
     </div>
 
     <div class="card">
-      <h2>2. Fila de Aceite</h2>
-      <div id="painel-lista">Nenhum chamado na fila agora.</div>
+      <h2>2. Aceite e Acerto (Entregador / Motorista)</h2>
+      <div id="lista-aceite">Nenhum chamado aguardando aceite no momento.</div>
     </div>
   </div>
 
@@ -394,57 +418,37 @@
         : "Som do alarme: Mudo";
     }
 
-    function lerForm() {
-      const partes = document.getElementById("modal-chamado").value.split("|");
-      return {
-        item: document.getElementById("o-que-pega").value.trim() || "Entrega local",
-        origem: document.getElementById("onde-pega").value.trim() || "A confirmar",
-        destino: document.getElementById("onde-leva").value.trim() || "A confirmar",
-        modal: partes[0],
-        taxa: parseFloat(partes[1]),
-        responsavel: document.getElementById("quem-aceita").value,
-        pagamento: document.getElementById("pagamento-chamado").value
-      };
+    function atualizarPreviaPedido() {
+      const modal = document.getElementById("modal-pedido").value;
+      const valor = parseFloat(document.getElementById("valor-base").value);
+      const repasse80 = valor * 0.8;
+      const parte20 = valor * 0.2;
+
+      document.getElementById("previa-pedido").textContent =
+        "Modal: " + modal +
+        "\nValor base: " + grana(valor) +
+        "\nDivisão base: 80% Entregador (" + grana(repasse80) + ") | 20% 32 Entregas (" + grana(parte20) + ")";
     }
 
-    function atualizarPrevia() {
-      const d = lerForm();
-      const repasse80 = d.taxa * 0.8;
-      const parte20 = d.taxa * 0.2;
+    function enviarChamado() {
+      const item = document.getElementById("o-que-pega").value.trim() || "Entrega de mercadoria";
+      const origem = document.getElementById("onde-pega").value.trim() || "A confirmar";
+      const destino = document.getElementById("onde-leva").value.trim() || "A confirmar";
+      const modal = document.getElementById("modal-pedido").value;
+      const valorBase = parseFloat(document.getElementById("valor-base").value);
+      const pagamento = document.getElementById("pagamento-pedido").value;
 
-      document.getElementById("previa-box").textContent =
-        "Modal: " + d.modal +
-        "\nTaxa: " + grana(d.taxa) +
-        "\nRepasse: 80% Entregador (" + grana(repasse80) + ") | 20% 32 Entregas (" + grana(parte20) + ")";
-    }
-
-    function montarMsgAceite(c) {
-      const repasse80 = c.taxa * 0.8;
-      const parte20 = c.taxa * 0.2;
-
-      return (
-        "*32 ENTREGAS — CHAMADO ACEITO*\n" +
-        "Modal: " + c.modal + "\n" +
-        "Responsável: " + c.responsavel + "\n" +
-        "Item: " + c.item + "\n" +
-        "Pegar em: " + c.origem + "\n" +
-        "Entregar em: " + c.destino + "\n" +
-        "Pagamento: " + c.pagamento + "\n" +
-        "Taxa: " + grana(c.taxa) + " (80% Entregador: " + grana(repasse80) + " | 20% 32 Entregas: " + grana(parte20) + ")"
-      );
-    }
-
-    function chegarChamado() {
-      const d = lerForm();
       chamados.unshift({
         id: Date.now(),
-        item: d.item,
-        origem: d.origem,
-        destino: d.destino,
-        modal: d.modal,
-        taxa: d.taxa,
-        responsavel: d.responsavel,
-        pagamento: d.pagamento,
+        item: item,
+        origem: origem,
+        destino: destino,
+        modal: modal,
+        valorBase: valorBase,
+        valorFinal: valorBase,
+        dinamica20: false,
+        pagamento: pagamento,
+        responsavel: "Entregador / Motorista",
         aceito: false
       });
 
@@ -452,33 +456,78 @@
       renderChamados();
     }
 
+    function calcularFinal(c) {
+      const base = Number(c.valorFinal);
+      return c.dinamica20 ? base * 1.2 : base;
+    }
+
+    function alternarDinamica(idx) {
+      chamados[idx].dinamica20 = !chamados[idx].dinamica20;
+      renderChamados();
+    }
+
+    function alterarValorManual(idx, novoValor) {
+      const num = parseFloat(novoValor);
+      if (!isNaN(num) && num >= 0) {
+        chamados[idx].valorFinal = num;
+        renderChamados();
+      }
+    }
+
+    function alterarResponsavel(idx, nome) {
+      chamados[idx].responsavel = nome;
+    }
+
     function aceitarChamado(idx) {
+      const respSelect = document.getElementById("resp-" + idx);
+      if (respSelect) {
+        chamados[idx].responsavel = respSelect.value;
+      }
       chamados[idx].aceito = true;
       tocarBipe("aceito");
       renderChamados();
     }
 
-    function copiarAceite(idx) {
-      const texto = montarMsgAceite(chamados[idx]);
+    function montarResumoAcerto(c) {
+      const total = calcularFinal(c);
+      const repasse80 = total * 0.8;
+      const parte20 = total * 0.2;
+
+      return (
+        "*32 ENTREGAS — ACERTO E ACEITE*\n" +
+        "Modal: " + c.modal + "\n" +
+        "Responsável: " + c.responsavel + "\n" +
+        "Item: " + c.item + "\n" +
+        "Pegar em: " + c.origem + "\n" +
+        "Entregar em: " + c.destino + "\n" +
+        "Pagamento: " + c.pagamento + "\n" +
+        "Dinâmica (+20%): " + (c.dinamica20 ? "SIM" : "NÃO") + "\n" +
+        "Valor final: " + grana(total) + " (80% Entregador: " + grana(repasse80) + " | 20% 32 Entregas: " + grana(parte20) + ")"
+      );
+    }
+
+    function copiarAcerto(idx) {
+      const texto = montarResumoAcerto(chamados[idx]);
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(texto);
       }
-      alert("Resumo copiado!");
+      alert("Resumo do aceite e acerto copiado!");
     }
 
     function renderChamados() {
-      const alvo = document.getElementById("painel-lista");
+      const alvo = document.getElementById("lista-aceite");
       if (chamados.length === 0) {
-        alvo.innerHTML = "Nenhum chamado na fila agora.";
+        alvo.innerHTML = "Nenhum chamado aguardando aceite no momento.";
         return;
       }
 
       alvo.innerHTML = "";
       for (let i = 0; i < chamados.length; i++) {
         const c = chamados[i];
-        const repasse80 = c.taxa * 0.8;
-        const parte20 = c.taxa * 0.2;
-        const msg = montarMsgAceite(c).replace(/\n/g, "<br>");
+        const total = calcularFinal(c);
+        const repasse80 = total * 0.8;
+        const parte20 = total * 0.2;
+        const msgHtml = montarResumoAcerto(c).replace(/\n/g, "<br>");
 
         alvo.innerHTML +=
           "<div class='chamado-card " + (c.aceito ? "aceito" : "") + "'>" +
@@ -486,11 +535,31 @@
             "<div><strong>" + c.modal + "</strong> — " + c.item + "</div>" +
             "<div>Pegar em: " + c.origem + "</div>" +
             "<div>Entregar em: " + c.destino + "</div>" +
-            "<div>Taxa: " + grana(c.taxa) + " | 80%: " + grana(repasse80) + " | 20%: " + grana(parte20) + "</div>" +
-            (!c.aceito
-              ? "<button type='button' class='btn btn-verde' onclick='aceitarChamado(" + i + ")'>ACEITAR ENTREGA (SINAL SONORO)</button>"
-              : "<div class='caixa-resumo'>" + msg + "</div>" +
-                "<button type='button' class='btn btn-amarelo' onclick='copiarAceite(" + i + ")'>COPIAR RESUMO PARA WHATSAPP</button>") +
+            "<div class='bloco-acerto'>" +
+              "<label for='resp-" + i + "'>Quem vai fazer a entrega</label>" +
+              "<select id='resp-" + i + "' onchange='alterarResponsavel(" + i + ", this.value)'>" +
+                "<option value='32 Bike (Entregador Bike)'" + (c.responsavel === "32 Bike (Entregador Bike)" ? " selected" : "") + ">32 Bike (Entregador Bike)</option>" +
+                "<option value='Motorista / Entregador 32'" + (c.responsavel === "Motorista / Entregador 32" ? " selected" : "") + ">Motorista / Entregador 32</option>" +
+                "<option value='Parceiro disponível'" + (c.responsavel === "Parceiro disponível" ? " selected" : "") + ">Parceiro disponível</option>" +
+              "</select>" +
+              "<label for='val-manual-" + i + "'>Valor ajustado da corrida (R$ — ex: 18 ou 20)</label>" +
+              "<input type='number' id='val-manual-" + i + "' step='0.50' min='0' value='" + Number(c.valorFinal).toFixed(2) + "' onchange='alterarValorManual(" + i + ", this.value)' />" +
+              "<button type='button' class='btn btn-dinamica " + (c.dinamica20 ? "ativa" : "") + "' onclick='alternarDinamica(" + i + ")'>" +
+                (c.dinamica20 ? "DINÂMICA +20%: LIGADA (CHUVA / PICO)" : "DINÂMICA +20%: DESLIGADA") +
+              "</button>" +
+              "<div class='caixa-resumo'>" +
+                "Valor final da corrida: " + grana(total) +
+                "\n80% Entregador / Motorista: " + grana(repasse80) +
+                "\n20% 32 Entregas: " + grana(parte20) +
+              "</div>" +
+              "<button type='button' class='btn btn-verde' onclick='aceitarChamado(" + i + ")'>" +
+                (c.aceito ? "ATUALIZAR ACEITE (SINAL SONORO)" : "ACEITAR CORRIDA (SINAL SONORO)") +
+              "</button>" +
+              (c.aceito
+                ? "<div class='caixa-resumo'>" + msgHtml + "</div>" +
+                  "<button type='button' class='btn btn-amarelo' onclick='copiarAcerto(" + i + ")'>COPIAR RESUMO PARA WHATSAPP</button>"
+                : "") +
+            "</div>" +
           "</div>";
       }
     }
@@ -502,7 +571,7 @@
       alert("Chave Pix copiada: " + CHAVE_PIX);
     }
 
-    atualizarPrevia();
+    atualizarPreviaPedido();
   </script>
 </body>
 </html>
