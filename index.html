@@ -177,6 +177,13 @@
       color: var(--amarelo);
     }
 
+    .card h3 {
+      margin: 18px 0 8px;
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: var(--amarelo);
+    }
+
     label {
       display: block;
       font-size: 1rem;
@@ -285,6 +292,25 @@
       margin-top: 6px;
       font-weight: 700;
     }
+
+    .retorno-cliente-box {
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 12px;
+      background: var(--card-escuro);
+      border: 2px solid var(--borda);
+      font-size: 0.94rem;
+    }
+
+    .retorno-status {
+      font-weight: 900;
+      font-size: 0.98rem;
+      margin-bottom: 6px;
+    }
+
+    .status-aceito { color: var(--verde); }
+    .status-recusado { color: var(--vermelho); }
+    .status-pendente { color: var(--amarelo); }
 
     .caixa-empresa {
       margin-top: 16px;
@@ -401,7 +427,7 @@
 
     <div class="aviso-acao" id="aviso-acao">Pronto. Preencha o pedido no painel do cliente.</div>
 
-    <!-- PAINEL 1: CLIENTE (SEM VALOR DA ENTREGA) -->
+    <!-- PAINEL 1: CLIENTE (SEM VALOR DA ENTREGA, GPS SÓ EM "ONDE PEGAR", RECEBE ACEITE/RECUSA) -->
     <section id="sec-1" class="card">
       <h2>Painel do Cliente</h2>
 
@@ -411,16 +437,12 @@
       <label for="onde-pegar">Onde pegar a mercadoria</label>
       <div class="linha-acao">
         <input type="text" id="onde-pegar" placeholder="Rua, número e CEP" />
-        <button type="button" class="btn btn-amarelo btn-pequeno" onclick="buscarEnderecoGPS('onde-pegar', 'status-gps-pegar')">GPS Atual</button>
+        <button type="button" class="btn btn-amarelo btn-pequeno" onclick="buscarEnderecoGPS()">GPS Atual</button>
       </div>
-      <div class="info-gps" id="status-gps-pegar">GPS: preenche rua, número e CEP.</div>
+      <div class="info-gps" id="status-gps-pegar">GPS: preenche rua, número e CEP de onde pegar.</div>
 
       <label for="onde-levar">Para onde levar a mercadoria</label>
-      <div class="linha-acao">
-        <input type="text" id="onde-levar" placeholder="Rua, número e CEP de entrega" />
-        <button type="button" class="btn btn-escuro btn-pequeno" onclick="buscarEnderecoGPS('onde-levar', 'status-gps-levar')">GPS Atual</button>
-      </div>
-      <div class="info-gps" id="status-gps-levar">GPS: pode usar no destino se preferir.</div>
+      <input type="text" id="onde-levar" placeholder="Digite o endereço de entrega (rua, número e CEP)" />
 
       <label for="tipo-mercadoria">Tipo de mercadoria</label>
       <input type="text" id="tipo-mercadoria" placeholder="Ex: Peça na caixa, sacola, lanche, encomenda" />
@@ -448,6 +470,9 @@
 
       <button type="button" class="btn btn-escuro" onclick="copiarPix()">COPIAR E COLAR PIX: 53999089980</button>
       <button type="button" class="btn btn-amarelo" onclick="mandarMensagemEntregador()">MANDAR MENSAGEM PARA O ENTREGADOR (ALARME)</button>
+
+      <h3>Resposta do Entregador (Aceite / Não Aceite)</h3>
+      <div id="retorno-cliente">Nenhum pedido enviado ainda.</div>
 
       <div class="caixa-empresa">
         <strong>32 Entregas &amp; 32 Bike</strong>
@@ -481,6 +506,9 @@
         document.getElementById("sec-" + i).classList.toggle("oculto", i !== num);
         document.getElementById("tab-" + i).classList.toggle("ativa", i === num);
       });
+      if (num === 1) {
+        renderRetornoCliente();
+      }
       mostrarAviso(num === 1 ? "Painel do Cliente aberto." : "Painel do Entregador aberto.");
     }
 
@@ -517,8 +545,8 @@
       } catch (e) {}
     }
 
-    function buscarEnderecoGPS(campoId, statusId) {
-      const statusEl = document.getElementById(statusId);
+    function buscarEnderecoGPS() {
+      const statusEl = document.getElementById("status-gps-pegar");
       if (!navigator.geolocation) {
         statusEl.textContent = "GPS não disponível neste aparelho. Digite rua, número e CEP.";
         mostrarAviso("GPS indisponível neste aparelho.");
@@ -543,8 +571,8 @@
             const enderecoFormatado = (rua + numero + bairro + cep).trim();
 
             if (enderecoFormatado) {
-              document.getElementById(campoId).value = enderecoFormatado;
-              statusEl.textContent = "Endereço preenchido pelo GPS.";
+              document.getElementById("onde-pegar").value = enderecoFormatado;
+              statusEl.textContent = "Endereço de retirada preenchido pelo GPS.";
               mostrarAviso("Endereço atualizado: " + enderecoFormatado);
             } else {
               statusEl.textContent = "Não veio nome de rua neste ponto. Digite rua, número e CEP.";
@@ -610,8 +638,9 @@
 
       tocarAlerta("chegada");
       renderEntregador();
+      renderRetornoCliente();
       irPainel(2);
-      mostrarAviso("Pedido enviado ao entregador (sugestão: " + moeda(valorSugerido) + " pela distância e carga).");
+      mostrarAviso("Mensagem enviada ao painel do entregador com alerta sonoro.");
     }
 
     function calcularValorFinal(p) {
@@ -622,12 +651,14 @@
     function mudarValorBase(idx, novoValor) {
       pedidos[idx].valorBase = parseFloat(novoValor) || 10;
       renderEntregador();
+      renderRetornoCliente();
       mostrarAviso("Valor alterado para " + moeda(pedidos[idx].valorBase) + ".");
     }
 
     function alternarDinamica(idx) {
       pedidos[idx].dinamica20 = !pedidos[idx].dinamica20;
       renderEntregador();
+      renderRetornoCliente();
       mostrarAviso(
         pedidos[idx].dinamica20
           ? "Dinâmica +20% ativada (chuva / horário de pico)."
@@ -639,27 +670,76 @@
       pedidos[idx].status = decisao;
       if (decisao === "aceito") {
         tocarAlerta("aceito");
-        mostrarAviso("Pedido aceito pelo entregador.");
+        mostrarAviso("Pedido aceito — resposta enviada para o painel do cliente.");
       } else {
-        mostrarAviso("Pedido recusado pelo entregador.");
+        mostrarAviso("Pedido recusado — resposta enviada para o painel do cliente.");
       }
       renderEntregador();
+      renderRetornoCliente();
     }
 
     function montarMsgCliente(p) {
+      if (p.status === "recusado") {
+        return (
+          "*32 ENTREGAS — NÃO ACEITO NO MOMENTO*\n" +
+          "Cliente: " + p.cliente + "\n" +
+          "Mercadoria: " + p.mercadoria + "\n" +
+          "Pegar em: " + p.pegar + "\n" +
+          "Levar para: " + p.levar + "\n" +
+          "Status: Não foi possível aceitar este pedido agora."
+        );
+      }
       const total = calcularValorFinal(p);
       return (
-        "*32 ENTREGAS — RESPOSTA AO CLIENTE*\n" +
+        "*32 ENTREGAS — PEDIDO ACEITO*\n" +
         "Cliente: " + p.cliente + "\n" +
-        "Status: ENTREGA ACEITA\n" +
         "Mercadoria: " + p.mercadoria + "\n" +
-        "Carga: " + p.carga + " | Distância: " + p.distancia + "\n" +
         "Pegar em: " + p.pegar + "\n" +
         "Levar para: " + p.levar + "\n" +
         "Pagamento: " + p.pagamento + "\n" +
         "Dinâmica (+20%): " + (p.dinamica20 ? "Sim (chuva/pico)" : "Não") + "\n" +
         "Valor da entrega: " + moeda(total)
       );
+    }
+
+    function renderRetornoCliente() {
+      const alvo = document.getElementById("retorno-cliente");
+      if (pedidos.length === 0) {
+        alvo.innerHTML = "<div class='retorno-cliente-box'>Nenhum pedido enviado ainda.</div>";
+        return;
+      }
+
+      const p = pedidos[0];
+      let classeStatus = "status-pendente";
+      let textoStatus = "AGUARDANDO RESPOSTA DO ENTREGADOR";
+      let detalheExtra = "<div><strong>Mercadoria:</strong> " + p.mercadoria + " (" + p.pegar + " → " + p.levar + ")</div>";
+
+      if (p.status === "aceito") {
+        classeStatus = "status-aceito";
+        textoStatus = "ACEITO PELO ENTREGADOR";
+        detalheExtra =
+          "<div><strong>Mercadoria:</strong> " + p.mercadoria + "</div>" +
+          "<div><strong>Pegar em:</strong> " + p.pegar + "</div>" +
+          "<div><strong>Levar para:</strong> " + p.levar + "</div>" +
+          "<div><strong>Pagamento:</strong> " + p.pagamento + "</div>" +
+          "<div><strong>Valor:</strong> " + moeda(calcularValorFinal(p)) + (p.dinamica20 ? " (com dinâmica +20%)" : "") + "</div>";
+      } else if (p.status === "recusado") {
+        classeStatus = "status-recusado";
+        textoStatus = "NÃO ACEITO / RECUSADO PELO ENTREGADOR";
+        detalheExtra =
+          "<div><strong>Mercadoria:</strong> " + p.mercadoria + "</div>" +
+          "<div><strong>Status:</strong> Pedido recusado no momento.</div>";
+      }
+
+      alvo.innerHTML =
+        "<div class='retorno-cliente-box'>" +
+          "<div class='retorno-status " + classeStatus + "'>" + textoStatus + "</div>" +
+          "<div><strong>Cliente:</strong> " + p.cliente + "</div>" +
+          detalheExtra +
+          (p.status !== "pendente"
+            ? "<button type='button' class='btn btn-amarelo' onclick='copiarTexto(montarMsgCliente(pedidos[0]), \"Resposta do entregador copiada para o WhatsApp.\")'>COPIAR RESPOSTA PARA WHATSAPP</button>"
+            : "") +
+        "</div>";
     }
 
     function renderEntregador() {
@@ -678,7 +758,7 @@
           p.status === "aceito"
             ? "ACEITO PELO ENTREGADOR"
             : p.status === "recusado"
-            ? "RECUSADO PELO ENTREGADOR"
+            ? "NÃO ACEITO / RECUSADO"
             : "NOVO PEDIDO (AGUARDANDO ACEITE)";
 
         let htmlOpcoes = "";
@@ -714,16 +794,18 @@
 
             "<div class='grade-aceite'>" +
               "<button type='button' class='btn btn-verde' onclick='responderPedido(" + idx + ", \"aceito\")'>ACEITAR</button>" +
-              "<button type='button' class='btn btn-vermelho' onclick='responderPedido(" + idx + ", \"recusado\")'>RECUSAR</button>" +
+              "<button type='button' class='btn btn-vermelho' onclick='responderPedido(" + idx + ", \"recusado\")'>NÃO ACEITAR</button>" +
             "</div>" +
 
-            (p.status === "aceito"
+            (p.status !== "pendente"
               ? "<div class='msg-box'>" + montarMsgCliente(p) + "</div>" +
-                "<button type='button' class='btn btn-amarelo' onclick='copiarTexto(montarMsgCliente(pedidos[" + idx + "]), \"Mensagem de aceite copiada para enviar ao cliente.\")'>MANDAR ACEITE PARA O CLIENTE (COPIAR)</button>"
+                "<button type='button' class='btn btn-amarelo' onclick='copiarTexto(montarMsgCliente(pedidos[" + idx + "]), \"Mensagem enviada ao painel do cliente e copiada.\")'>MANDAR PARA O CLIENTE (COPIAR)</button>"
               : "") +
           "</div>";
       });
     }
+
+    renderRetornoCliente();
   </script>
 </body>
 </html>
