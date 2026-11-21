@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>32 Entregas — Teste 3 Lojas</title>
+  <title>32 Entregas — Lojas e Entregas Locais</title>
   <style>
     :root {
+      --branco: #FFFFFF;
+      --cinza-claro: #F7F7F7;
       --amarelo: #F5B800;
       --amarelo-claro: #FFD23F;
-      --creme: #FFF3B0;
+      --creme: #FFF6CC;
       --preto: #111111;
       --verde: #1B7F3A;
-      --borda: 3px solid #111111;
     }
 
     * {
@@ -22,38 +23,82 @@
     body {
       margin: 0;
       padding: 14px;
-      background-color: var(--amarelo);
+      background-color: var(--branco);
       color: var(--preto);
     }
 
     .container {
       max-width: 560px;
       margin: 0 auto;
-      padding-bottom: 32px;
+      padding-bottom: 36px;
     }
 
-    header {
-      background: var(--amarelo-claro);
-      border: var(--borda);
-      border-radius: 14px;
-      padding: 14px;
+    .cabecalho-32 {
+      background: var(--amarelo);
+      border: 3px solid var(--preto);
+      border-radius: 16px;
+      padding: 14px 16px;
       margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
       box-shadow: 4px 4px 0px var(--preto);
     }
 
-    header h1 {
+    .cabecalho-titulo {
       margin: 0;
-      font-size: 1.5rem;
+      font-size: 1.55rem;
       font-weight: 900;
+      letter-spacing: -0.4px;
+      color: var(--preto);
     }
 
-    header p {
+    .cabecalho-sub {
       margin: 4px 0 0;
-      font-size: 0.88rem;
-      font-weight: 700;
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--preto);
     }
 
-    .menu-abas {
+    .btn-login-redondo {
+      width: 58px;
+      height: 58px;
+      min-width: 58px;
+      border-radius: 50%;
+      background: var(--amarelo-claro);
+      border: 3px solid var(--preto);
+      color: var(--preto);
+      font-size: 0.72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      box-shadow: 2px 2px 0px var(--preto);
+    }
+
+    .btn-login-redondo:active {
+      transform: translate(1px, 1px);
+    }
+
+    .status-login {
+      background: var(--cinza-claro);
+      border: 2px solid var(--preto);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .abas {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
@@ -62,28 +107,28 @@
 
     .aba-btn {
       padding: 11px 6px;
-      border: var(--borda);
+      border: 2px solid var(--preto);
       border-radius: 10px;
-      background: var(--amarelo-claro);
+      background: var(--branco);
       color: var(--preto);
       font-weight: 900;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       cursor: pointer;
-      box-shadow: 3px 3px 0px var(--preto);
     }
 
     .aba-btn.ativa {
-      background: var(--preto);
-      color: var(--amarelo);
+      background: var(--amarelo);
+      color: var(--preto);
+      box-shadow: 2px 2px 0px var(--preto);
     }
 
     .card {
-      background: var(--amarelo-claro);
-      border: var(--borda);
+      background: var(--branco);
+      border: 2px solid var(--preto);
       border-radius: 14px;
       padding: 14px;
       margin-bottom: 14px;
-      box-shadow: 4px 4px 0px var(--preto);
+      box-shadow: 3px 3px 0px var(--preto);
     }
 
     .card h2 {
@@ -93,55 +138,67 @@
       text-transform: uppercase;
     }
 
-    .lojas-linha {
+    .lojas-grade {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 8px;
     }
 
-    .loja-btn {
+    .btn-loja {
       padding: 12px 6px;
       border: 2px solid var(--preto);
       border-radius: 10px;
-      background: var(--creme);
+      background: var(--cinza-claro);
       color: var(--preto);
       font-weight: 900;
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       cursor: pointer;
     }
 
-    .loja-btn.selecionada {
-      background: var(--preto);
-      color: var(--amarelo);
+    .btn-loja.ativa {
+      background: var(--amarelo);
+      color: var(--preto);
+      box-shadow: 2px 2px 0px var(--preto);
     }
 
-    .produto-item {
+    .loja-aberta-banner {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 2px solid var(--preto);
+      background: var(--creme);
+      font-size: 0.86rem;
+      font-weight: 800;
+    }
+
+    .linha-prod {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
-      padding: 8px 0;
-      border-bottom: 2px dashed var(--preto);
+      gap: 10px;
+      padding: 9px 0;
+      border-bottom: 1px solid #D9D9D9;
     }
 
-    .produto-item:last-child {
+    .linha-prod:last-child {
       border-bottom: none;
     }
 
     .prod-nome {
       font-weight: 800;
-      font-size: 0.9rem;
+      font-size: 0.92rem;
     }
 
-    .prod-preco {
+    .prod-valor {
       font-weight: 700;
-      font-size: 0.82rem;
+      font-size: 0.84rem;
+      color: #333333;
     }
 
     label {
       display: block;
       font-weight: 800;
-      font-size: 0.86rem;
+      font-size: 0.85rem;
       margin-top: 8px;
       margin-bottom: 4px;
     }
@@ -151,7 +208,7 @@
       padding: 10px;
       border: 2px solid var(--preto);
       border-radius: 8px;
-      background: var(--creme);
+      background: var(--branco);
       color: var(--preto);
       font-size: 0.92rem;
       font-weight: 700;
@@ -161,18 +218,16 @@
       padding: 8px 12px;
       border: 2px solid var(--preto);
       border-radius: 8px;
-      background: var(--preto);
-      color: var(--amarelo);
+      background: var(--amarelo);
+      color: var(--preto);
       font-weight: 900;
       font-size: 0.84rem;
       cursor: pointer;
     }
 
-    .btn-grande {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      font-size: 0.95rem;
+    .btn-preto {
+      background: var(--preto);
+      color: var(--amarelo);
     }
 
     .btn-verde {
@@ -180,13 +235,15 @@
       color: #FFFFFF;
     }
 
-    .btn-claro {
-      background: var(--creme);
-      color: var(--preto);
+    .btn-cheio {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      font-size: 0.94rem;
     }
 
-    .caixa-texto {
-      background: var(--creme);
+    .caixa {
+      background: var(--cinza-claro);
       border: 2px solid var(--preto);
       border-radius: 10px;
       padding: 10px;
@@ -196,7 +253,7 @@
       margin-top: 8px;
     }
 
-    .pedido-box {
+    .item-pedido {
       background: var(--creme);
       border: 2px solid var(--preto);
       border-radius: 10px;
@@ -206,320 +263,43 @@
       font-weight: 700;
     }
 
-    .oculto {
+    .escondido {
       display: none;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <header>
-      <h1>32 ENTREGAS</h1>
-      <p>Teste com Loja 1, Loja 2 e Loja 3 • Pix 53999089980</p>
+    <!-- CABEÇALHO 32 ENTREGAS -->
+    <header class="cabecalho-32">
+      <div>
+        <h1 class="cabecalho-titulo">32 ENTREGAS</h1>
+        <p class="cabecalho-sub">Balneário Cassino &amp; Rio Grande • 80% Entregador / 20% 32 Entregas</p>
+      </div>
+      <button type="button" class="btn-login-redondo" onclick="alternarLogin()">
+        <span id="rotulo-login">Entrar</span>
+      </button>
     </header>
 
-    <div class="menu-abas">
-      <button type="button" id="aba-cliente" class="aba-btn ativa" onclick="abrirTela('cliente')">1. CLIENTE</button>
-      <button type="button" id="aba-loja" class="aba-btn" onclick="abrirTela('loja')">2. LOJA</button>
-      <button type="button" id="aba-admin" class="aba-btn" onclick="abrirTela('admin')">3. ADMIN</button>
+    <div class="status-login">
+      <span id="texto-sessao">Modo: Visitante</span>
+      <span id="contador-itens">Carrinho: 0 item(ns)</span>
     </div>
 
-    <!-- TELA 1: CLIENTE -->
-    <div id="tela-cliente">
+    <!-- ABAS DE NAVEGAÇÃO -->
+    <div class="abas">
+      <button type="button" id="tab-cliente" class="aba-btn ativa" onclick="irPara('cliente')">1. Cliente</button>
+      <button type="button" id="tab-loja" class="aba-btn" onclick="irPara('loja')">2. Loja</button>
+      <button type="button" id="tab-admin" class="aba-btn" onclick="irPara('admin')">3. Admin</button>
+    </div>
+
+    <!-- TELA 1: CLIENTE (3 LOJAS + PRODUTOS + PIX) -->
+    <div id="sec-cliente">
       <div class="card">
-        <h2>Escolha a loja</h2>
-        <div class="lojas-linha">
-          <button type="button" id="btn-loja-1" class="loja-btn selecionada" onclick="escolherLoja('Loja 1')">Loja 1</button>
-          <button type="button" id="btn-loja-2" class="loja-btn" onclick="escolherLoja('Loja 2')">Loja 2</button>
-          <button type="button" id="btn-loja-3" class="loja-btn" onclick="escolherLoja('Loja 3')">Loja 3</button>
+        <h2>1. Escolha a Loja</h2>
+        <div class="lojas-grade">
+          <button type="button" id="card-loja-1" class="btn-loja ativa" onclick="abrirLoja('Loja 1')">Loja 1</button>
+          <button type="button" id="card-loja-2" class="btn-loja" onclick="abrirLoja('Loja 2')">Loja 2</button>
+          <button type="button" id="card-loja-3" class="btn-loja" onclick="abrirLoja('Loja 3')">Loja 3</button>
         </div>
-        <div id="info-loja-atual" class="caixa-texto">Loja selecionada: Loja 1 • Chave Pix: 53999089980</div>
-      </div>
-
-      <div class="card">
-        <h2 id="titulo-produtos">Produtos — Loja 1</h2>
-        <div id="lista-produtos"></div>
-      </div>
-
-      <div class="card">
-        <h2>Carrinho e Pix</h2>
-        <div id="resumo-carrinho" class="caixa-texto">Carrinho vazio. Toque em "+ Adicionar" nos produtos.</div>
-
-        <label for="nome-cliente">Nome do cliente</label>
-        <input type="text" id="nome-cliente" placeholder="Ex: João" />
-
-        <label for="endereco-cliente">Endereço de entrega</label>
-        <input type="text" id="endereco-cliente" placeholder="Ex: Rua principal, 100" />
-
-        <label for="modal-entrega">Modal e taxa de entrega</label>
-        <select id="modal-entrega" onchange="mostrarCarrinho()">
-          <option value="Bike|6.00">Bike — R$ 6,00</option>
-          <option value="Moto|10.00" selected>Moto — R$ 10,00</option>
-          <option value="Carro|15.00">Carro — R$ 15,00</option>
-        </select>
-
-        <button type="button" class="btn btn-grande" onclick="gerarPedidoPix()">GERAR PEDIDO E PIX</button>
-        <button type="button" class="btn btn-grande btn-claro" onclick="limparCarrinho()">LIMPAR CARRINHO</button>
-
-        <div id="area-pix" class="oculto">
-          <div id="texto-pix" class="caixa-texto"></div>
-          <button type="button" class="btn btn-grande btn-verde" onclick="copiarPix()">COPIAR CHAVE PIX: 53999089980</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- TELA 2: LOJA -->
-    <div id="tela-loja" class="oculto">
-      <div class="card">
-        <h2>Painel da Loja (Pedidos Recebidos)</h2>
-        <div id="pedidos-loja">Nenhum pedido ainda.</div>
-      </div>
-    </div>
-
-    <!-- TELA 3: ADMIN -->
-    <div id="tela-admin" class="oculto">
-      <div class="card">
-        <h2>Painel Admin / Entregador (80% / 20%)</h2>
-        <div id="resumo-admin" class="caixa-texto">Nenhuma entrega registrada ainda.</div>
-        <div id="pedidos-admin" style="margin-top:10px;"></div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const CHAVE_PIX = "53999089980";
-
-    const produtosPadrao = [
-      { nome: "Coca-Cola 2L", preco: 11.50 },
-      { nome: "Guaraná 2L", preco: 9.50 },
-      { nome: "Cerveja Lata 350ml", preco: 5.00 },
-      { nome: "Água Mineral 1,5L", preco: 4.00 },
-      { nome: "Pão de Forma", preco: 8.50 },
-      { nome: "Leite Integral 1L", preco: 5.80 },
-      { nome: "Café 500g", preco: 18.00 },
-      { nome: "Arroz 5kg", preco: 26.00 },
-      { nome: "Feijão 1kg", preco: 8.50 },
-      { nome: "Salgadinho Pacote", preco: 7.50 }
-    ];
-
-    let lojaAtual = "Loja 1";
-    let carrinho = [];
-    let pedidos = [];
-
-    function grana(valor) {
-      return "R$ " + Number(valor).toFixed(2).replace(".", ",");
-    }
-
-    function abrirTela(tela) {
-      document.getElementById("tela-cliente").classList.add("oculto");
-      document.getElementById("tela-loja").classList.add("oculto");
-      document.getElementById("tela-admin").classList.add("oculto");
-
-      document.getElementById("aba-cliente").classList.remove("ativa");
-      document.getElementById("aba-loja").classList.remove("ativa");
-      document.getElementById("aba-admin").classList.remove("ativa");
-
-      document.getElementById("tela-" + tela).classList.remove("oculto");
-      document.getElementById("aba-" + tela).classList.add("ativa");
-
-      atualizarPaineis();
-    }
-
-    function escolherLoja(nomeLoja) {
-      lojaAtual = nomeLoja;
-
-      document.getElementById("btn-loja-1").classList.remove("selecionada");
-      document.getElementById("btn-loja-2").classList.remove("selecionada");
-      document.getElementById("btn-loja-3").classList.remove("selecionada");
-
-      if (nomeLoja === "Loja 1") document.getElementById("btn-loja-1").classList.add("selecionada");
-      if (nomeLoja === "Loja 2") document.getElementById("btn-loja-2").classList.add("selecionada");
-      if (nomeLoja === "Loja 3") document.getElementById("btn-loja-3").classList.add("selecionada");
-
-      document.getElementById("info-loja-atual").textContent =
-        "Loja selecionada: " + lojaAtual + " • Chave Pix: " + CHAVE_PIX;
-      document.getElementById("titulo-produtos").textContent =
-        "Produtos — " + lojaAtual;
-
-      mostrarCarrinho();
-    }
-
-    function montarProdutos() {
-      const alvo = document.getElementById("lista-produtos");
-      alvo.innerHTML = "";
-
-      for (let i = 0; i < produtosPadrao.length; i++) {
-        const item = produtosPadrao[i];
-        const div = document.createElement("div");
-        div.className = "produto-item";
-        div.innerHTML =
-          "<div><div class='prod-nome'>" + item.nome + "</div><div class='prod-preco'>" + grana(item.preco) + "</div></div>" +
-          "<button type='button' class='btn' onclick='adicionarItem(" + i + ")'>+ Adicionar</button>";
-        alvo.appendChild(div);
-      }
-    }
-
-    function adicionarItem(indice) {
-      carrinho.push({
-        loja: lojaAtual,
-        nome: produtosPadrao[indice].nome,
-        preco: produtosPadrao[indice].preco
-      });
-      mostrarCarrinho();
-    }
-
-    function limparCarrinho() {
-      carrinho = [];
-      document.getElementById("area-pix").classList.add("oculto");
-      mostrarCarrinho();
-    }
-
-    function mostrarCarrinho() {
-      const box = document.getElementById("resumo-carrinho");
-      if (carrinho.length === 0) {
-        box.textContent = "Carrinho vazio (" + lojaAtual + "). Toque em '+ Adicionar' nos produtos.";
-        return;
-      }
-
-      const partesModal = document.getElementById("modal-entrega").value.split("|");
-      const modal = partesModal[0];
-      const taxa = parseFloat(partesModal[1]);
-
-      let somaProdutos = 0;
-      let linhas = [];
-
-      for (let i = 0; i < carrinho.length; i++) {
-        somaProdutos += carrinho[i].preco;
-        linhas.push((i + 1) + ". [" + carrinho[i].loja + "] " + carrinho[i].nome + " - " + grana(carrinho[i].preco));
-      }
-
-      const total = somaProdutos + taxa;
-
-      box.textContent =
-        linhas.join("\n") +
-        "\n\nProdutos: " + grana(somaProdutos) +
-        "\nEntrega (" + modal + "): " + grana(taxa) +
-        "\nTOTAL PIX: " + grana(total);
-    }
-
-    function gerarPedidoPix() {
-      if (carrinho.length === 0) {
-        alert("Adicione algum produto primeiro.");
-        return;
-      }
-
-      const cliente = document.getElementById("nome-cliente").value.trim() || "Cliente";
-      const endereco = document.getElementById("endereco-cliente").value.trim() || "Endereço não informado";
-      const partesModal = document.getElementById("modal-entrega").value.split("|");
-      const modal = partesModal[0];
-      const taxa = parseFloat(partesModal[1]);
-
-      let somaProdutos = 0;
-      let nomesItens = [];
-      for (let i = 0; i < carrinho.length; i++) {
-        somaProdutos += carrinho[i].preco;
-        nomesItens.push(carrinho[i].nome + " (" + carrinho[i].loja + ")");
-      }
-
-      const total = somaProdutos + taxa;
-      const parteEntregador = taxa * 0.8;
-      const parte32 = taxa * 0.2;
-      const numeroPedido = "#" + (pedidos.length + 1);
-
-      const pedido = {
-        numero: numeroPedido,
-        loja: lojaAtual,
-        cliente: cliente,
-        endereco: endereco,
-        itens: nomesItens.join(", "),
-        produtos: somaProdutos,
-        taxa: taxa,
-        total: total,
-        modal: modal,
-        parteEntregador: parteEntregador,
-        parte32: parte32,
-        status: "Recebido na Loja"
-      };
-
-      pedidos.unshift(pedido);
-
-      document.getElementById("area-pix").classList.remove("oculto");
-      document.getElementById("texto-pix").textContent =
-        "Pedido " + numeroPedido + " criado!\n" +
-        "Cliente: " + cliente + "\n" +
-        "Loja: " + lojaAtual + "\n" +
-        "Chave Pix: " + CHAVE_PIX + "\n" +
-        "Valor Total Pix: " + grana(total);
-
-      carrinho = [];
-      mostrarCarrinho();
-      atualizarPaineis();
-    }
-
-    function copiarPix() {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(CHAVE_PIX);
-      }
-      alert("Chave Pix copiada: " + CHAVE_PIX);
-    }
-
-    function marcarPronto(indice) {
-      pedidos[indice].status = "Pronto para retirada";
-      atualizarPaineis();
-    }
-
-    function atualizarPaineis() {
-      const divLoja = document.getElementById("pedidos-loja");
-      const divAdminPedidos = document.getElementById("pedidos-admin");
-      const divResumoAdmin = document.getElementById("resumo-admin");
-
-      if (pedidos.length === 0) {
-        divLoja.innerHTML = "<div class='caixa-texto'>Nenhum pedido recebido ainda.</div>";
-        divAdminPedidos.innerHTML = "<div class='caixa-texto'>Nenhuma corrida disponível.</div>";
-        divResumoAdmin.textContent = "Total corridas: 0 | Entregador (80%): R$ 0,00 | 32 Entregas (20%): R$ 0,00";
-        return;
-      }
-
-      divLoja.innerHTML = "";
-      divAdminPedidos.innerHTML = "";
-
-      let totalTaxas = 0;
-      let totalEntregador = 0;
-      let total32 = 0;
-
-      for (let i = 0; i < pedidos.length; i++) {
-        const p = pedidos[i];
-        totalTaxas += p.taxa;
-        totalEntregador += p.parteEntregador;
-        total32 += p.parte32;
-
-        divLoja.innerHTML +=
-          "<div class='pedido-box'>" +
-          "<div><strong>Pedido " + p.numero + " — " + p.loja + "</strong> (" + p.status + ")</div>" +
-          "<div>Cliente: " + p.cliente + "</div>" +
-          "<div>Itens: " + p.itens + "</div>" +
-          "<div>Produtos: " + grana(p.produtos) + " | Entrega: " + grana(p.taxa) + " | Total Pix: " + grana(p.total) + "</div>" +
-          "<button type='button' class='btn' style='margin-top:8px;' onclick='marcarPronto(" + i + ")'>Marcar Pronto</button>" +
-          "</div>";
-
-        divAdminPedidos.innerHTML +=
-          "<div class='pedido-box'>" +
-          "<div><strong>Pedido " + p.numero + " — " + p.modal + "</strong> (" + p.status + ")</div>" +
-          "<div>Coleta: " + p.loja + " | Entrega: " + p.cliente + " (" + p.endereco + ")</div>" +
-          "<div>Taxa: " + grana(p.taxa) + " | Entregador 80%: " + grana(p.parteEntregador) + " | 32 Entregas 20%: " + grana(p.parte32) + "</div>" +
-          "</div>";
-      }
-
-      divResumoAdmin.textContent =
-        "Total de pedidos: " + pedidos.length +
-        "\nTotal em taxas de entrega: " + grana(totalTaxas) +
-        "\nEntregador (80%): " + grana(totalEntregador) +
-        "\n32 Entregas (20%): " + grana(total32);
-    }
-
-    montarProdutos();
-    escolherLoja("Loja 1");
-    atualizarPaineis();
-  </script>
-</body>
-</html>
+        <div id="banner-loja
