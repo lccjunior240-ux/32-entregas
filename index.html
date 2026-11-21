@@ -3,13 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>32E Entregas &amp; 32 Bike — Logística Local</title>
+  <title>32 Entregas &amp; 32 Bike — Teste em Campo</title>
   <style>
     :root {
+      --azul-marinho: #0B1F3A;
+      --azul-escuro: #071528;
+      --amarelo: #FFD400;
+      --amarelo-suave: #FFF4B8;
       --branco: #FFFFFF;
-      --cinza: #F6F6F6;
-      --amarelo-vivo: #FFE600;
-      --amarelo-destaque: #FFF04D;
+      --cinza: #F4F6F9;
       --preto: #111111;
       --verde: #177A36;
     }
@@ -22,68 +24,142 @@
     body {
       margin: 0;
       padding: 14px;
-      background-color: var(--branco);
+      background-color: var(--cinza);
       color: var(--preto);
     }
 
-    .container {
-      max-width: 560px;
+    .app {
+      max-width: 540px;
       margin: 0 auto;
       padding-bottom: 36px;
     }
 
-    .topo-32e {
-      background: var(--amarelo-vivo);
+    .topo {
+      background: var(--azul-marinho);
       border: 3px solid var(--preto);
+      border-bottom: 5px solid var(--amarelo);
       border-radius: 16px;
-      padding: 14px 16px;
+      padding: 12px 14px;
       margin-bottom: 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       box-shadow: 4px 4px 0px var(--preto);
     }
 
-    .marca-32e {
-      margin: 0;
-      font-size: 1.55rem;
-      font-weight: 900;
-      letter-spacing: -0.4px;
-      color: var(--preto);
-    }
-
-    .marca-32e span {
-      background: var(--preto);
-      color: var(--amarelo-vivo);
-      padding: 1px 6px;
-      border-radius: 6px;
-      margin-right: 4px;
-    }
-
-    .sub-32e {
-      margin: 5px 0 0;
-      font-size: 0.82rem;
-      font-weight: 800;
-      color: var(--preto);
-    }
-
-    .btn-redondo {
-      width: 56px;
-      height: 56px;
-      min-width: 56px;
-      border-radius: 50%;
-      background: var(--amarelo-destaque);
-      border: 3px solid var(--preto);
-      color: var(--preto);
-      font-size: 0.72rem;
-      font-weight: 900;
-      text-transform: uppercase;
-      cursor: pointer;
+    .logos-duplas {
       display: flex;
       align-items: center;
+      gap: 10px;
+    }
+
+    .selo-bike {
+      width: 62px;
+      height: 62px;
+      min-width: 62px;
+      border-radius: 50%;
+      background: var(--amarelo);
+      border: 2.5px solid var(--preto);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       justify-content: center;
-      box-shadow: 2px 2px 0px var(--preto);
+      text-align: center;
+      padding: 4px;
+      box-shadow: 2px 2px 0px var(--azul-escuro);
+    }
+
+    .selo-bike svg {
+      width: 22px;
+      height: 15px;
+      stroke: var(--preto);
+      fill: none;
+      stroke-width: 2.3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .selo-bike span {
+      font-size: 0.58rem;
+      font-weight: 900;
+      line-height: 1.05;
+      color: var(--preto);
+      margin-top: 2px;
+    }
+
+    .selo-entregas {
+      background: var(--amarelo);
+      border: 2.5px solid var(--preto);
+      border-radius: 10px;
+      padding: 6px 9px;
+      min-width: 70px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      box-shadow: 2px 2px 0px var(--azul-escuro);
+    }
+
+    .selo-entregas .letra-e {
+      font-size: 1.25rem;
+      font-weight: 900;
+      line-height: 1;
+      color: var(--preto);
+    }
+
+    .selo-entregas .nome-baixo {
+      font-size: 0.56rem;
+      font-weight: 900;
+      line-height: 1.1;
+      color: var(--preto);
+      margin-top: 2px;
+      text-transform: uppercase;
+    }
+
+    .titulo-topo {
+      color: var(--branco);
+      text-align: right;
+    }
+
+    .titulo-topo h1 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 900;
+      color: var(--amarelo);
+    }
+
+    .titulo-topo p {
+      margin: 3px 0 0;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #DCE6F2;
+    }
+
+    .barra-som {
+      background: var(--branco);
+      border: 2px solid var(--preto);
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .btn-mini {
+      padding: 7px 10px;
+      border: 2px solid var(--preto);
+      border-radius: 8px;
+      background: var(--amarelo);
+      color: var(--preto);
+      font-size: 0.78rem;
+      font-weight: 900;
+      cursor: pointer;
     }
 
     .card {
@@ -97,15 +173,16 @@
 
     .card h2 {
       margin: 0 0 10px;
-      font-size: 1rem;
+      font-size: 0.96rem;
       font-weight: 900;
+      color: var(--azul-marinho);
       text-transform: uppercase;
     }
 
     label {
       display: block;
+      font-size: 0.84rem;
       font-weight: 800;
-      font-size: 0.85rem;
       margin-top: 8px;
       margin-bottom: 4px;
     }
@@ -127,224 +204,302 @@
       margin-top: 10px;
       border: 2px solid var(--preto);
       border-radius: 8px;
+      font-size: 0.9rem;
       font-weight: 900;
-      font-size: 0.92rem;
       cursor: pointer;
     }
 
-    .btn-preto {
-      background: var(--preto);
-      color: var(--amarelo-vivo);
+    .btn-azul {
+      background: var(--azul-marinho);
+      color: var(--amarelo);
     }
 
     .btn-amarelo {
-      background: var(--amarelo-vivo);
+      background: var(--amarelo);
       color: var(--preto);
     }
 
     .btn-verde {
       background: var(--verde);
-      color: #FFFFFF;
+      color: var(--branco);
     }
 
-    .caixa {
-      background: var(--cinza);
-      border: 2px solid var(--preto);
-      border-radius: 10px;
+    .caixa-resumo {
+      margin-top: 10px;
       padding: 11px;
-      font-size: 0.86rem;
-      font-weight: 700;
-      white-space: pre-line;
-      margin-top: 10px;
-    }
-
-    .chamado {
-      background: var(--amarelo-destaque);
-      border: 2px solid var(--preto);
       border-radius: 10px;
-      padding: 10px;
-      margin-top: 10px;
+      border: 2px solid var(--preto);
+      background: var(--amarelo-suave);
       font-size: 0.85rem;
       font-weight: 700;
+      white-space: pre-line;
+    }
+
+    .chamado-card {
+      margin-top: 10px;
+      padding: 11px;
+      border-radius: 10px;
+      border: 2px solid var(--preto);
+      background: var(--cinza);
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .chamado-card.aceito {
+      background: var(--amarelo-suave);
+    }
+
+    .status-tag {
+      display: inline-block;
+      padding: 3px 7px;
+      border: 1.5px solid var(--preto);
+      border-radius: 6px;
+      background: var(--branco);
+      font-size: 0.75rem;
+      font-weight: 900;
+      margin-bottom: 6px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header class="topo-32e">
-      <div>
-        <h1 class="marca-32e"><span>32E</span> ENTREGAS</h1>
-        <p class="sub-32e">32 Bike &amp; Logística Local • 80% Entregador / 20% 32E</p>
+  <div class="app">
+    <header class="topo">
+      <div class="logos-duplas">
+        <div class="selo-bike" aria-label="32 Bike">
+          <svg viewBox="0 0 32 20">
+            <circle cx="7" cy="14" r="4.5"></circle>
+            <circle cx="25" cy="14" r="4.5"></circle>
+            <path d="M7 14 L13 14 L18 7 L25 14"></path>
+            <path d="M13 14 L16 6 L19 6"></path>
+            <path d="M18 7 L17 4 L21 4"></path>
+          </svg>
+          <span>32 Bike</span>
+        </div>
+
+        <div class="selo-entregas" aria-label="32 Entregas">
+          <div class="letra-e">E</div>
+          <div class="nome-baixo">32 Entregas</div>
+        </div>
       </div>
-      <button type="button" class="btn-redondo" onclick="alternarBase()">
-        <span id="status-base">Base</span>
-      </button>
+
+      <div class="titulo-topo">
+        <h1>32 ENTREGAS</h1>
+        <p>Teste na rua • 80% / 20%</p>
+      </div>
     </header>
 
-    <div class="card">
-      <h2>1. Retirada no Comércio</h2>
-      <label for="comercio">Comércio / Estabelecimento</label>
-      <input type="text" id="comercio" placeholder="Ex: Mercado / Farmácia / Loja" />
-
-      <label for="retirada">Endereço de retirada</label>
-      <input type="text" id="retirada" placeholder="Ex: Rua principal, 230 - Cassino" />
-
-      <label for="obs">Detalhes do pedido</label>
-      <input type="text" id="obs" placeholder="Ex: Sacola pronta / Entrega rápida" />
+    <div class="barra-som">
+      <span id="estado-som">Som do alarme: Ativo</span>
+      <div>
+        <button type="button" class="btn-mini" onclick="testarAlarme()">Testar Som</button>
+        <button type="button" class="btn-mini" onclick="alternarSom()">Mudo / Som</button>
+      </div>
     </div>
 
     <div class="card">
-      <h2>2. Destino, Modal e Repasse</h2>
-      <label for="destino">Endereço de entrega</label>
-      <input type="text" id="destino" placeholder="Ex: Av. Rio Grande, 500 - Cassino" />
+      <h2>1. Simular / Lançar Entrega</h2>
 
-      <label for="modal">Modal de entrega</label>
-      <select id="modal" onchange="atualizarPrevia()">
-        <option value="32 Bike|6.00" selected>32 Bike — Taxa R$ 6,00</option>
-        <option value="Moto|10.00">Moto — Taxa R$ 10,00</option>
-        <option value="Carro|15.00">Carro — Taxa R$ 15,00</option>
+      <label for="o-que-pega">O que vai levar?</label>
+      <input type="text" id="o-que-pega" placeholder="Ex: Encomenda / Peça / Sacola" />
+
+      <label for="onde-pega">Onde pega?</label>
+      <input type="text" id="onde-pega" placeholder="Ex: Ponto de saída / Rua e número" />
+
+      <label for="onde-leva">Onde entrega?</label>
+      <input type="text" id="onde-leva" placeholder="Ex: Ponto de destino / Rua e número" />
+
+      <label for="modal-chamado">Modal e taxa</label>
+      <select id="modal-chamado" onchange="atualizarPrevia()">
+        <option value="32 Bike|6.00" selected>32 Bike — R$ 6,00</option>
+        <option value="Moto|10.00">Moto — R$ 10,00</option>
+        <option value="Carro|15.00">Carro — R$ 15,00</option>
       </select>
 
-      <label for="entregador">Entregador escalado</label>
-      <select id="entregador">
-        <option value="32 Bike (Ciclista Parceiro)">32 Bike (Ciclista Parceiro)</option>
-        <option value="Junior (32E Entregas)">Junior (32E Entregas)</option>
-        <option value="Motoboy Parceiro">Motoboy Parceiro</option>
+      <label for="quem-aceita">Quem assume a entrega</label>
+      <select id="quem-aceita">
+        <option value="32 Bike (Entregador Bike)">32 Bike (Entregador Bike)</option>
+        <option value="Entregador 32 Entregas">Entregador 32 Entregas</option>
+        <option value="Parceiro disponível">Parceiro disponível</option>
       </select>
 
-      <label for="pagamento">Forma de acerto</label>
-      <select id="pagamento">
+      <label for="pagamento-chamado">Pagamento</label>
+      <select id="pagamento-chamado">
         <option value="Pix (53999089980)">Pix (53999089980)</option>
-        <option value="Acerto no comércio">Acerto no comércio</option>
+        <option value="Acerto na retirada">Acerto na retirada</option>
         <option value="Acerto na entrega">Acerto na entrega</option>
       </select>
 
-      <button type="button" class="btn btn-preto" onclick="gerarChamado()">GERAR CHAMADO</button>
-      <button type="button" class="btn btn-amarelo" onclick="copiarWhatsApp()">COPIAR RESUMO WHATSAPP</button>
-      <button type="button" class="btn btn-verde" onclick="copiarPix()">COPIAR PIX: 53999089980</button>
+      <button type="button" class="btn btn-azul" onclick="chegarChamado()">DISPARAR CHAMADO (ALARME)</button>
+      <button type="button" class="btn btn-verde" onclick="copiarPix()">COPIAR CHAVE PIX: 53999089980</button>
 
-      <div id="painel-calculo" class="caixa">Selecione o modal ou preencha os campos para calcular.</div>
+      <div id="previa-box" class="caixa-resumo">Preencha os campos para ver o valor e o repasse (80% / 20%).</div>
     </div>
 
     <div class="card">
-      <h2>3. Chamados Registrados</h2>
-      <div id="lista-chamados">Nenhum chamado registrado ainda.</div>
+      <h2>2. Fila de Aceite</h2>
+      <div id="painel-lista">Nenhum chamado na fila agora.</div>
     </div>
   </div>
 
   <script>
-    const PIX_32E = "53999089980";
+    const CHAVE_PIX = "53999089980";
+    let somLigado = true;
+    let audioCtx = null;
     let chamados = [];
-    let textoAtual = "";
-    let ativa = false;
 
-    function real(v) {
+    function grana(v) {
       return "R$ " + Number(v).toFixed(2).replace(".", ",");
     }
 
-    function alternarBase() {
-      ativa = !ativa;
-      document.getElementById("status-base").textContent = ativa ? "On" : "Base";
+    function tocarBipe(tipo) {
+      if (!somLigado) return;
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === "suspended") {
+          audioCtx.resume();
+        }
+
+        const agora = audioCtx.currentTime;
+        const notas = tipo === "aceito" ? [660, 880] : [587, 784, 587];
+
+        for (let i = 0; i < notas.length; i++) {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = "triangle";
+          osc.frequency.value = notas[i];
+
+          gain.gain.setValueAtTime(0.18, agora + i * 0.14);
+          gain.gain.exponentialRampToValueAtTime(0.001, agora + i * 0.14 + 0.12);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(agora + i * 0.14);
+          osc.stop(agora + i * 0.14 + 0.13);
+        }
+      } catch (e) {}
     }
 
-    function lerDados() {
-      const partes = document.getElementById("modal").value.split("|");
+    function testarAlarme() {
+      somLigado = true;
+      document.getElementById("estado-som").textContent = "Som do alarme: Ativo";
+      tocarBipe("chegada");
+    }
+
+    function alternarSom() {
+      somLigado = !somLigado;
+      document.getElementById("estado-som").textContent = somLigado
+        ? "Som do alarme: Ativo"
+        : "Som do alarme: Mudo";
+    }
+
+    function lerForm() {
+      const partes = document.getElementById("modal-chamado").value.split("|");
       return {
-        comercio: document.getElementById("comercio").value.trim() || "Comércio parceiro",
-        retirada: document.getElementById("retirada").value.trim() || "A confirmar",
-        obs: document.getElementById("obs").value.trim() || "Entrega padrão",
-        destino: document.getElementById("destino").value.trim() || "A confirmar",
+        item: document.getElementById("o-que-pega").value.trim() || "Entrega local",
+        origem: document.getElementById("onde-pega").value.trim() || "A confirmar",
+        destino: document.getElementById("onde-leva").value.trim() || "A confirmar",
         modal: partes[0],
         taxa: parseFloat(partes[1]),
-        entregador: document.getElementById("entregador").value,
-        pagamento: document.getElementById("pagamento").value
+        responsavel: document.getElementById("quem-aceita").value,
+        pagamento: document.getElementById("pagamento-chamado").value
       };
     }
 
-    function montarMensagem(d) {
+    function atualizarPrevia() {
+      const d = lerForm();
       const repasse80 = d.taxa * 0.8;
       const parte20 = d.taxa * 0.2;
+
+      document.getElementById("previa-box").textContent =
+        "Modal: " + d.modal +
+        "\nTaxa: " + grana(d.taxa) +
+        "\nRepasse: 80% Entregador (" + grana(repasse80) + ") | 20% 32 Entregas (" + grana(parte20) + ")";
+    }
+
+    function montarMsgAceite(c) {
+      const repasse80 = c.taxa * 0.8;
+      const parte20 = c.taxa * 0.2;
+
       return (
-        "*32E ENTREGAS — CHAMADO*\n" +
-        "Modal: " + d.modal + "\n" +
-        "Entregador: " + d.entregador + "\n" +
-        "Retirar em: " + d.comercio + " (" + d.retirada + ")\n" +
-        "Obs: " + d.obs + "\n" +
-        "Entregar em: " + d.destino + "\n" +
-        "Pagamento: " + d.pagamento + "\n" +
-        "Taxa: " + real(d.taxa) + " | Entregador (80%): " + real(repasse80) + " | 32E (20%): " + real(parte20)
+        "*32 ENTREGAS — CHAMADO ACEITO*\n" +
+        "Modal: " + c.modal + "\n" +
+        "Responsável: " + c.responsavel + "\n" +
+        "Item: " + c.item + "\n" +
+        "Pegar em: " + c.origem + "\n" +
+        "Entregar em: " + c.destino + "\n" +
+        "Pagamento: " + c.pagamento + "\n" +
+        "Taxa: " + grana(c.taxa) + " (80% Entregador: " + grana(repasse80) + " | 20% 32 Entregas: " + grana(parte20) + ")"
       );
     }
 
-    function atualizarPrevia() {
-      const d = lerDados();
-      const repasse80 = d.taxa * 0.8;
-      const parte20 = d.taxa * 0.2;
-      textoAtual = montarMensagem(d);
-
-      document.getElementById("painel-calculo").textContent =
-        "Modal: " + d.modal +
-        "\nTaxa total: " + real(d.taxa) +
-        "\nEntregador (80%): " + real(repasse80) +
-        "\n32E Entregas (20%): " + real(parte20) +
-        "\nEntregador: " + d.entregador;
-    }
-
-    function gerarChamado() {
-      const d = lerDados();
-      const repasse80 = d.taxa * 0.8;
-      const parte20 = d.taxa * 0.2;
-      const msg = montarMensagem(d);
-      textoAtual = msg;
-
+    function chegarChamado() {
+      const d = lerForm();
       chamados.unshift({
-        msg: msg,
-        resumo: d.modal + " • " + d.comercio + " → " + d.destino + " (" + real(d.taxa) + " | 80%: " + real(repasse80) + " / 20%: " + real(parte20) + ")"
+        id: Date.now(),
+        item: d.item,
+        origem: d.origem,
+        destino: d.destino,
+        modal: d.modal,
+        taxa: d.taxa,
+        responsavel: d.responsavel,
+        pagamento: d.pagamento,
+        aceito: false
       });
 
-      document.getElementById("painel-calculo").textContent = msg;
-      desenharChamados();
+      tocarBipe("chegada");
+      renderChamados();
     }
 
-    function desenharChamados() {
-      const alvo = document.getElementById("lista-chamados");
+    function aceitarChamado(idx) {
+      chamados[idx].aceito = true;
+      tocarBipe("aceito");
+      renderChamados();
+    }
+
+    function copiarAceite(idx) {
+      const texto = montarMsgAceite(chamados[idx]);
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(texto);
+      }
+      alert("Resumo copiado!");
+    }
+
+    function renderChamados() {
+      const alvo = document.getElementById("painel-lista");
       if (chamados.length === 0) {
-        alvo.innerHTML = "Nenhum chamado registrado ainda.";
+        alvo.innerHTML = "Nenhum chamado na fila agora.";
         return;
       }
 
       alvo.innerHTML = "";
       for (let i = 0; i < chamados.length; i++) {
+        const c = chamados[i];
+        const repasse80 = c.taxa * 0.8;
+        const parte20 = c.taxa * 0.2;
+        const msg = montarMsgAceite(c).replace(/\n/g, "<br>");
+
         alvo.innerHTML +=
-          "<div class='chamado'>" +
-            "<div>" + chamados[i].resumo + "</div>" +
-            "<button type='button' class='btn btn-preto' style='margin-top:8px;' onclick='copiarItem(" + i + ")'>Copiar Chamado #" + (chamados.length - i) + "</button>" +
+          "<div class='chamado-card " + (c.aceito ? "aceito" : "") + "'>" +
+            "<div class='status-tag'>" + (c.aceito ? "ACEITO — " + c.responsavel : "AGUARDANDO ACEITE") + "</div>" +
+            "<div><strong>" + c.modal + "</strong> — " + c.item + "</div>" +
+            "<div>Pegar em: " + c.origem + "</div>" +
+            "<div>Entregar em: " + c.destino + "</div>" +
+            "<div>Taxa: " + grana(c.taxa) + " | 80%: " + grana(repasse80) + " | 20%: " + grana(parte20) + "</div>" +
+            (!c.aceito
+              ? "<button type='button' class='btn btn-verde' onclick='aceitarChamado(" + i + ")'>ACEITAR ENTREGA (SINAL SONORO)</button>"
+              : "<div class='caixa-resumo'>" + msg + "</div>" +
+                "<button type='button' class='btn btn-amarelo' onclick='copiarAceite(" + i + ")'>COPIAR RESUMO PARA WHATSAPP</button>") +
           "</div>";
       }
     }
 
-    function copiarItem(idx) {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(chamados[idx].msg);
-      }
-      alert("Chamado copiado para o WhatsApp!");
-    }
-
-    function copiarWhatsApp() {
-      if (!textoAtual) {
-        atualizarPrevia();
-      }
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(textoAtual);
-      }
-      alert("Resumo copiado para o WhatsApp!");
-    }
-
     function copiarPix() {
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(PIX_32E);
+        navigator.clipboard.writeText(CHAVE_PIX);
       }
-      alert("Chave Pix copiada: " + PIX_32E);
+      alert("Chave Pix copiada: " + CHAVE_PIX);
     }
 
     atualizarPrevia();
