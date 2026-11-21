@@ -152,6 +152,12 @@
       font-weight: 700;
     }
 
+    .catalogo-scroll {
+      max-height: 360px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
     .item-row {
       display: flex;
       justify-content: space-between;
@@ -256,7 +262,7 @@
   <div class="container">
     <header>
       <h1>32 ENTREGAS</h1>
-      <p>Lojas locais + Entrega rápida • Balneário Cassino & Rio Grande</p>
+      <p>Marketplace Local • Balneário Cassino & Rio Grande</p>
     </header>
 
     <div class="tabs">
@@ -265,41 +271,41 @@
       <button class="tab-btn" onclick="trocarAba('admin', this)">3. Entregador/Admin</button>
     </div>
 
-    <!-- ABA 1: CLIENTE (ESTILO IFOOD) -->
+    <!-- ABA 1: CLIENTE -->
     <div id="view-cliente" class="view active">
       <div class="card">
-        <h2>Escolha a loja</h2>
+        <h2>1. Escolha o comércio</h2>
         <div id="gridLojas" class="loja-grid"></div>
       </div>
 
       <div class="card">
-        <h2 id="tituloCatalogo">Catálogo da loja</h2>
-        <div id="listaProdutos"></div>
+        <h2 id="tituloCatalogo">2. Produtos disponíveis</h2>
+        <div id="listaProdutos" class="catalogo-scroll"></div>
       </div>
 
       <div class="card">
-        <h2>Carrinho e Pagamento Pix</h2>
+        <h2>3. Carrinho e Pagamento Pix</h2>
         <div id="resumoCarrinho" class="box-info">Seu carrinho está vazio. Adicione produtos acima.</div>
 
         <label for="clienteNome">Seu nome</label>
-        <input type="text" id="clienteNome" placeholder="Ex: Carlos Silva" />
+        <input type="text" id="clienteNome" placeholder="Ex: Maria Souza" />
 
         <label for="clienteEndereco">Endereço de entrega</label>
         <input type="text" id="clienteEndereco" placeholder="Ex: Av. Rio Grande, 450 - Cassino" />
 
-        <label for="modalEntrega">Tipo de entrega (definido pelo porte do pedido)</label>
+        <label for="modalEntrega">Modal de entrega (taxa fixa)</label>
         <select id="modalEntrega" onchange="atualizarCarrinho()">
           <option value="Bike|6.00">Bike — Pedido leve (Taxa R$ 6,00)</option>
-          <option value="Moto|10.00">Moto — Entrega rápida (Taxa R$ 10,00)</option>
+          <option value="Moto|10.00" selected>Moto — Entrega rápida (Taxa R$ 10,00)</option>
           <option value="Carro|15.00">Carro — Volume maior (Taxa R$ 15,00)</option>
         </select>
 
-        <button class="btn btn-full" onclick="finalizarCompraPix()">PAGAR COM PIX E ENVIAR PEDIDO</button>
+        <button class="btn btn-full" onclick="finalizarCompraPix()">GERAR PIX DO COMÉRCIO E PEDIR</button>
         <button class="btn btn-full btn-sec" onclick="limparCarrinho()">LIMPAR CARRINHO</button>
 
         <div id="areaPix" style="display:none; margin-top:12px;">
           <div id="dadosPix" class="box-info"></div>
-          <button class="btn btn-full btn-ok" onclick="copiarPix()">COPIAR CÓDIGO PIX</button>
+          <button class="btn btn-full btn-ok" onclick="copiarChavePix()">COPIAR CHAVE PIX (53999089980)</button>
         </div>
       </div>
     </div>
@@ -307,37 +313,37 @@
     <!-- ABA 2: PAINEL DA LOJA -->
     <div id="view-loja" class="view">
       <div class="card">
-        <h2>Pedidos recebidos na loja</h2>
+        <h2>Pedidos recebidos (Pix do comércio)</h2>
         <p style="font-size:0.84rem; font-weight:700; margin-top:0;">
-          A compra já foi paga pelo cliente no app. Separe a mercadoria e libere para retirada.
+          Confira o pagamento na chave Pix do comércio, separe os itens e escolha quem vai entregar.
         </p>
         <div id="listaPedidosLoja"></div>
       </div>
 
       <div class="card">
-        <h2>Cadastrar produto na loja selecionada</h2>
+        <h2>Cadastrar novo item no catálogo</h2>
         <label for="lojaCadastroSelect">Loja</label>
         <select id="lojaCadastroSelect"></select>
 
         <label for="novoProdNome">Nome do produto</label>
-        <input type="text" id="novoProdNome" placeholder="Ex: Shampoo Neutro 400ml" />
+        <input type="text" id="novoProdNome" placeholder="Ex: Coca-Cola 2L" />
 
         <label for="novoProdPreco">Preço (R$)</label>
-        <input type="number" id="novoProdPreco" step="0.01" placeholder="Ex: 24.90" />
+        <input type="number" id="novoProdPreco" step="0.01" placeholder="Ex: 11.50" />
 
-        <button class="btn btn-full" onclick="adicionarProdutoLoja()">+ ADICIONAR AO CATÁLOGO</button>
+        <button class="btn btn-full" onclick="adicionarProdutoLoja()">+ ADICIONAR PRODUTO</button>
       </div>
     </div>
 
     <!-- ABA 3: ENTREGADOR / ADMIN -->
     <div id="view-admin" class="view">
       <div class="card">
-        <h2>Resumo Financeiro (80% Entregador / 20% 32 Entregas)</h2>
+        <h2>Resumo da Taxa (80% Entregador / 20% 32 Entregas)</h2>
         <div id="resumoFinanceiro" class="box-info">Nenhuma corrida gerada ainda.</div>
       </div>
 
       <div class="card">
-        <h2>Fila de Entregas & Despacho</h2>
+        <h2>Despacho e Fila de Entregas</h2>
         <div id="listaEntregas"></div>
       </div>
     </div>
@@ -346,55 +352,60 @@
   <script>
     const lojas = [
       {
+        id: "mercadinho",
+        nome: "Mercadinho Parceiro",
+        categoria: "Mercado & Bebidas",
+        endereco: "Balneário Cassino - Rio Grande/RS",
+        chavePix: "53999089980",
+        produtos: [
+          { nome: "Coca-Cola 2L", preco: 11.50 },
+          { nome: "Coca-Cola Lata 350ml", preco: 5.50 },
+          { nome: "Guaraná Antarctica 2L", preco: 9.90 },
+          { nome: "Refrigerante Fruki Guaraná 2L", preco: 8.50 },
+          { nome: "Cerveja Polar Latão 473ml", preco: 6.00 },
+          { nome: "Cerveja Brahma Duplo Malte 350ml", preco: 5.00 },
+          { nome: "Cerveja Heineken Long Neck 330ml", preco: 8.50 },
+          { nome: "Cerveja Skol Lata 350ml", preco: 4.50 },
+          { nome: "Água Mineral sem Gás 1,5L", preco: 4.00 },
+          { nome: "Água Mineral com Gás 500ml", preco: 3.00 },
+          { nome: "Suco de Laranja Integral 1L", preco: 12.00 },
+          { nome: "Energético Monster 473ml", preco: 11.00 },
+          { nome: "Gelo em Cubos Pacote 3kg", preco: 10.00 },
+          { nome: "Carvão Vegetal Saco 3kg", preco: 16.00 },
+          { nome: "Pão de Forma Tradicional", preco: 8.90 },
+          { nome: "Leite Integral Caixa 1L", preco: 5.80 },
+          { nome: "Café Torrado e Moído 500g", preco: 18.50 },
+          { nome: "Arroz Branco Tipo 1 (5kg)", preco: 26.90 },
+          { nome: "Feijão Preto Tipo 1 (1kg)", preco: 8.50 },
+          { nome: "Salgadinho Batata / Milho Pacote", preco: 7.50 }
+        ]
+      },
+      {
         id: "farmacia",
-        nome: "Farmácia São João",
-        categoria: "Farmácia • 24h",
-        endereco: "Av. Rio Grande, 230 - Cassino",
+        nome: "Farmácia Associada Local",
+        categoria: "Farmácia & Higiene",
+        endereco: "Balneário Cassino - Rio Grande/RS",
+        chavePix: "53999089980",
         produtos: [
           { nome: "Shampoo Uso Diário 400ml", preco: 22.90 },
-          { nome: "Analgésico (cartela)", preco: 12.50 },
-          { nome: "Protetor Solar FPS 50", preco: 49.90 }
-        ]
-      },
-      {
-        id: "padaria",
-        nome: "Padaria Central",
-        categoria: "Padaria & Café",
-        endereco: "Rua Lisboa, 115 - Cassino",
-        produtos: [
-          { nome: "Pão Francês (10 unid.)", preco: 10.00 },
-          { nome: "Bolo Caseiro de Milho", preco: 18.00 },
-          { nome: "Café + Sanduíche Natural", preco: 16.50 }
-        ]
-      },
-      {
-        id: "mercado",
-        nome: "Mercado do Bairro",
-        categoria: "Mercearia",
-        endereco: "Rua Principal, 310 - Cassino",
-        produtos: [
-          { nome: "Kit Café da Manhã", preco: 35.00 },
-          { nome: "Água Mineral 5L", preco: 11.00 },
-          { nome: "Cesta Hortifruti", preco: 42.00 }
-        ]
-      },
-      {
-        id: "lancheria",
-        nome: "Lancheria 32",
-        categoria: "Lanches",
-        endereco: "Av. Atlântica, 88 - Cassino",
-        produtos: [
-          { nome: "Xis Completo", preco: 28.00 },
-          { nome: "Porção de Batata Frita", preco: 20.00 },
-          { nome: "Refrigerante Lata", preco: 6.00 }
+          { nome: "Condicionador 400ml", preco: 24.90 },
+          { nome: "Sabonete Líquido 250ml", preco: 14.50 },
+          { nome: "Protetor Solar FPS 50", preco: 49.90 },
+          { nome: "Creme Dental 90g", preco: 6.50 }
         ]
       }
     ];
 
-    let lojaAtualId = "farmacia";
+    const entregadoresDisponiveis = [
+      "Junior (32 Entregas - Carro)",
+      "Motoboy Apoio (32 Entregas)",
+      "Entregador de Confiança da Loja"
+    ];
+
+    let lojaAtualId = "mercadinho";
     let carrinho = [];
     let pedidos = [];
-    let ultimoCodigoPix = "";
+    let chavePixAtual = "53999089980";
 
     function moeda(v) {
       return "R$ " + v.toFixed(2).replace(".", ",");
@@ -442,7 +453,7 @@
 
     function renderizarCatalogo() {
       const loja = lojas.find(l => l.id === lojaAtualId);
-      document.getElementById("tituloCatalogo").textContent = "Catálogo — " + loja.nome;
+      document.getElementById("tituloCatalogo").textContent = `2. Produtos — ${loja.nome} (${loja.produtos.length} itens)`;
       const lista = document.getElementById("listaProdutos");
       lista.innerHTML = "";
 
@@ -454,7 +465,7 @@
             <div class="item-title">${prod.nome}</div>
             <div class="item-sub">${moeda(prod.preco)}</div>
           </div>
-          <button class="btn" onclick="adicionarAoCarrinho(${index})">+ Comprar</button>
+          <button class="btn" onclick="adicionarAoCarrinho(${index})">+ Adicionar</button>
         `;
         lista.appendChild(row);
       });
@@ -485,82 +496,5 @@
       const subtotal = carrinho.reduce((s, item) => s + item.preco, 0);
       const total = subtotal + taxa;
 
-      const listaTexto = carrinho.map((it, i) => `${i + 1}. ${it.nome} — ${moeda(it.preco)}`).join("\n");
-
-      box.textContent =
-        `Loja: ${loja.nome}\n` +
-        `${listaTexto}\n\n` +
-        `Produtos: ${moeda(subtotal)}\n` +
-        `Entrega (${modal}): ${moeda(taxa)}\n` +
-        `TOTAL A PAGAR NO PIX: ${moeda(total)}`;
-    }
-
-    function finalizarCompraPix() {
-      if (carrinho.length === 0) {
-        alert("Adicione pelo menos um produto no carrinho antes de finalizar.");
-        return;
-      }
-
-      const loja = lojas.find(l => l.id === lojaAtualId);
-      const cliente = document.getElementById("clienteNome").value.trim() || "Cliente App";
-      const destino = document.getElementById("clienteEndereco").value.trim() || "Endereço não informado";
-      const [modal, taxaStr] = document.getElementById("modalEntrega").value.split("|");
-      const taxa = parseFloat(taxaStr);
-      const subtotal = carrinho.reduce((s, item) => s + item.preco, 0);
-      const total = subtotal + taxa;
-
-      const idPedido = "32E-" + (100 + pedidos.length + 1);
-      const repasseEntregador = taxa * 0.8;
-      const taxaAdmin = taxa * 0.2;
-
-      const novoPedido = {
-        id: idPedido,
-        lojaNome: loja.nome,
-        lojaEndereco: loja.endereco,
-        cliente,
-        destino,
-        modal,
-        itens: [...carrinho],
-        subtotal,
-        taxa,
-        total,
-        repasseEntregador,
-        taxaAdmin,
-        status: "Pago • Loja separando"
-      };
-
-      pedidos.unshift(novoPedido);
-
-      ultimoCodigoPix = `00020126360014BR.GOV.BCB.PIX011432ENTREGASPIX5204000053039865405${total.toFixed(2)}5802BR591132ENTREGAS6009RIOGRANDE62070503${idPedido}6304ABCD`;
-
-      document.getElementById("areaPix").style.display = "block";
-      document.getElementById("dadosPix").textContent =
-        `PEDIDO ${idPedido} GERADO COM SUCESSO!\n` +
-        `Valor total pago (Produtos + Entrega): ${moeda(total)}\n` +
-        `Chave / Copia e Cola Pix:\n${ultimoCodigoPix}`;
-
-      carrinho = [];
-      atualizarCarrinho();
-      renderizarPedidos();
-    }
-
-    function copiarPix() {
-      if (!ultimoCodigoPix) return;
-      navigator.clipboard.writeText(ultimoCodigoPix);
-      alert("Código Pix copiado!");
-    }
-
-    function adicionarProdutoLoja() {
-      const lojaId = document.getElementById("lojaCadastroSelect").value;
-      const nome = document.getElementById("novoProdNome").value.trim();
-      const preco = parseFloat(document.getElementById("novoProdPreco").value);
-
-      if (!nome || isNaN(preco) || preco <= 0) {
-        alert("Informe o nome e um preço válido para o produto.");
-        return;
-      }
-
-      const loja = lojas.find(l => l.id === lojaId);
-      loja.produtos.push({ nome, preco });
-      document.getElementById("novoProdNome").value = "";
-      document.getElementById
+      const listaTexto = carrinho.map((it, i) => `${i + 1}.${it.nome} — ${moeda(it.preco)}`).join("\n");  box.textContent = `Comércio: ${loja.nome}\n` +
+        `${listaTexto}\n\n` + `Produtos (vai p/ comércio): ${moeda(subtotal)}\
