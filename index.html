@@ -3,16 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>32 Entregas — Lojas e Entregas Locais</title>
+  <title>32E Entregas &amp; 32 Bike — Logística Local</title>
   <style>
     :root {
       --branco: #FFFFFF;
-      --cinza-claro: #F7F7F7;
-      --amarelo: #F5B800;
-      --amarelo-claro: #FFD23F;
-      --creme: #FFF6CC;
+      --cinza: #F6F6F6;
+      --amarelo-vivo: #FFE600;
+      --amarelo-destaque: #FFF04D;
       --preto: #111111;
-      --verde: #1B7F3A;
+      --verde: #177A36;
     }
 
     * {
@@ -33,12 +32,12 @@
       padding-bottom: 36px;
     }
 
-    .cabecalho-32 {
-      background: var(--amarelo);
+    .topo-32e {
+      background: var(--amarelo-vivo);
       border: 3px solid var(--preto);
       border-radius: 16px;
       padding: 14px 16px;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -46,7 +45,7 @@
       box-shadow: 4px 4px 0px var(--preto);
     }
 
-    .cabecalho-titulo {
+    .marca-32e {
       margin: 0;
       font-size: 1.55rem;
       font-weight: 900;
@@ -54,19 +53,27 @@
       color: var(--preto);
     }
 
-    .cabecalho-sub {
-      margin: 4px 0 0;
+    .marca-32e span {
+      background: var(--preto);
+      color: var(--amarelo-vivo);
+      padding: 1px 6px;
+      border-radius: 6px;
+      margin-right: 4px;
+    }
+
+    .sub-32e {
+      margin: 5px 0 0;
       font-size: 0.82rem;
       font-weight: 800;
       color: var(--preto);
     }
 
-    .btn-login-redondo {
-      width: 58px;
-      height: 58px;
-      min-width: 58px;
+    .btn-redondo {
+      width: 56px;
+      height: 56px;
+      min-width: 56px;
       border-radius: 50%;
-      background: var(--amarelo-claro);
+      background: var(--amarelo-destaque);
       border: 3px solid var(--preto);
       color: var(--preto);
       font-size: 0.72rem;
@@ -76,49 +83,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      text-align: center;
-      box-shadow: 2px 2px 0px var(--preto);
-    }
-
-    .btn-login-redondo:active {
-      transform: translate(1px, 1px);
-    }
-
-    .status-login {
-      background: var(--cinza-claro);
-      border: 2px solid var(--preto);
-      border-radius: 10px;
-      padding: 8px 12px;
-      font-size: 0.82rem;
-      font-weight: 800;
-      margin-bottom: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .abas {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-
-    .aba-btn {
-      padding: 11px 6px;
-      border: 2px solid var(--preto);
-      border-radius: 10px;
-      background: var(--branco);
-      color: var(--preto);
-      font-weight: 900;
-      font-size: 0.82rem;
-      cursor: pointer;
-    }
-
-    .aba-btn.ativa {
-      background: var(--amarelo);
-      color: var(--preto);
       box-shadow: 2px 2px 0px var(--preto);
     }
 
@@ -136,63 +100,6 @@
       font-size: 1rem;
       font-weight: 900;
       text-transform: uppercase;
-    }
-
-    .lojas-grade {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-
-    .btn-loja {
-      padding: 12px 6px;
-      border: 2px solid var(--preto);
-      border-radius: 10px;
-      background: var(--cinza-claro);
-      color: var(--preto);
-      font-weight: 900;
-      font-size: 0.92rem;
-      cursor: pointer;
-    }
-
-    .btn-loja.ativa {
-      background: var(--amarelo);
-      color: var(--preto);
-      box-shadow: 2px 2px 0px var(--preto);
-    }
-
-    .loja-aberta-banner {
-      margin-top: 10px;
-      padding: 10px;
-      border-radius: 10px;
-      border: 2px solid var(--preto);
-      background: var(--creme);
-      font-size: 0.86rem;
-      font-weight: 800;
-    }
-
-    .linha-prod {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      padding: 9px 0;
-      border-bottom: 1px solid #D9D9D9;
-    }
-
-    .linha-prod:last-child {
-      border-bottom: none;
-    }
-
-    .prod-nome {
-      font-weight: 800;
-      font-size: 0.92rem;
-    }
-
-    .prod-valor {
-      font-weight: 700;
-      font-size: 0.84rem;
-      color: #333333;
     }
 
     label {
@@ -215,19 +122,24 @@
     }
 
     .btn {
-      padding: 8px 12px;
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
       border: 2px solid var(--preto);
       border-radius: 8px;
-      background: var(--amarelo);
-      color: var(--preto);
       font-weight: 900;
-      font-size: 0.84rem;
+      font-size: 0.92rem;
       cursor: pointer;
     }
 
     .btn-preto {
       background: var(--preto);
-      color: var(--amarelo);
+      color: var(--amarelo-vivo);
+    }
+
+    .btn-amarelo {
+      background: var(--amarelo-vivo);
+      color: var(--preto);
     }
 
     .btn-verde {
@@ -235,71 +147,207 @@
       color: #FFFFFF;
     }
 
-    .btn-cheio {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      font-size: 0.94rem;
-    }
-
     .caixa {
-      background: var(--cinza-claro);
+      background: var(--cinza);
       border: 2px solid var(--preto);
       border-radius: 10px;
-      padding: 10px;
+      padding: 11px;
       font-size: 0.86rem;
       font-weight: 700;
       white-space: pre-line;
-      margin-top: 8px;
+      margin-top: 10px;
     }
 
-    .item-pedido {
-      background: var(--creme);
+    .chamado {
+      background: var(--amarelo-destaque);
       border: 2px solid var(--preto);
       border-radius: 10px;
       padding: 10px;
-      margin-bottom: 10px;
+      margin-top: 10px;
       font-size: 0.85rem;
       font-weight: 700;
-    }
-
-    .escondido {
-      display: none;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- CABEÇALHO 32 ENTREGAS -->
-    <header class="cabecalho-32">
+    <header class="topo-32e">
       <div>
-        <h1 class="cabecalho-titulo">32 ENTREGAS</h1>
-        <p class="cabecalho-sub">Balneário Cassino &amp; Rio Grande • 80% Entregador / 20% 32 Entregas</p>
+        <h1 class="marca-32e"><span>32E</span> ENTREGAS</h1>
+        <p class="sub-32e">32 Bike &amp; Logística Local • 80% Entregador / 20% 32E</p>
       </div>
-      <button type="button" class="btn-login-redondo" onclick="alternarLogin()">
-        <span id="rotulo-login">Entrar</span>
+      <button type="button" class="btn-redondo" onclick="alternarBase()">
+        <span id="status-base">Base</span>
       </button>
     </header>
 
-    <div class="status-login">
-      <span id="texto-sessao">Modo: Visitante</span>
-      <span id="contador-itens">Carrinho: 0 item(ns)</span>
+    <div class="card">
+      <h2>1. Retirada no Comércio</h2>
+      <label for="comercio">Comércio / Estabelecimento</label>
+      <input type="text" id="comercio" placeholder="Ex: Mercado / Farmácia / Loja" />
+
+      <label for="retirada">Endereço de retirada</label>
+      <input type="text" id="retirada" placeholder="Ex: Rua principal, 230 - Cassino" />
+
+      <label for="obs">Detalhes do pedido</label>
+      <input type="text" id="obs" placeholder="Ex: Sacola pronta / Entrega rápida" />
     </div>
 
-    <!-- ABAS DE NAVEGAÇÃO -->
-    <div class="abas">
-      <button type="button" id="tab-cliente" class="aba-btn ativa" onclick="irPara('cliente')">1. Cliente</button>
-      <button type="button" id="tab-loja" class="aba-btn" onclick="irPara('loja')">2. Loja</button>
-      <button type="button" id="tab-admin" class="aba-btn" onclick="irPara('admin')">3. Admin</button>
+    <div class="card">
+      <h2>2. Destino, Modal e Repasse</h2>
+      <label for="destino">Endereço de entrega</label>
+      <input type="text" id="destino" placeholder="Ex: Av. Rio Grande, 500 - Cassino" />
+
+      <label for="modal">Modal de entrega</label>
+      <select id="modal" onchange="atualizarPrevia()">
+        <option value="32 Bike|6.00" selected>32 Bike — Taxa R$ 6,00</option>
+        <option value="Moto|10.00">Moto — Taxa R$ 10,00</option>
+        <option value="Carro|15.00">Carro — Taxa R$ 15,00</option>
+      </select>
+
+      <label for="entregador">Entregador escalado</label>
+      <select id="entregador">
+        <option value="32 Bike (Ciclista Parceiro)">32 Bike (Ciclista Parceiro)</option>
+        <option value="Junior (32E Entregas)">Junior (32E Entregas)</option>
+        <option value="Motoboy Parceiro">Motoboy Parceiro</option>
+      </select>
+
+      <label for="pagamento">Forma de acerto</label>
+      <select id="pagamento">
+        <option value="Pix (53999089980)">Pix (53999089980)</option>
+        <option value="Acerto no comércio">Acerto no comércio</option>
+        <option value="Acerto na entrega">Acerto na entrega</option>
+      </select>
+
+      <button type="button" class="btn btn-preto" onclick="gerarChamado()">GERAR CHAMADO</button>
+      <button type="button" class="btn btn-amarelo" onclick="copiarWhatsApp()">COPIAR RESUMO WHATSAPP</button>
+      <button type="button" class="btn btn-verde" onclick="copiarPix()">COPIAR PIX: 53999089980</button>
+
+      <div id="painel-calculo" class="caixa">Selecione o modal ou preencha os campos para calcular.</div>
     </div>
 
-    <!-- TELA 1: CLIENTE (3 LOJAS + PRODUTOS + PIX) -->
-    <div id="sec-cliente">
-      <div class="card">
-        <h2>1. Escolha a Loja</h2>
-        <div class="lojas-grade">
-          <button type="button" id="card-loja-1" class="btn-loja ativa" onclick="abrirLoja('Loja 1')">Loja 1</button>
-          <button type="button" id="card-loja-2" class="btn-loja" onclick="abrirLoja('Loja 2')">Loja 2</button>
-          <button type="button" id="card-loja-3" class="btn-loja" onclick="abrirLoja('Loja 3')">Loja 3</button>
-        </div>
-        <div id="banner-loja
+    <div class="card">
+      <h2>3. Chamados Registrados</h2>
+      <div id="lista-chamados">Nenhum chamado registrado ainda.</div>
+    </div>
+  </div>
+
+  <script>
+    const PIX_32E = "53999089980";
+    let chamados = [];
+    let textoAtual = "";
+    let ativa = false;
+
+    function real(v) {
+      return "R$ " + Number(v).toFixed(2).replace(".", ",");
+    }
+
+    function alternarBase() {
+      ativa = !ativa;
+      document.getElementById("status-base").textContent = ativa ? "On" : "Base";
+    }
+
+    function lerDados() {
+      const partes = document.getElementById("modal").value.split("|");
+      return {
+        comercio: document.getElementById("comercio").value.trim() || "Comércio parceiro",
+        retirada: document.getElementById("retirada").value.trim() || "A confirmar",
+        obs: document.getElementById("obs").value.trim() || "Entrega padrão",
+        destino: document.getElementById("destino").value.trim() || "A confirmar",
+        modal: partes[0],
+        taxa: parseFloat(partes[1]),
+        entregador: document.getElementById("entregador").value,
+        pagamento: document.getElementById("pagamento").value
+      };
+    }
+
+    function montarMensagem(d) {
+      const repasse80 = d.taxa * 0.8;
+      const parte20 = d.taxa * 0.2;
+      return (
+        "*32E ENTREGAS — CHAMADO*\n" +
+        "Modal: " + d.modal + "\n" +
+        "Entregador: " + d.entregador + "\n" +
+        "Retirar em: " + d.comercio + " (" + d.retirada + ")\n" +
+        "Obs: " + d.obs + "\n" +
+        "Entregar em: " + d.destino + "\n" +
+        "Pagamento: " + d.pagamento + "\n" +
+        "Taxa: " + real(d.taxa) + " | Entregador (80%): " + real(repasse80) + " | 32E (20%): " + real(parte20)
+      );
+    }
+
+    function atualizarPrevia() {
+      const d = lerDados();
+      const repasse80 = d.taxa * 0.8;
+      const parte20 = d.taxa * 0.2;
+      textoAtual = montarMensagem(d);
+
+      document.getElementById("painel-calculo").textContent =
+        "Modal: " + d.modal +
+        "\nTaxa total: " + real(d.taxa) +
+        "\nEntregador (80%): " + real(repasse80) +
+        "\n32E Entregas (20%): " + real(parte20) +
+        "\nEntregador: " + d.entregador;
+    }
+
+    function gerarChamado() {
+      const d = lerDados();
+      const repasse80 = d.taxa * 0.8;
+      const parte20 = d.taxa * 0.2;
+      const msg = montarMensagem(d);
+      textoAtual = msg;
+
+      chamados.unshift({
+        msg: msg,
+        resumo: d.modal + " • " + d.comercio + " → " + d.destino + " (" + real(d.taxa) + " | 80%: " + real(repasse80) + " / 20%: " + real(parte20) + ")"
+      });
+
+      document.getElementById("painel-calculo").textContent = msg;
+      desenharChamados();
+    }
+
+    function desenharChamados() {
+      const alvo = document.getElementById("lista-chamados");
+      if (chamados.length === 0) {
+        alvo.innerHTML = "Nenhum chamado registrado ainda.";
+        return;
+      }
+
+      alvo.innerHTML = "";
+      for (let i = 0; i < chamados.length; i++) {
+        alvo.innerHTML +=
+          "<div class='chamado'>" +
+            "<div>" + chamados[i].resumo + "</div>" +
+            "<button type='button' class='btn btn-preto' style='margin-top:8px;' onclick='copiarItem(" + i + ")'>Copiar Chamado #" + (chamados.length - i) + "</button>" +
+          "</div>";
+      }
+    }
+
+    function copiarItem(idx) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(chamados[idx].msg);
+      }
+      alert("Chamado copiado para o WhatsApp!");
+    }
+
+    function copiarWhatsApp() {
+      if (!textoAtual) {
+        atualizarPrevia();
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(textoAtual);
+      }
+      alert("Resumo copiado para o WhatsApp!");
+    }
+
+    function copiarPix() {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(PIX_32E);
+      }
+      alert("Chave Pix copiada: " + PIX_32E);
+    }
+
+    atualizarPrevia();
+  </script>
+</body>
+</html>
