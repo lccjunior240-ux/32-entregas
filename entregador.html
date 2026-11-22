@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>32 Entregas — Entregador &amp; Turno</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#F5C400" />
+  <style>
+    :root {
+      --fundo: #070D1D;
+      --card: #101A33;
+      --card-escuro: #0B1326;
+      --borda: #283B66;
+      --amarelo: #F5C400;
+      --texto: #FFFFFF;
+      --suave: #B4C3E0;
+      --verde: #26D07C;
+      --vermelho: #FF5C5C;
+    }
+    * { box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
+    body { margin: 0; padding: 14px; background: var(--fundo); color: var(--texto); font-size: 16px; line-height: 1.4; }
+    .app { max-width: 520px; margin: 0 auto; padding-bottom: 48px; }
+    .topo-amarelo { background: var(--amarelo); color: #091124; border-radius: 16px; border: 3px solid #091124; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+    .marca-texto h1 { margin: 0; font-size: 1.15rem; font-weight: 900; display: flex; align-items: center; gap: 6px; }
+    .marca-texto h1 .tag-32 { background: #091124; color: var(--amarelo); padding: 2px 7px; border-radius: 7px; }
+    .marca-texto p { margin: 3px 0 0; font-size: 0.82rem; font-weight: 800; color: #111A2E; }
+    .badge-lat { background: #091124; color: var(--amarelo); font-size: 0.76rem; font-weight: 900; padding: 7px 9px; border-radius: 9px; white-space: nowrap; }
+    .aviso-acao { background: var(--card); border: 2px solid var(--amarelo); color: var(--amarelo); border-radius: 12px; padding: 11px 13px; font-size: 0.94rem; font-weight: 800; margin-bottom: 14px; min-height: 44px; display: flex; align-items: center; }
+    .card { background: var(--card); border: 2px solid var(--borda); border-radius: 16px; padding: 16px; margin-bottom: 14px; }
+    .card h2 { margin: 0 0 12px; font-size: 1.2rem; font-weight: 900; color: var(--amarelo); }
+    label { display: block; font-size: 0.98rem; font-weight: 800; color: #FFFFFF; margin-top: 12px; margin-bottom: 6px; }
+    input, select, textarea { width: 100%; padding: 13px; border-radius: 10px; border: 2px solid var(--borda); background: var(--card-escuro); color: var(--texto); font-size: 1rem; font-weight: 700; }
+    textarea { min-height: 76px; resize: vertical; }
+    .btn { width: 100%; padding: 14px; border-radius: 11px; border: none; font-size: 1rem; font-weight: 900; cursor: pointer; margin-top: 12px; }
+    .btn-amarelo { background: var(--amarelo); color: #091124; }
+    .btn-escuro { background: var(--card-escuro); color: var(--texto); border: 2px solid var(--borda); }
+    .btn-verde { background: var(--verde); color: #06130C; }
+    .btn-vermelho { background: var(--vermelho); color: #160404; }
+    .btn-dinamica { background: var(--card-escuro); color: var(--amarelo); border: 2px solid var(--amarelo); }
+    .btn-dinamica.ligada { background: var(--amarelo); color: #091124; }
+    .grade-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+    .grade-tempo { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 8px; }
+    .btn-tempo { padding: 12px 6px; border-radius: 10px; border: 2px solid var(--borda); background: var(--card-escuro); color: var(--texto); font-size: 0.92rem; font-weight: 900; cursor: pointer; }
+    .btn-tempo.escolhido { background: var(--verde); color: #06130C; border-color: var(--verde); }
+    .caixa-divisao { margin-top: 12px; padding: 12px; border-radius: 10px; border: 2px dashed #4E679A; background: #081022; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; text-align: center; }
+    .caixa-divisao small { display: block; font-size: 0.78rem; color: var(--suave); margin-bottom: 3px; }
+    .caixa-divisao strong { font-size: 1.02rem; font-weight: 900; }
+    .cor-branco { color: var(--texto); }
+    .cor-verde { color: var(--verde); }
+    .cor-amarelo { color: var(--amarelo); }
+    .codigo-box { margin-top: 10px; padding: 11px; border-radius: 10px; background: #060B18; border: 2px dashed var(--amarelo); color: var(--amarelo); font-family: monospace; font-size: 0.86rem; word-break: break-all; }
+    .msg-box { margin-top: 12px; padding: 12px; border-radius: 10px; background: #081022; border: 2px solid var(--borda); font-size: 0.92rem; white-space: pre-line; }
+    .chamado-box { margin-top: 12px; padding: 13px; border-radius: 12px; background: var(--card-escuro); border: 2px solid var(--borda); }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topo-amarelo">
+      <div class="marca-texto">
+        <h1><span class="tag-32">32</span> ENTREGADOR</h1>
+        <p>Operação &amp; Caixa 80% / 20%</p>
+      </div>
+      <div class="badge-lat">LAT 32° S</div>
+    </header>
+
+    <div class="aviso-acao" id="aviso-acao">Cole o código recebido do cliente para calcular o valor.</div>
+
+    <section class="card">
+      <h2>1. Receber Código do Cliente</h2>
+      <label for="entrada-cliente">Cole o código 32E|... do pedido ou do ACEITO do cliente</label>
+      <textarea id="entrada-cliente" placeholder="Cole aqui o código recebido no WhatsApp"></textarea>
+      <div class="grade-2">
+        <button type="button" class="btn btn-amarelo" onclick="lerCodigoCliente()">LER CÓDIGO DO CLIENTE</button>
+        <button type="button" class="btn btn-escuro" onclick="limparChamado()">ZERAR CHAMADO</button>
+      </div>
+      <div id="painel-chamado"></div>
+    </section>
+
+    <section class="card">
+      <h2>2. Turno &amp; Caixa (80% / 20%)</h2>
+      <div class="caixa-divisao">
+        <div><small>Bruto Turno</small><strong class="cor-branco" id="turno-total">R$ 0,00</strong></div>
+        <div><small>80% Entregador</small><strong class="cor-verde" id="turno-80">R$ 0,00</strong></div>
+        <div><small>20% 32E</small><strong class="cor-amarelo" id="turno-20">R$ 0,00</strong></div>
+      </div>
+      <div class="msg-box" id="detalhe-turno">Nenhuma entrega finalizada neste turno ainda.</div>
+      <div class="grade-2">
+        <button type="button" class="btn btn-amarelo" onclick="copiarFechamento()">COPIAR FECHAMENTO</button>
+        <button type="button" class="btn btn-verde" onclick="fecharTurno()">FECHAR TURNO / ZERAR</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const CHAVE_PIX = "53999089980";
+    const CHAVE_TURNO = "app32_turno_entregador_v1";
+    let chamado = null;
+    let entregasTurno = [];
+
+    try { entregasTurno = JSON.parse(localStorage.getItem(CHAVE_TURNO) || "[]"); } catch (e) {}
+
+    function moeda(v) { return "R$ " + Number(v || 0).toFixed(2).replace(".", ","); }
+    function mostrarAviso(msg) { document.getElementById("aviso-acao").textContent = msg; }
+
+    function copiarTexto(texto, msg) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(texto).catch(() => {});
+      }
+      mostrarAviso(msg);
+    }
+
+    function codificarObj(obj) {
+      const json = JSON.stringify(obj);
+      const b64 = btoa(unescape(encodeURIComponent(json)));
+      return "32E|" + b64;
+    }
+
+    function decodificarTexto(txt) {
+      const limpo = (txt || "").trim();
+      const idx = limpo.indexOf("32E|");
+      if (idx === -1) return null;
+      const b64 = limpo.slice(idx + 4).split(/\s/)[0];
+      try {
+        return JSON.parse(decodeURIComponent(escape(atob(b64))));
+      } catch (e) { return null; }
+    }
+
+    function valorFinal(p) {
+      const base = Number(p.valorBase) || 20;
+      return p.dinamica20 ? base * 1.2 : base;
+    }
+
+    function lerCodigoCliente() {
+      const obj = decodificarTexto(document.getElementById("entrada-cliente").value);
+      if (!obj) { mostrarAviso("Código inválido. Cole o código completo 32E|... do cliente."); return; }
+      if (!obj.valorBase) obj.valorBase = 20;
+      if (typeof obj.dinamica20 !== "boolean") obj.dinamica20 = false;
+      obj.valorFinal = valorFinal(obj);
+      chamado = obj;
+      renderChamado();
+      mostrarAviso(obj.etapa === "aceito_cliente" ? "Cliente ACEITOU! Escolha o tempo até a mercadoria." : "Pedido do cliente carregado!");
+    }
+
+    function mudarValorBase(v) {
+      if (!chamado) return;
+      chamado.valorBase = parseFloat(v) || 10;
+      chamado.valorFinal = valorFinal(chamado);
+      renderChamado();
+    }
+
+    function alternarDinamica() {
+      if (!chamado) return;
+      chamado.dinamica20 = !chamado.dinamica20;
+      chamado.valorFinal = valorFinal(chamado);
+      renderChamado();
+    }
+
+    function gerarRetornoValor() {
+      if (!chamado) return;
+      chamado.etapa = "valor_enviado";
+      chamado.valorFinal = valorFinal(chamado);
+      const cod = codificarObj(chamado);
+      copiarTexto(cod, `Valor ${moeda(chamado.valorFinal)} copiado! Cole no WhatsApp do cliente.`);
+      renderChamado(cod);
+    }
+
+    function recusarEntrega() {
+      if (!chamado) return;
+      chamado.etapa = "recusado_entregador";
+      const cod = codificarObj(chamado);
+      copiarTexto(cod, "Aviso de não disponibilidade copiado!");
+      renderChamado(cod);
+    }
+
+    function enviarTempo(tempo) {
+      if (!chamado) return;
+      chamado.tempoChegada = tempo;
+      chamado.etapa = "tempo_enviado";
+      chamado.valorFinal = valorFinal(chamado);
+      const cod = codificarObj(chamado);
+      copiarTexto(cod, `Tempo (${tempo}) copiado! Cole no WhatsApp do cliente.`);
+      renderChamado(cod);
+    }
+
+    function finalizarEntrega() {
+      if (!chamado) return;
+      const total = valorFinal(chamado);
+      entregasTurno.push({
+        cliente: chamado.cliente,
+        bairro: chamado.bairro,
+        valor: total,
+        p80: total * 0.8,
+        p20: total * 0.2
+      });
+      try { localStorage.setItem(CHAVE_TURNO, JSON.stringify(entregasTurno)); } catch (e) {}
+      renderTurno();
+      limparChamado();
+      mostrarAviso("Entrega finalizada e somada no Turno/Caixa (80% / 20%)!");
+    }
+
+    function limparChamado() {
+      chamado = null;
+      document.getElementById("entrada-cliente").value = "";
+      document.getElementById("painel-chamado").innerHTML = "";
+    }
+
+    function renderChamado(codGerado) {
+      const alvo = document.getElementById("painel-chamado");
+      if (!chamado) { alvo.innerHTML = ""; return; }
+      const p = chamado;
+      const total = valorFinal(p);
+      const valores = [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60];
+      const tempos = ["2 min", "5 min", "8 min", "10 min", "12 min", "15 min", "18 min", "20 min"];
+
+      const opts = valores.map((v) => `<option value="${v}"${Number(p.valorBase) === v ? " selected" : ""}>${moeda(v)}</option>`).join("");
+      const btnsTempo = tempos.map((t) => `<button type="button" class="btn-tempo ${p.tempoChegada === t ? "escolhido" : ""}" onclick="enviarTempo('${t}')">${t}</button>`).join("");
+
+      const blocoCodigo = codGerado
+        ? `<div class="codigo-box">${codGerado}</div><button type="button" class="btn btn-escuro" onclick="copiarTexto('${codGerado}', 'Código copiado!')">COPIAR CÓDIGO NOVAMENTE</button>`
+        : "";
+
+      const blocoTempo = (p.etapa === "aceito_cliente" || p.etapa === "tempo_enviado")
+        ? `<label>Cliente ACEITOU! Escolha o tempo até a mercadoria:</label><div class="grade-tempo">${btnsTempo}</div>`
+        : "";
+
+      const blocoFinalizar = p.etapa === "tempo_enviado"
+        ? `<button type="button" class="btn btn-verde" onclick="finalizarEntrega()">ENTREGA FINALIZADA (SOMAR NO CAIXA)</button>`
+        : "";
+
+      alvo.innerHTML = `
+        <div class="chamado-box">
+          <div style="color:var(--amarelo); font-weight:900;">ETAPA: ${p.etapa.toUpperCase()}</div>
+          <div><strong>Cliente:</strong> ${p.cliente} (${p.bairro})</div>
+          <div><strong>Mercadoria:</strong> ${p.mercadoria} • ${p.carga || ""}</div>
+          <div><strong>Pegar:</strong> ${p.pegar}</div>
+          <div><strong>Levar:</strong> ${p.levar}</div>
+
+          <label>Tabela de valores (R$ 10 a R$ 60)</label>
+          <select onchange="mudarValorBase(this.value)">${opts}</select>
+
+          <label>Ou ajuste o valor na mão (R$)</label>
+          <input type="number" step="0.50" value="${Number(p.valorBase).toFixed(2)}" onchange="mudarValorBase(this.value)" />
+
+          <button type="button" class="btn btn-dinamica ${p.dinamica20 ? "ligada" : ""}" onclick="alternarDinamica()">
+            ${p.dinamica20 ? "DINÂMICA +20%: ATIVADA" : "DINÂMICA +20%: DESATIVADA"}
+          </button>
+
+          <div class="caixa-divisao">
+            <div><small>Final</small><strong class="cor-branco">${moeda(total)}</strong></div>
+            <div><small>80% Seu</small><strong class="cor-verde">${moeda(total * 0.8)}</strong></div>
+            <div><small>20% 32E</small><strong class="cor-amarelo">${moeda(total * 0.2)}</strong></div>
+          </div>
+
+          <div class="grade-2">
+            <button type="button" class="btn btn-amarelo" onclick="gerarRetornoValor()">GERAR CÓDIGO DE VALOR</button>
+            <button type="button" class="btn btn-vermelho" onclick="recusarEntrega()">NÃO FAZER ENTREGA</button>
+          </div>
+
+          ${blocoTempo}
+          ${blocoCodigo}
+          ${blocoFinalizar}
+        </div>`;
+    }
+
+    function renderTurno() {
+      let tot = 0, s80 = 0, s20 = 0;
+      entregasTurno.forEach((e) => { tot += e.valor; s80 += e.p80; s20 += e.p20; });
+      document.getElementById("turno-total").textContent = moeda(tot);
+      document.getElementById("turno-80").textContent = moeda(s80);
+      document.getElementById("turno-20").textContent = moeda(s20);
+      document.getElementById("detalhe-turno").textContent = entregasTurno.length === 0
+        ? "Nenhuma entrega finalizada neste turno ainda."
+        : entregasTurno.map((e, i) => `${i + 1}. ${e.cliente} (${e.bairro}): ${moeda(e.valor)}`).join("\n");
+    }
+
+    function textoTurno() {
+      let tot = 0;
+      entregasTurno.forEach((e) => tot += e.valor);
+      return `*32 ENTREGAS — FECHAMENTO DO TURNO*\nEntregas: ${entregasTurno.length}\nBruto: ${moeda(tot)}\n80% Entregador: ${moeda(tot * 0.8)}\n20% 32 Entregas: ${moeda(tot * 0.2)}\nPix: ${CHAVE_PIX}`;
+    }
+
+    function copiarFechamento() { copiarTexto(textoTurno(), "Fechamento do turno copiado!"); }
+
+    function fecharTurno() {
+      copiarTexto(textoTurno(), "Turno fechado, copiado e zerado!");
+      entregasTurno = [];
+      try { localStorage.setItem(CHAVE_TURNO, "[]"); } catch (e) {}
+      renderTurno();
+    }
+
+    renderTurno();
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () { navigator.serviceWorker.register("./sw.js").catch(function () {}); });
+    }
+  </script>
+</body>
+</html>
