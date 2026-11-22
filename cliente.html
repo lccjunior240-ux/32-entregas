@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>32 Entregas — Painel do Cliente</title>
+  <title>32 Entregas — Cliente</title>
   <style>
     :root {
       --azul-marinho: #07192f;
@@ -91,10 +91,44 @@
       border-color: var(--amarelo);
     }
 
-    .row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+    .campo-acao {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .campo-acao input {
+      flex: 1;
+    }
+
+    .btn-acao {
+      padding: 10px 12px;
+      border: 1px solid var(--amarelo);
+      border-radius: 8px;
+      background: #12355e;
+      color: var(--amarelo);
+      font-weight: bold;
+      font-size: 0.82rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .sugestoes {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .sugestao-item {
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: var(--azul-marinho);
+      border: 1px solid var(--amarelo);
+      color: var(--texto);
+      font-size: 0.82rem;
+      text-align: left;
+      cursor: pointer;
     }
 
     .btn {
@@ -187,37 +221,30 @@
       <div class="brand-title">32 ENTREGAS</div>
       <span class="brand-tag">32 BIKE • CLIENTE</span>
     </div>
-    <div class="sub">Solicitação de entrega e envio para o painel do entregador</div>
+    <div class="sub">Solicitação de entrega, GPS e envio para o painel do entregador</div>
 
     <label for="nomeCliente">Nome do Cliente</label>
     <input id="nomeCliente" type="text" placeholder="Ex: Tati" />
 
-    <label for="whatsCliente">WhatsApp do Cliente (com DDD)</label>
-    <input id="whatsCliente" type="tel" placeholder="53999999999" />
-
-    <label for="origem">Origem / Retirada</label>
-    <input id="origem" type="text" placeholder="Ex: Balneário Cassino" />
-
-    <label for="paradas">Lojas / Paradas (opcional)</label>
-    <input id="paradas" type="text" placeholder="Ex: Loja A e Loja B" />
-
-    <label for="destino">Destino / Entrega</label>
-    <input id="destino" type="text" placeholder="Ex: Centro, Rio Grande" />
-
-    <div class="row">
-      <div>
-        <label for="modal">Modal</label>
-        <select id="modal">
-          <option value="Bicicleta">Bicicleta</option>
-          <option value="Moto">Moto</option>
-          <option value="Carro">Carro</option>
-        </select>
-      </div>
-      <div>
-        <label for="valorEntrega">Valor da Entrega (R$)</label>
-        <input id="valorEntrega" type="number" step="0.50" value="10.00" />
-      </div>
+    <label for="origem">Origem / Retirada (GPS ou endereço)</label>
+    <div class="campo-acao">
+      <input id="origem" type="text" placeholder="Ex: Balneário Cassino ou use o GPS" />
+      <button type="button" class="btn-acao" id="btnGPS">Usar GPS</button>
     </div>
+
+    <label for="destino">Destino / Entrega (Rua ou endereço)</label>
+    <div class="campo-acao">
+      <input id="destino" type="text" placeholder="Digite a rua e toque em Buscar" />
+      <button type="button" class="btn-acao" id="btnBuscarRua">Buscar Rua</button>
+    </div>
+    <div class="sugestoes" id="listaSugestoesRua"></div>
+
+    <label for="modal">Modal</label>
+    <select id="modal">
+      <option value="Bicicleta">Bicicleta</option>
+      <option value="Moto">Moto</option>
+      <option value="Carro">Carro</option>
+    </select>
 
     <button type="button" class="btn btn-amarelo" id="btnSalvarCliente">Salvar Dados do Cliente</button>
     <button type="button" class="btn btn-azul" id="btnLimparCampos">Limpar Campos</button>
@@ -255,13 +282,102 @@
     function pegarDadosFormulario() {
       return {
         nome: document.getElementById('nomeCliente').value.trim(),
-        whatsCliente: document.getElementById('whatsCliente').value.trim(),
         origem: document.getElementById('origem').value.trim(),
-        paradas: document.getElementById('paradas').value.trim(),
         destino: document.getElementById('destino').value.trim(),
-        modal: document.getElementById('modal').value,
-        valorEntrega: document.getElementById('valorEntrega').value
+        modal: document.getElementById('modal').value
       };
+    }
+
+    async function usarLocalizacaoGPS() {
+      if (!navigator.geolocation) {
+        mostrarAviso('GPS não disponível neste navegador.');
+        return;
+      }
+
+      mostrarAviso('Buscando localização atual no GPS...');
+
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          const lat = pos.coords.latitude.toFixed(6);
+          const lon = pos.coords.longitude.toFixed(6);
+          const campoOrigem = document.getElementById('origem');
+          campoOrigem.value = `GPS: ${lat}, ${lon}`;
+
+          try {
+            const resp = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`,
+              { headers: { 'Accept': 'application/json' } }
+            );
+            if (resp.ok) {
+              const data = await resp.json();
+              const addr = data.address || {};
+              const rua = addr.road || addr.pedestrian || addr.suburb || '';
+              const bairro = addr.suburb || addr.neighbourhood || '';
+              const cidade = addr.city || addr.town || addr.village || '';
+              const resumo = [rua, bairro, cidade].filter(Boolean).join(', ');
+              if (resumo) {
+                campoOrigem.value = resumo;
+              }
+            }
+            mostrarAviso('Localização atual preenchida na Origem.');
+          } catch (e) {
+            mostrarAviso('Coordenadas do GPS preenchidas na Origem.');
+          }
+        },
+        () => {
+          mostrarAviso('Permita o acesso ao GPS no celular para puxar a localização atual.');
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    }
+
+    async function buscarRuaDestino() {
+      const campoDestino = document.getElementById('destino');
+      const sugestoesEl = document.getElementById('listaSugestoesRua');
+      const busca = campoDestino.value.trim();
+
+      sugestoesEl.innerHTML = '';
+      if (!busca) {
+        mostrarAviso('Digite o nome da rua no Destino para buscar.');
+        return;
+      }
+
+      mostrarAviso('Buscando ruas...');
+      const consulta = encodeURIComponent(`${busca}, Rio Grande, RS, Brasil`);
+
+      try {
+        const resp = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=4&q=${consulta}`,
+          { headers: { 'Accept': 'application/json' } }
+        );
+        const resultados = resp.ok ? await resp.json() : [];
+
+        if (!resultados.length) {
+          mostrarAviso('Nenhuma rua encontrada; você pode manter o endereço digitado.');
+          return;
+        }
+
+        sugestoesEl.innerHTML = resultados.map((item, idx) => {
+          const a = item.address || {};
+          const rua = a.road || item.name || busca;
+          const bairro = a.suburb || a.neighbourhood || '';
+          const cidade = a.city || a.town || a.village || 'Rio Grande';
+          const textoCurto = [rua, bairro, cidade].filter(Boolean).join(', ');
+          return `<button type="button" class="sugestao-item" data-idx="${idx}">${textoCurto}</button>`;
+        }).join('');
+
+        sugestoesEl.querySelectorAll('.sugestao-item').forEach(btn => {
+          btn.addEventListener('click', () => {
+            campoDestino.value = btn.textContent;
+            sugestoesEl.innerHTML = '';
+            mostrarAviso('Rua selecionada no Destino.');
+          });
+        });
+
+        mostrarAviso('Toque em uma rua sugerida para preencher o Destino.');
+      } catch (e) {
+        mostrarAviso('Sem conexão para buscar rua agora; digite o endereço manualmente.');
+      }
     }
 
     function salvarCliente() {
@@ -292,12 +408,10 @@
       if (!item) return;
 
       document.getElementById('nomeCliente').value = item.nome || '';
-      document.getElementById('whatsCliente').value = item.whatsCliente || '';
       document.getElementById('origem').value = item.origem || '';
-      document.getElementById('paradas').value = item.paradas || '';
       document.getElementById('destino').value = item.destino || '';
       document.getElementById('modal').value = item.modal || 'Bicicleta';
-      document.getElementById('valorEntrega').value = item.valorEntrega ?? '10.00';
+      document.getElementById('listaSugestoesRua').innerHTML = '';
       mostrarAviso(`Dados de "${item.nome}" carregados.`);
     }
 
@@ -309,11 +423,11 @@
     }
 
     function limparCampos() {
-      ['nomeCliente', 'whatsCliente', 'origem', 'paradas', 'destino'].forEach(id => {
+      ['nomeCliente', 'origem', 'destino'].forEach(id => {
         document.getElementById(id).value = '';
       });
       document.getElementById('modal').value = 'Bicicleta';
-      document.getElementById('valorEntrega').value = '10.00';
+      document.getElementById('listaSugestoesRua').innerHTML = '';
       mostrarAviso('Campos limpos.');
     }
 
@@ -368,6 +482,8 @@
       });
     }
 
+    document.getElementById('btnGPS').addEventListener('click', usarLocalizacaoGPS);
+    document.getElementById('btnBuscarRua').addEventListener('click', buscarRuaDestino);
     document.getElementById('btnSalvarCliente').addEventListener('click', salvarCliente);
     document.getElementById('btnLimparCampos').addEventListener('click', limparCampos);
     document.getElementById('btnEnviarEntregador').addEventListener('click', enviarParaPainelEntregador);
