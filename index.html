@@ -404,4 +404,618 @@
     <header class="topo-amarelo">
       <div class="topo-esq">
         <div class="logo-circulo" aria-label="32 Bike">
-          <svg viewBox="0 0 32 20
+          <svg viewBox="0 0 32 20">
+            <circle cx="7" cy="14" r="4.5"></circle>
+            <circle cx="25" cy="14" r="4.5"></circle>
+            <path d="M7 14 L13 14 L18 7 L25 14"></path>
+            <path d="M13 14 L16 6 L19 6"></path>
+            <path d="M18 7 L17 4 L21 4"></path>
+          </svg>
+          <span>32 BIKE</span>
+        </div>
+        <div class="marca-texto">
+          <h1><span class="tag-32">32</span> ENTREGAS</h1>
+          <p>32 Bike &amp; Local • Cassino &amp; Rio Grande</p>
+        </div>
+      </div>
+      <div class="badge-lat">LAT 32° S</div>
+    </header>
+
+    <nav class="abas">
+      <button type="button" class="aba-btn ativa" id="tab-1" onclick="irPainel(1)">1. Cliente</button>
+      <button type="button" class="aba-btn" id="tab-2" onclick="irPainel(2)">2. Entregador</button>
+    </nav>
+
+    <div class="aviso-acao" id="aviso-acao">Pronto. Cliente pede, entregador envia valor, cliente aceita e entregador amarra o tempo.</div>
+
+    <section id="sec-1" class="card">
+      <h2>Painel do Cliente</h2>
+
+      <label for="nome-cliente">Seu nome</label>
+      <input type="text" id="nome-cliente" placeholder="Ex: Maria / João" />
+
+      <label for="onde-pegar">Onde pegar a mercadoria</label>
+      <div class="linha-acao">
+        <input type="text" id="onde-pegar" placeholder="Rua, número e CEP" />
+        <button type="button" class="btn btn-amarelo btn-pequeno" onclick="buscarEnderecoGPS()">GPS Atual</button>
+      </div>
+      <div class="info-gps" id="status-gps-pegar">GPS: preenche rua, número e CEP de onde pegar.</div>
+
+      <label for="onde-levar">Para onde levar a mercadoria</label>
+      <input type="text" id="onde-levar" placeholder="Digite o endereço de entrega (rua, número e CEP)" />
+
+      <label for="tipo-mercadoria">Tipo de mercadoria</label>
+      <input type="text" id="tipo-mercadoria" placeholder="Ex: Peça na caixa, sacola, lanche, encomenda" />
+
+      <label for="tamanho-carga">Tamanho da carga</label>
+      <select id="tamanho-carga">
+        <option value="Pequena / Leve" selected>Pequena / Leve</option>
+        <option value="Média">Média</option>
+        <option value="Maior / Caixa ou Peça">Maior / Caixa ou Peça</option>
+      </select>
+
+      <label for="faixa-distancia">Distância do trajeto</label>
+      <select id="faixa-distancia">
+        <option value="Perto / Mesmo bairro" selected>Perto / Mesmo bairro</option>
+        <option value="Média distância">Média distância</option>
+        <option value="Mais longe / Outro ponto">Mais longe / Outro ponto</option>
+      </select>
+
+      <button type="button" class="btn btn-amarelo" onclick="mandarPedidoCliente()">ENVIAR PEDIDO DE ENTREGA (ALARME)</button>
+      <button type="button" class="btn btn-escuro" onclick="limparPainelCliente(true)">LIMPAR PAINEL DO CLIENTE</button>
+
+      <h3>Retorno do Entregador &amp; Confirmação</h3>
+      <div id="retorno-cliente">Painel limpo — nenhum pedido ativo no momento.</div>
+
+      <div class="caixa-empresa">
+        <strong>32 Entregas &amp; 32 Bike</strong>
+        Entrega local de mercadorias e deslocamento em Cassino e Rio Grande (32° S). O valor sai do entregador, o cliente aceita ou recusa, e o entregador confirma o tempo até o local da mercadoria.
+      </div>
+    </section>
+
+    <section id="sec-2" class="card oculto">
+      <h2>Painel do Entregador</h2>
+      <button type="button" class="btn btn-escuro" onclick="limparPainelEntregador(true)">LIMPAR PAINEL DO ENTREGADOR</button>
+      <div id="lista-entregador">Nenhum pedido chegou ainda.</div>
+
+      <div class="bloco-acumulado">
+        <h3>Acumulado do Dia (Entregador / Parceiros — 80% / 20%)</h3>
+        <div class="caixa-divisao">
+          <div>
+            <small>Total no Dia</small>
+            <strong class="cor-branco" id="acum-total">R$ 0,00</strong>
+          </div>
+          <div>
+            <small>Entregador (80%)</small>
+            <strong class="cor-verde" id="acum-80">R$ 0,00</strong>
+          </div>
+          <div>
+            <small>32 Entregas (20%)</small>
+            <strong class="cor-amarelo" id="acum-20">R$ 0,00</strong>
+          </div>
+        </div>
+        <div class="msg-box" id="detalhe-acumulado">Entregas amarradas no dia: 0</div>
+        <div class="grade-2">
+          <button type="button" class="btn btn-amarelo" onclick="copiarAcertoDia()">COPIAR ACERTO DO DIA</button>
+          <button type="button" class="btn btn-escuro" onclick="zerarAcumuladoDia()">ZERAR ACUMULADO</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    var CHAVE_PIX = "53999089980";
+    var painelAtual = 1;
+    var pedidos = [];
+    var entregasDoDia = [];
+    var audioCtx = null;
+    var timerFinalizacao = null;
+
+    function moeda(v) {
+      return "R$ " + Number(v || 0).toFixed(2).replace(".", ",");
+    }
+
+    function mostrarAviso(msg) {
+      document.getElementById("aviso-acao").textContent = msg;
+    }
+
+    function limparCamposCliente() {
+      document.getElementById("nome-cliente").value = "";
+      document.getElementById("onde-pegar").value = "";
+      document.getElementById("onde-levar").value = "";
+      document.getElementById("tipo-mercadoria").value = "";
+      document.getElementById("tamanho-carga").value = "Pequena / Leve";
+      document.getElementById("faixa-distancia").value = "Perto / Mesmo bairro";
+      document.getElementById("status-gps-pegar").textContent = "GPS: preenche rua, número e CEP de onde pegar.";
+    }
+
+    function limparPainelCliente(comAviso) {
+      if (timerFinalizacao) {
+        clearTimeout(timerFinalizacao);
+        timerFinalizacao = null;
+      }
+      limparCamposCliente();
+      pedidos = [];
+      renderRetornoCliente();
+      renderEntregador();
+      if (comAviso) mostrarAviso("Painel do cliente limpo.");
+    }
+
+    function limparPainelEntregador(comAviso) {
+      if (timerFinalizacao) {
+        clearTimeout(timerFinalizacao);
+        timerFinalizacao = null;
+      }
+      pedidos = [];
+      renderEntregador();
+      renderRetornoCliente();
+      if (comAviso) mostrarAviso("Painel do entregador limpo (acumulado do dia mantido).");
+    }
+
+    function irPainel(num) {
+      var anterior = painelAtual;
+      if (anterior !== num) {
+        if (anterior === 1) {
+          limparCamposCliente();
+        } else if (anterior === 2) {
+          pedidos = [];
+          renderEntregador();
+          renderRetornoCliente();
+        }
+      }
+      painelAtual = num;
+      [1, 2].forEach(function (i) {
+        document.getElementById("sec-" + i).classList.toggle("oculto", i !== num);
+        document.getElementById("tab-" + i).classList.toggle("ativa", i === num);
+      });
+      if (num === 1) {
+        renderRetornoCliente();
+        mostrarAviso("Painel do Cliente aberto.");
+      } else {
+        renderEntregador();
+        renderAcumuladoDia();
+        mostrarAviso("Painel do Entregador aberto.");
+      }
+    }
+
+    function tocarAlerta(tipo) {
+      try {
+        if (!audioCtx) {
+          var AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          audioCtx = new AudioContextClass();
+        }
+        if (audioCtx.state === "suspended") {
+          audioCtx.resume();
+        }
+        var agora = audioCtx.currentTime;
+        var tons = tipo === "amarrado" ? [660, 880, 1046] : [587, 784, 587];
+        tons.forEach(function (freq, i) {
+          var osc = audioCtx.createOscillator();
+          var gain = audioCtx.createGain();
+          osc.type = "triangle";
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.2, agora + i * 0.14);
+          gain.gain.exponentialRampToValueAtTime(0.001, agora + i * 0.14 + 0.12);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(agora + i * 0.14);
+          osc.stop(agora + i * 0.14 + 0.13);
+        });
+      } catch (e) {}
+    }
+
+    function buscarEnderecoGPS() {
+      var statusEl = document.getElementById("status-gps-pegar");
+      if (!navigator.geolocation) {
+        statusEl.textContent = "GPS não disponível neste aparelho. Digite rua, número e CEP.";
+        mostrarAviso("GPS indisponível neste aparelho.");
+        return;
+      }
+      statusEl.textContent = "Buscando endereço por GPS...";
+      mostrarAviso("Consultando endereço por GPS...");
+
+      navigator.geolocation.getCurrentPosition(
+        function (pos) {
+          var lat = pos.coords.latitude;
+          var lon = pos.coords.longitude;
+          var url = "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" + lat + "&lon=" + lon;
+          fetch(url)
+            .then(function (resp) { return resp.json(); })
+            .then(function (data) {
+              var addr = data.address || {};
+              var rua = addr.road || addr.pedestrian || addr.suburb || "";
+              var numero = addr.house_number ? ", " + addr.house_number : "";
+              var cep = addr.postcode ? " - CEP " + addr.postcode : "";
+              var bairro = addr.suburb ? " (" + addr.suburb + ")" : "";
+              var enderecoFormatado = (rua + numero + bairro + cep).trim();
+
+              if (enderecoFormatado) {
+                document.getElementById("onde-pegar").value = enderecoFormatado;
+                statusEl.textContent = "Endereço de retirada preenchido pelo GPS.";
+                mostrarAviso("Endereço atualizado: " + enderecoFormatado);
+              } else {
+                statusEl.textContent = "Não veio nome de rua neste ponto. Digite rua, número e CEP.";
+                mostrarAviso("Rua não encontrada no ponto; digite manualmente.");
+              }
+            })
+            .catch(function () {
+              statusEl.textContent = "Sem rede para buscar rua/CEP. Digite rua, número e CEP.";
+              mostrarAviso("Sem internet para buscar rua/CEP.");
+            });
+        },
+        function () {
+          statusEl.textContent = "GPS sem sinal ou permissão. Digite rua, número e CEP.";
+          mostrarAviso("Permissão de GPS negada ou sem sinal.");
+        }
+      );
+    }
+
+    function copiarTexto(texto, msg) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(texto).catch(function () {});
+      }
+      mostrarAviso(msg);
+    }
+
+    function mandarPedidoCliente() {
+      var cliente = document.getElementById("nome-cliente").value.trim() || "Cliente";
+      var pegar = document.getElementById("onde-pegar").value.trim() || "A confirmar";
+      var levar = document.getElementById("onde-levar").value.trim() || "A confirmar";
+      var mercadoria = document.getElementById("tipo-mercadoria").value.trim() || "Mercadoria";
+      var carga = document.getElementById("tamanho-carga").value;
+      var distancia = document.getElementById("faixa-distancia").value;
+
+      pedidos.unshift({
+        id: Date.now(),
+        cliente: cliente,
+        pegar: pegar,
+        levar: levar,
+        mercadoria: mercadoria,
+        carga: carga,
+        distancia: distancia,
+        valorBase: 20,
+        dinamica20: false,
+        tempoChegada: "",
+        contabilizadaNoDia: false,
+        etapa: "pendente_valor"
+      });
+
+      tocarAlerta("chegada");
+      renderEntregador();
+      renderRetornoCliente();
+      irPainel(2);
+      mostrarAviso("Pedido enviado ao entregador com alerta sonoro.");
+    }
+
+    function valorFinal(p) {
+      var v = Number(p.valorBase) || 0;
+      return p.dinamica20 ? v * 1.2 : v;
+    }
+
+    function registrarNoAcumuladoDia(p) {
+      if (p.contabilizadaNoDia) return;
+      var total = valorFinal(p);
+      entregasDoDia.push({
+        id: p.id,
+        cliente: p.cliente,
+        mercadoria: p.mercadoria,
+        valor: total,
+        repasse80: total * 0.8,
+        parte20: total * 0.2
+      });
+      p.contabilizadaNoDia = true;
+      renderAcumuladoDia();
+    }
+
+    function renderAcumuladoDia() {
+      var somaTotal = 0;
+      var soma80 = 0;
+      var soma20 = 0;
+
+      entregasDoDia.forEach(function (item) {
+        somaTotal += item.valor;
+        soma80 += item.repasse80;
+        soma20 += item.parte20;
+      });
+
+      document.getElementById("acum-total").textContent = moeda(somaTotal);
+      document.getElementById("acum-80").textContent = moeda(soma80);
+      document.getElementById("acum-20").textContent = moeda(soma20);
+
+      if (entregasDoDia.length === 0) {
+        document.getElementById("detalhe-acumulado").textContent = "Entregas amarradas no dia: 0";
+      } else {
+        var linhas = entregasDoDia.map(function (e, i) {
+          return (i + 1) + ". " + e.cliente + " (" + e.mercadoria + "): " + moeda(e.valor) +
+            " [80%: " + moeda(e.repasse80) + " | 20%: " + moeda(e.parte20) + "]";
+        });
+        document.getElementById("detalhe-acumulado").textContent =
+          "Entregas amarradas no dia: " + entregasDoDia.length + "\n" + linhas.join("\n");
+      }
+    }
+
+    function montarTextoAcertoDia() {
+      var somaTotal = 0;
+      entregasDoDia.forEach(function (item) {
+        somaTotal += item.valor;
+      });
+      return [
+        "*32 ENTREGAS — ACUMULADO DO DIA (80% / 20%)*",
+        "Total de entregas: " + entregasDoDia.length,
+        "Total acumulado: " + moeda(somaTotal),
+        "80% Entregador / Parceiro: " + moeda(somaTotal * 0.8),
+        "20% 32 Entregas: " + moeda(somaTotal * 0.2),
+        "Pix: " + CHAVE_PIX
+      ].join("\n");
+    }
+
+    function copiarAcertoDia() {
+      copiarTexto(montarTextoAcertoDia(), "Acerto do dia (80% / 20%) copiado.");
+    }
+
+    function zerarAcumuladoDia() {
+      entregasDoDia = [];
+      renderAcumuladoDia();
+      mostrarAviso("Acumulado do dia zerado.");
+    }
+
+    function selecionarTabelaValor(idx, val) {
+      pedidos[idx].valorBase = parseFloat(val) || 10;
+      renderEntregador();
+    }
+
+    function digitarValorAjustado(idx, val) {
+      var num = parseFloat(val);
+      if (!isNaN(num) && num >= 0) {
+        pedidos[idx].valorBase = num;
+        renderEntregador();
+      }
+    }
+
+    function alternarDinamica(idx) {
+      pedidos[idx].dinamica20 = !pedidos[idx].dinamica20;
+      renderEntregador();
+      mostrarAviso(
+        pedidos[idx].dinamica20
+          ? "Dinâmica +20% ativada."
+          : "Dinâmica +20% desativada."
+      );
+    }
+
+    function entregadorEnviaValor(idx) {
+      pedidos[idx].etapa = "valor_enviado";
+      tocarAlerta("chegada");
+      renderEntregador();
+      renderRetornoCliente();
+      mostrarAviso("Mensagem enviada ao cliente: aceita fazer por " + moeda(valorFinal(pedidos[idx])) + ".");
+    }
+
+    function entregadorRecusa(idx) {
+      pedidos[idx].etapa = "recusado_entregador";
+      renderEntregador();
+      renderRetornoCliente();
+      mostrarAviso("Entrega não aceita pelo entregador.");
+    }
+
+    function clienteAceitaValor(idx) {
+      pedidos[idx].etapa = "aceito_cliente";
+      tocarAlerta("amarrado");
+      renderEntregador();
+      renderRetornoCliente();
+      mostrarAviso("Cliente aceitou! Aperte o botão do tempo (2 a 20 min) para amarrar o serviço.");
+    }
+
+    function clienteRecusaValor(idx) {
+      pedidos[idx].etapa = "recusado_cliente";
+      renderEntregador();
+      renderRetornoCliente();
+      mostrarAviso("Cliente recusou o valor.");
+    }
+
+    function amarrarTempoEntregador(idx, tempo) {
+      pedidos[idx].tempoChegada = tempo;
+      pedidos[idx].etapa = "amarrado";
+      registrarNoAcumuladoDia(pedidos[idx]);
+      tocarAlerta("amarrado");
+      renderEntregador();
+      renderRetornoCliente();
+      mostrarAviso("Serviço amarrado! Chegada em " + tempo + " e somado ao acumulado do dia.");
+    }
+
+    function mercadoriaEntregueFinalizar(idx) {
+      registrarNoAcumuladoDia(pedidos[idx]);
+      tocarAlerta("amarrado");
+      limparCamposCliente();
+      pedidos = [];
+      renderRetornoCliente();
+      mostrarAviso("Mercadoria entregue e finalizando! Painel do cliente apagado; limpando entregador...");
+
+      if (timerFinalizacao) {
+        clearTimeout(timerFinalizacao);
+      }
+      timerFinalizacao = setTimeout(function () {
+        renderEntregador();
+        mostrarAviso("Ciclo finalizado. Acumulado do dia atualizado.");
+      }, 2000);
+    }
+
+    function montarResumoAmarrado(p) {
+      var total = valorFinal(p);
+      return [
+        "*32 ENTREGAS — SERVIÇO AMARRADO*",
+        "Cliente: " + p.cliente,
+        "Mercadoria: " + p.mercadoria,
+        "Pegar em: " + p.pegar,
+        "Levar para: " + p.levar,
+        "Valor da entrega: " + moeda(total) + (p.dinamica20 ? " (Dinâmica +20%)" : ""),
+        "Tempo até a mercadoria: " + (p.tempoChegada || "A confirmar"),
+        "Pix para pagamento: " + CHAVE_PIX
+      ].join("\n");
+    }
+
+    function renderRetornoCliente() {
+      var alvo = document.getElementById("retorno-cliente");
+      if (pedidos.length === 0) {
+        alvo.innerHTML = "<div class='retorno-cliente-box'>Painel limpo — nenhum pedido ativo no momento.</div>";
+        return;
+      }
+
+      var p = pedidos[0];
+      var total = valorFinal(p);
+
+      if (p.etapa === "pendente_valor") {
+        alvo.innerHTML =
+          "<div class='retorno-cliente-box'>" +
+            "<div class='retorno-status status-amarelo'>AGUARDANDO VALOR DO ENTREGADOR</div>" +
+            "<div><strong>Cliente:</strong> " + p.cliente + "</div>" +
+            "<div><strong>Mercadoria:</strong> " + p.mercadoria + "</div>" +
+            "<div><strong>Pegar em:</strong> " + p.pegar + "</div>" +
+            "<div><strong>Levar para:</strong> " + p.levar + "</div>" +
+          "</div>";
+        return;
+      }
+
+      if (p.etapa === "recusado_entregador") {
+        alvo.innerHTML =
+          "<div class='retorno-cliente-box'>" +
+            "<div class='retorno-status status-vermelho'>ENTREGADOR NÃO VAI FAZER ESTA ENTREGA</div>" +
+            "<div><strong>Cliente:</strong> " + p.cliente + "</div>" +
+            "<div><strong>Mercadoria:</strong> " + p.mercadoria + "</div>" +
+          "</div>";
+        return;
+      }
+
+      if (p.etapa === "valor_enviado") {
+        alvo.innerHTML =
+          "<div class='retorno-cliente-box'>" +
+            "<div class='retorno-status status-amarelo'>ENTREGADOR ACEITA FAZER POR " + moeda(total) + (p.dinamica20 ? " (DINÂMICA +20%)" : "") + "</div>" +
+            "<div><strong>Cliente:</strong> " + p.cliente + "</div>" +
+            "<div><strong>Mercadoria:</strong> " + p.mercadoria + "</div>" +
+            "<div><strong>Pegar em:</strong> " + p.pegar + "</div>" +
+            "<div><strong>Levar para:</strong> " + p.levar + "</div>" +
+            "<div class='grade-2'>" +
+              "<button type='button' class='btn btn-verde' onclick='clienteAceitaValor(0)'>ACEITAR ENTREGA</button>" +
+              "<button type='button' class='btn btn-vermelho' onclick='clienteRecusaValor(0)'>RECUSAR VALOR</button>" +
+            "</div>" +
+          "</div>";
+        return;
+      }
+
+      if (p.etapa === "recusado_cliente") {
+        alvo.innerHTML =
+          "<div class='retorno-cliente-box'>" +
+            "<div class='retorno-status status-vermelho'>VOCÊ RECUSOU O VALOR DE " + moeda(total) + "</div>" +
+          "</div>";
+        return;
+      }
+
+      if (p.etapa === "aceito_cliente") {
+        alvo.innerHTML =
+          "<div class='retorno-cliente-box'>" +
+            "<div class='retorno-status status-verde'>VOCÊ ACEITOU A ENTREGA POR " + moeda(total) + "</div>" +
+            "<div>Aguardando o entregador informar o tempo (2 a 20 min) até a mercadoria.</div>" +
+          "</div>";
+        return;
+      }
+
+      if (p.etapa === "amarrado") {
+        alvo.innerHTML =
+          "<div class='retorno-cliente-box'>" +
+            "<div class='retorno-status status-verde'>SERVIÇO AMARRADO — CHEGADA EM " + p.tempoChegada + "</div>" +
+            "<div><strong>Cliente:</strong> " + p.cliente + "</div>" +
+            "<div><strong>Mercadoria:</strong> " + p.mercadoria + "</div>" +
+            "<div><strong>Pegar em:</strong> " + p.pegar + "</div>" +
+            "<div><strong>Levar para:</strong> " + p.levar + "</div>" +
+            "<div><strong>Tempo até a mercadoria:</strong> " + p.tempoChegada + "</div>" +
+            "<div><strong>Valor combinado:</strong> " + moeda(total) + "</div>" +
+            "<div><strong>Pix:</strong> " + CHAVE_PIX + "</div>" +
+            "<button type='button' class='btn btn-escuro' onclick='copiarTexto(CHAVE_PIX, \"Pix 53999089980 copiado.\")'>COPIAR PIX: 53999089980</button>" +
+            "<button type='button' class='btn btn-amarelo' onclick='copiarTexto(montarResumoAmarrado(pedidos[0]), \"Resumo copiado para o WhatsApp.\")'>COPIAR RESUMO PARA WHATSAPP</button>" +
+          "</div>";
+      }
+    }
+
+    function renderEntregador() {
+      var alvo = document.getElementById("lista-entregador");
+      if (pedidos.length === 0) {
+        alvo.innerHTML = "Nenhum pedido chegou ainda.";
+        return;
+      }
+
+      var valoresTabela = [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60];
+      var temposBotoes = ["2 min", "5 min", "8 min", "10 min", "12 min", "15 min", "18 min", "20 min"];
+
+      alvo.innerHTML = "";
+      pedidos.forEach(function (p, idx) {
+        var total = valorFinal(p);
+        var repasse80 = total * 0.8;
+        var parte20 = total * 0.2;
+
+        var opcoesSelect = "";
+        valoresTabela.forEach(function (v) {
+          opcoesSelect += "<option value='" + v + "'" + (Number(p.valorBase) === v ? " selected" : "") + ">" + moeda(v) + "</option>";
+        });
+
+        var statusTopo = "NOVO PEDIDO — MANDE O VALOR QUE SAI A ENTREGA";
+        if (p.etapa === "valor_enviado") statusTopo = "VALOR ENVIADO — AGUARDANDO CLIENTE ACEITAR";
+        if (p.etapa === "recusado_entregador") statusTopo = "ENTREGA RECUSADA PELO ENTREGADOR";
+        if (p.etapa === "recusado_cliente") statusTopo = "CLIENTE RECUSOU O VALOR";
+        if (p.etapa === "aceito_cliente") statusTopo = "CLIENTE ACEITOU — APERTE O TEMPO (2 A 20 MIN)";
+        if (p.etapa === "amarrado") statusTopo = "SERVIÇO AMARRADO — CHEGADA EM " + p.tempoChegada;
+
+        var botoesTempoHtml = "";
+        if (p.etapa === "aceito_cliente" || p.etapa === "amarrado") {
+          botoesTempoHtml += "<label>Tempo até o local da mercadoria (2 a 20 min — amarra o serviço)</label><div class='grade-tempo'>";
+          temposBotoes.forEach(function (t) {
+            var ativo = p.tempoChegada === t ? "escolhido" : "";
+            botoesTempoHtml += "<button type='button' class='btn-tempo " + ativo + "' onclick='amarrarTempoEntregador(" + idx + ", \"" + t + "\")'>" + t + "</button>";
+          });
+          botoesTempoHtml += "</div>";
+        }
+
+        alvo.innerHTML +=
+          "<div class='chamado-item " + (p.etapa === "amarrado" ? "amarrado" : "") + "'>" +
+            "<div style='font-weight:900; color:var(--amarelo); font-size:0.95rem;'>" + statusTopo + "</div>" +
+            "<div style='margin-top:6px;'><strong>Cliente:</strong> " + p.cliente + "</div>" +
+            "<div><strong>Mercadoria:</strong> " + p.mercadoria + "</div>" +
+            "<div><strong>Carga:</strong> " + p.carga + " • <strong>Distância:</strong> " + p.distancia + "</div>" +
+            "<div><strong>Pegar em:</strong> " + p.pegar + "</div>" +
+            "<div><strong>Levar para:</strong> " + p.levar + "</div>" +
+
+            "<label for='tab-val-" + idx + "'>Tabela de valores (R$ 10 a R$ 60 de R$ 5 em R$ 5)</label>" +
+            "<select id='tab-val-" + idx + "' onchange='selecionarTabelaValor(" + idx + ", this.value)'>" + opcoesSelect + "</select>" +
+
+            "<label for='aj-val-" + idx + "'>Ajustar valor na mão (R$)</label>" +
+            "<input type='number' id='aj-val-" + idx + "' step='0.50' min='0' value='" + Number(p.valorBase).toFixed(2) + "' onchange='digitarValorAjustado(" + idx + ", this.value)' />" +
+
+            "<button type='button' class='btn btn-dinamica " + (p.dinamica20 ? "ligada" : "") + "' onclick='alternarDinamica(" + idx + ")'>" +
+              (p.dinamica20 ? "DINÂMICA +20%: ATIVADA" : "DINÂMICA +20%: DESATIVADA") +
+            "</button>" +
+
+            "<div class='caixa-divisao'>" +
+              "<div><small>Valor Final</small><strong class='cor-branco'>" + moeda(total) + "</strong></div>" +
+              "<div><small>80% Entregador</small><strong class='cor-verde'>" + moeda(repasse80) + "</strong></div>" +
+              "<div><small>20% 32E</small><strong class='cor-amarelo'>" + moeda(parte20) + "</strong></div>" +
+            "</div>" +
+
+            "<div class='grade-2'>" +
+              "<button type='button' class='btn btn-amarelo' onclick='entregadorEnviaValor(" + idx + ")'>ACEITO POR ESSE VALOR (ENVIAR)</button>" +
+              "<button type='button' class='btn btn-vermelho' onclick='entregadorRecusa(" + idx + ")'>NÃO FAZER ENTREGA</button>" +
+            "</div>" +
+
+            botoesTempoHtml +
+
+            (p.etapa === "amarrado"
+              ? "<div class='msg-box'>" + montarResumoAmarrado(p) + "</div>" +
+                "<button type='button' class='btn btn-escuro' onclick='copiarTexto(montarResumoAmarrado(pedidos[" + idx + "]), \"Resumo amarrado copiado para o WhatsApp.\")'>COPIAR RESUMO PARA WHATSAPP</button>" +
+                "<button type='button' class='btn btn-verde' onclick='mercadoriaEntregueFinalizar(" + idx + ")'>MERCADORIA ENTREGUE (FINALIZAR E APAGAR CLIENTE)</button>"
+              : "") +
+          "</div>";
+      });
+    }
+
+    renderRetornoCliente();
+    renderAcumuladoDia();
+  </script>
+</body>
+</html>
