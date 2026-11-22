@@ -4,346 +4,268 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>32 Entregas — Cliente</title>
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#F5C400" />
   <style>
-    :root {
-      --fundo: #070D1D;
-      --card: #101A33;
-      --card-escuro: #0B1326;
-      --borda: #283B66;
-      --amarelo: #F5C400;
-      --texto: #FFFFFF;
-      --suave: #B4C3E0;
-      --verde: #26D07C;
-      --vermelho: #FF5C5C;
-    }
-    * { box-sizing: border-box; font-family: Arial, Helvetica, sans-serif; }
-    body { margin: 0; padding: 14px; background: var(--fundo); color: var(--texto); font-size: 16px; line-height: 1.4; }
-    .app { max-width: 520px; margin: 0 auto; padding-bottom: 48px; }
-    .topo-amarelo { background: var(--amarelo); color: #091124; border-radius: 16px; border: 3px solid #091124; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
-    .marca-texto h1 { margin: 0; font-size: 1.2rem; font-weight: 900; display: flex; align-items: center; gap: 6px; }
-    .marca-texto h1 .tag-32 { background: #091124; color: var(--amarelo); padding: 2px 7px; border-radius: 7px; font-size: 1.05rem; }
-    .marca-texto p { margin: 3px 0 0; font-size: 0.82rem; font-weight: 800; color: #111A2E; }
-    .badge-lat { background: #091124; color: var(--amarelo); font-size: 0.76rem; font-weight: 900; padding: 7px 9px; border-radius: 9px; white-space: nowrap; }
-    .aviso-acao { background: var(--card); border: 2px solid var(--amarelo); color: var(--amarelo); border-radius: 12px; padding: 11px 13px; font-size: 0.94rem; font-weight: 800; margin-bottom: 14px; min-height: 44px; display: flex; align-items: center; }
-    .card { background: var(--card); border: 2px solid var(--borda); border-radius: 16px; padding: 16px; margin-bottom: 14px; }
-    .card h2 { margin: 0 0 12px; font-size: 1.2rem; font-weight: 900; color: var(--amarelo); }
-    label { display: block; font-size: 0.98rem; font-weight: 800; color: #FFFFFF; margin-top: 12px; margin-bottom: 6px; }
-    input, select, textarea { width: 100%; padding: 13px; border-radius: 10px; border: 2px solid var(--borda); background: var(--card-escuro); color: var(--texto); font-size: 1rem; font-weight: 700; }
-    textarea { min-height: 76px; resize: vertical; }
-    .linha-acao { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
-    .btn { width: 100%; padding: 14px; border-radius: 11px; border: none; font-size: 1rem; font-weight: 900; cursor: pointer; margin-top: 12px; }
-    .btn-amarelo { background: var(--amarelo); color: #091124; }
-    .btn-escuro { background: var(--card-escuro); color: var(--texto); border: 2px solid var(--borda); }
-    .btn-verde { background: var(--verde); color: #06130C; }
-    .btn-vermelho { background: var(--vermelho); color: #160404; }
-    .btn-pequeno { margin-top: 0; width: auto; padding: 13px; font-size: 0.88rem; white-space: nowrap; }
-    .grade-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-    .info-gps { font-size: 0.88rem; color: var(--suave); margin-top: 6px; font-weight: 700; }
-    .selo-padrao { margin-top: 8px; padding: 10px 12px; border-radius: 10px; background: #081022; border: 1px solid #3B5387; font-size: 0.86rem; color: var(--suave); }
-    .selo-padrao strong { color: var(--verde); }
-    .retorno-box { margin-top: 10px; padding: 12px; border-radius: 12px; background: var(--card-escuro); border: 2px solid var(--borda); font-size: 0.95rem; }
-    .status-verde { color: var(--verde); font-weight: 900; }
-    .status-vermelho { color: var(--vermelho); font-weight: 900; }
-    .status-amarelo { color: var(--amarelo); font-weight: 900; }
-    .codigo-box { margin-top: 10px; padding: 11px; border-radius: 10px; background: #060B18; border: 2px dashed var(--amarelo); color: var(--amarelo); font-family: monospace; font-size: 0.86rem; word-break: break-all; }
+    * { box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { margin: 0; padding: 14px; background: #0d1117; color: #f0f6fc; display: flex; justify-content: center; }
+    .app { width: 100%; max-width: 520px; background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 16px; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .badge { font-size: 0.75rem; font-weight: bold; padding: 4px 8px; border-radius: 999px; background: #1f6feb; color: #fff; }
+    .voltar { font-size: 0.82rem; color: #79c0ff; text-decoration: none; font-weight: bold; }
+    h1 { margin: 0 0 4px; font-size: 1.25rem; }
+    .sub { color: #8b949e; font-size: 0.82rem; margin-bottom: 12px; }
+    label { display: block; margin-top: 10px; margin-bottom: 4px; font-size: 0.84rem; color: #c9d1d9; font-weight: bold; }
+    input, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: #f0f6fc; font-size: 0.95rem; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .btn { width: 100%; padding: 11px; border: none; border-radius: 8px; font-weight: bold; font-size: 0.94rem; cursor: pointer; margin-top: 10px; text-decoration: none; display: block; text-align: center; }
+    .btn-green { background: #238636; color: #fff; }
+    .btn-blue { background: #1f6feb; color: #fff; }
+    .btn-gray { background: #21262d; color: #f0f6fc; border: 1px solid #30363d; }
+    .card { margin-top: 14px; padding: 12px; border-radius: 8px; background: #0d1117; border: 1px solid #30363d; }
+    .msg-box { margin-top: 8px; padding: 10px; border-radius: 8px; background: #161b22; border: 1px dashed #484f58; font-size: 0.85rem; white-space: pre-line; color: #e6edf3; }
+    .notice { margin-top: 8px; font-size: 0.82rem; color: #79c0ff; min-height: 18px; }
+    .saved-item { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px; margin-top: 8px; border-radius: 8px; background: #161b22; border: 1px solid #30363d; font-size: 0.84rem; }
+    .mini-btns { display: flex; gap: 6px; }
+    .mini-btn { padding: 6px 8px; border: none; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; color: #fff; }
   </style>
 </head>
 <body>
   <div class="app">
-    <header class="topo-amarelo">
-      <div class="marca-texto">
-        <h1><span class="tag-32">32</span> ENTREGAS • CLIENTE</h1>
-        <p>32 Bike &amp; Local • Cassino &amp; Rio Grande</p>
+    <div class="top-bar">
+      <span class="badge">PAINEL DO CLIENTE</span>
+      <a class="voltar" href="./index.html">← Voltar ao Início</a>
+    </div>
+
+    <h1>32 Entregas</h1>
+    <div class="sub">Rio Grande / Cassino • Solicitação de entrega</div>
+
+    <label for="nomeCliente">Nome do Cliente</label>
+    <input id="nomeCliente" type="text" placeholder="Ex: Tati" />
+
+    <label for="whatsCliente">WhatsApp do Cliente (com DDD)</label>
+    <input id="whatsCliente" type="tel" placeholder="53999999999" />
+
+    <label for="origem">Origem / Retirada</label>
+    <input id="origem" type="text" placeholder="Ex: Balneário Cassino" />
+
+    <label for="paradas">Lojas / Paradas (opcional)</label>
+    <input id="paradas" type="text" placeholder="Ex: Loja A e Loja B" />
+
+    <label for="destino">Destino / Entrega</label>
+    <input id="destino" type="text" placeholder="Ex: Centro, Rio Grande" />
+
+    <div class="row">
+      <div>
+        <label for="modal">Modal</label>
+        <select id="modal">
+          <option value="Bicicleta">Bicicleta</option>
+          <option value="Moto">Moto</option>
+          <option value="Carro">Carro</option>
+        </select>
       </div>
-      <div class="badge-lat">LAT 32° S</div>
-    </header>
-
-    <div class="aviso-acao" id="aviso-acao">Preencha o pedido, gere o código e envie ao entregador.</div>
-
-    <section class="card">
-      <h2>1. Solicitar Entrega</h2>
-
-      <div class="selo-padrao" id="resumo-padrao">
-        <strong>Perfil salvo:</strong> nenhum dado pré-estabelecido ainda.
+      <div>
+        <label for="valorEstimado">Valor da Entrega (R$)</label>
+        <input id="valorEstimado" type="number" step="0.50" value="10.00" />
       </div>
+    </div>
 
-      <label for="nome-cliente">Nome / Estabelecimento</label>
-      <input type="text" id="nome-cliente" placeholder="Ex: Farmácia / Lanchonete / Seu nome" />
+    <label for="whatsDestino">WhatsApp de Envio (Admin / Central)</label>
+    <input id="whatsDestino" type="tel" placeholder="53999089980" />
 
-      <label for="onde-pegar">Onde pegar a mercadoria</label>
-      <div class="linha-acao">
-        <input type="text" id="onde-pegar" placeholder="Rua, número e CEP" />
-        <button type="button" class="btn btn-amarelo btn-pequeno" onclick="buscarEnderecoGPS()">GPS Atual</button>
-      </div>
-      <div class="info-gps" id="status-gps">GPS: preenche rua, número e CEP de retirada.</div>
+    <button class="btn btn-blue" onclick="salvarCliente()">Salvar Cadastro do Cliente</button>
+    <button class="btn btn-gray" onclick="limparCampos()">Limpar Campos</button>
+    <div class="notice" id="aviso"></div>
 
-      <label for="bairro-pedido">Bairro</label>
-      <select id="bairro-pedido">
-        <option value="Cassino" selected>Cassino</option>
-        <option value="Centro">Centro</option>
-        <option value="Cidade Nova">Cidade Nova</option>
-        <option value="Vila Maria">Vila Maria</option>
-        <option value="Parque Marinha">Parque Marinha</option>
-        <option value="BGV">BGV</option>
-        <option value="Porto / Vila Santa Tereza">Porto / Vila Santa Tereza</option>
-        <option value="Outro bairro">Outro bairro</option>
-      </select>
+    <div class="card">
+      <strong>Clientes Salvos neste Aparelho</strong>
+      <div id="listaClientesSalvos"></div>
+    </div>
 
-      <label for="onde-levar">Para onde levar a mercadoria</label>
-      <input type="text" id="onde-levar" placeholder="Endereço de entrega (rua, número e CEP)" />
+    <button class="btn btn-green" onclick="gerarPedido()">Gerar Pedido e Liberar WhatsApp</button>
 
-      <label for="tipo-mercadoria">Tipo de mercadoria</label>
-      <input type="text" id="tipo-mercadoria" placeholder="Ex: Sacola, caixa, lanche, peça" />
-
-      <label for="tamanho-carga">Tamanho da carga</label>
-      <select id="tamanho-carga">
-        <option value="Pequena / Leve" selected>Pequena / Leve</option>
-        <option value="Média">Média</option>
-        <option value="Maior / Caixa ou Peça">Maior / Caixa ou Peça</option>
-      </select>
-
-      <div class="grade-2">
-        <button type="button" class="btn btn-verde" onclick="salvarPreEstabelecido()">SALVAR PRÉ-ESTABELECIDO</button>
-        <button type="button" class="btn btn-escuro" onclick="aplicarPreEstabelecido(true)">PUXAR SALVOS</button>
-      </div>
-
-      <div class="grade-2">
-        <button type="button" class="btn btn-verde" onclick="ouvirPedido()">OUVIR PEDIDO (VOZ)</button>
-        <button type="button" class="btn btn-escuro" onclick="pararVoz()">PARAR VOZ</button>
-      </div>
-
-      <button type="button" class="btn btn-amarelo" onclick="gerarCodigoPedido()">GERAR E COPIAR CÓDIGO DO PEDIDO</button>
-      <button type="button" class="btn btn-escuro" onclick="limparTudo()">LIMPAR PEDIDO ATUAL</button>
-
-      <div id="area-codigo-pedido"></div>
-    </section>
-
-    <section class="card">
-      <h2>2. Ler Retorno do Entregador</h2>
-      <label for="entrada-retorno">Cole aqui o código que o entregador mandou no WhatsApp</label>
-      <textarea id="entrada-retorno" placeholder="Cole o código 32E|... recebido do entregador"></textarea>
-      <button type="button" class="btn btn-amarelo" onclick="lerCodigoEntregador()">LER RETORNO DO ENTREGADOR</button>
-
-      <div id="retorno-cliente">
-        <div class="retorno-box">Nenhum retorno carregado ainda.</div>
-      </div>
-    </section>
+    <div class="card" id="boxEnvio" style="display:none;">
+      <div class="msg-box" id="textoPedido"></div>
+      <a class="btn btn-green" id="linkWhats" href="#" target="_blank" rel="noopener">
+        Enviar Pedido no WhatsApp
+      </a>
+      <button class="btn btn-gray" onclick="copiarPedido()">Copiar Mensagem</button>
+    </div>
   </div>
 
   <script>
-    const CHAVE_PIX = "53999089980";
-    const CHAVE_STORAGE = "app32_cliente_padrao_v1";
-    let pedidoAtual = null;
+    const STORAGE_KEY = 'cliente32Entregas_repo_v1';
 
-    function moeda(v) { return "R$ " + Number(v || 0).toFixed(2).replace(".", ","); }
-    function mostrarAviso(msg) { document.getElementById("aviso-acao").textContent = msg; }
-
-    function falarTexto(texto, aviso) {
+    function obterClientes() {
       try {
-        if (!("speechSynthesis" in window)) { mostrarAviso("Leitura por voz não suportada."); return; }
-        window.speechSynthesis.cancel();
-        const f = new SpeechSynthesisUtterance(texto);
-        f.lang = "pt-BR";
-        f.rate = 0.96;
-        window.speechSynthesis.speak(f);
-        if (aviso) mostrarAviso(aviso);
+        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function salvarListaClientes(lista) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
       } catch (e) {}
     }
 
-    function pararVoz() {
-      try { if ("speechSynthesis" in window) window.speechSynthesis.cancel(); } catch (e) {}
-      mostrarAviso("Áudio interrompido.");
+    function normalizarFone(num) {
+      const digitos = (num || '').replace(/\D/g, '');
+      if (!digitos) return '';
+      return digitos.startsWith('55') ? digitos : '55' + digitos;
     }
 
-    function copiarTexto(texto, msg) {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(texto).catch(() => {});
+    function formatarValor(v) {
+      return Number(v || 0).toFixed(2).replace('.', ',');
+    }
+
+    function salvarCliente() {
+      const nome = document.getElementById('nomeCliente').value.trim();
+      const whatsCliente = document.getElementById('whatsCliente').value.trim();
+      const origem = document.getElementById('origem').value.trim();
+      const paradas = document.getElementById('paradas').value.trim();
+      const destino = document.getElementById('destino').value.trim();
+      const modal = document.getElementById('modal').value;
+      const valorEstimado = document.getElementById('valorEstimado').value;
+      const whatsDestino = document.getElementById('whatsDestino').value.trim();
+      const aviso = document.getElementById('aviso');
+
+      if (!nome) {
+        aviso.textContent = 'Preencha o nome do cliente para salvar.';
+        return;
       }
-      mostrarAviso(msg);
-    }
 
-    function codificarObj(obj) {
-      const json = JSON.stringify(obj);
-      const b64 = btoa(unescape(encodeURIComponent(json)));
-      return "32E|" + b64;
-    }
-
-    function decodificarTexto(txt) {
-      const limpo = (txt || "").trim();
-      const idx = limpo.indexOf("32E|");
-      if (idx === -1) return null;
-      const b64 = limpo.slice(idx + 4).split(/\s/)[0];
-      try {
-        return JSON.parse(decodeURIComponent(escape(atob(b64))));
-      } catch (e) { return null; }
-    }
-
-    function salvarPreEstabelecido() {
+      const lista = obterClientes();
       const dados = {
-        cliente: document.getElementById("nome-cliente").value.trim(),
-        pegar: document.getElementById("onde-pegar").value.trim(),
-        bairro: document.getElementById("bairro-pedido").value,
-        mercadoria: document.getElementById("tipo-mercadoria").value.trim(),
-        carga: document.getElementById("tamanho-carga").value
-      };
-      try { localStorage.setItem(CHAVE_STORAGE, JSON.stringify(dados)); } catch (e) {}
-      atualizarResumoPadrao();
-      mostrarAviso("Dados pré-estabelecidos salvos!");
-    }
-
-    function atualizarResumoPadrao() {
-      let salvo = null;
-      try { salvo = JSON.parse(localStorage.getItem(CHAVE_STORAGE) || "null"); } catch (e) {}
-      const el = document.getElementById("resumo-padrao");
-      if (!salvo) { el.innerHTML = "<strong>Perfil salvo:</strong> nenhum dado pré-estabelecido ainda."; return; }
-      el.innerHTML = `<strong>Perfil salvo:</strong> ${salvo.cliente || "-"} • <strong>Pegar:</strong> ${salvo.pegar || "-"} • <strong>Bairro:</strong> ${salvo.bairro || "-"}`;
-    }
-
-    function aplicarPreEstabelecido(aviso) {
-      let salvo = null;
-      try { salvo = JSON.parse(localStorage.getItem(CHAVE_STORAGE) || "null"); } catch (e) {}
-      if (!salvo) { if (aviso) mostrarAviso("Nenhum dado salvo ainda."); return; }
-      if (salvo.cliente) document.getElementById("nome-cliente").value = salvo.cliente;
-      if (salvo.pegar) document.getElementById("onde-pegar").value = salvo.pegar;
-      if (salvo.bairro) document.getElementById("bairro-pedido").value = salvo.bairro;
-      if (salvo.mercadoria) document.getElementById("tipo-mercadoria").value = salvo.mercadoria;
-      if (salvo.carga) document.getElementById("tamanho-carga").value = salvo.carga;
-      atualizarResumoPadrao();
-      if (aviso) mostrarAviso("Dados pré-estabelecidos preenchidos.");
-    }
-
-    function buscarEnderecoGPS() {
-      const st = document.getElementById("status-gps");
-      if (!navigator.geolocation) { st.textContent = "GPS indisponível."; return; }
-      st.textContent = "Buscando endereço por GPS...";
-      navigator.geolocation.getCurrentPosition((pos) => {
-        fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`)
-          .then((r) => r.json())
-          .then((d) => {
-            const a = d.address || {};
-            const end = `${a.road || a.suburb || ""}${a.house_number ? ", " + a.house_number : ""}${a.postcode ? " - CEP " + a.postcode : ""}`.trim();
-            if (end) { document.getElementById("onde-pegar").value = end; st.textContent = "Endereço preenchido pelo GPS."; }
-            else st.textContent = "Digite rua, número e CEP manualmente.";
-          }).catch(() => { st.textContent = "Sem rede para buscar endereço."; });
-      }, () => { st.textContent = "Permissão de GPS negada."; });
-    }
-
-    function ouvirPedido() {
-      const c = document.getElementById("nome-cliente").value.trim() || "não informado";
-      const p = document.getElementById("onde-pegar").value.trim() || "não informado";
-      const b = document.getElementById("bairro-pedido").value || "não informado";
-      const l = document.getElementById("onde-levar").value.trim() || "não informado";
-      const m = document.getElementById("tipo-mercadoria").value.trim() || "não informado";
-      falarTexto(`Resumo do pedido. Cliente: ${c}. Pegar em: ${p}. Bairro: ${b}. Levar para: ${l}. Mercadoria: ${m}.`, "Lendo pedido em voz alta...");
-    }
-
-    function gerarCodigoPedido() {
-      pedidoAtual = {
-        etapa: "pedido",
         id: Date.now(),
-        cliente: document.getElementById("nome-cliente").value.trim() || "Cliente",
-        pegar: document.getElementById("onde-pegar").value.trim() || "A confirmar",
-        bairro: document.getElementById("bairro-pedido").value,
-        levar: document.getElementById("onde-levar").value.trim() || "A confirmar",
-        mercadoria: document.getElementById("tipo-mercadoria").value.trim() || "Mercadoria",
-        carga: document.getElementById("tamanho-carga").value
+        nome,
+        whatsCliente,
+        origem,
+        paradas,
+        destino,
+        modal,
+        valorEstimado,
+        whatsDestino
       };
-      const codigo = codificarObj(pedidoAtual);
-      copiarTexto(codigo, "Código do pedido copiado! Cole no WhatsApp do entregador.");
-      document.getElementById("area-codigo-pedido").innerHTML = `
-        <div class="codigo-box">${codigo}</div>
-        <button type="button" class="btn btn-verde" onclick="copiarTexto('${codigo}', 'Código copiado novamente!')">COPIAR CÓDIGO NOVAMENTE</button>
-      `;
+
+      const existente = lista.findIndex(item => item.nome.toLowerCase() === nome.toLowerCase());
+      if (existente >= 0) {
+        lista[existente] = dados;
+        aviso.textContent = `Cadastro de "${nome}" atualizado.`;
+      } else {
+        lista.unshift(dados);
+        aviso.textContent = `Cliente "${nome}" salvo.`;
+      }
+
+      salvarListaClientes(lista);
+      renderizarLista();
     }
 
-    function lerCodigoEntregador() {
-      const obj = decodificarTexto(document.getElementById("entrada-retorno").value);
-      if (!obj) { mostrarAviso("Código inválido. Cole o código completo 32E|... do entregador."); return; }
-      pedidoAtual = obj;
-      renderRetorno();
-      mostrarAviso("Retorno do entregador carregado!");
+    function usarCliente(id) {
+      const item = obterClientes().find(c => c.id === id);
+      if (!item) return;
+
+      document.getElementById('nomeCliente').value = item.nome || '';
+      document.getElementById('whatsCliente').value = item.whatsCliente || '';
+      document.getElementById('origem').value = item.origem || '';
+      document.getElementById('paradas').value = item.paradas || '';
+      document.getElementById('destino').value = item.destino || '';
+      document.getElementById('modal').value = item.modal || 'Bicicleta';
+      document.getElementById('valorEstimado').value = item.valorEstimado ?? '10.00';
+      document.getElementById('whatsDestino').value = item.whatsDestino || '';
+      document.getElementById('aviso').textContent = `Dados de "${item.nome}" carregados.`;
     }
 
-    function responderAceite(aceito) {
-      if (!pedidoAtual) return;
-      pedidoAtual.etapa = aceito ? "aceito_cliente" : "recusado_cliente";
-      const codigo = codificarObj(pedidoAtual);
-      copiarTexto(codigo, aceito ? "ACEITO copiado! Cole no WhatsApp do entregador." : "NÃO ACEITO copiado!");
-      renderRetorno(codigo);
+    function removerCliente(id) {
+      const lista = obterClientes().filter(c => c.id !== id);
+      salvarListaClientes(lista);
+      renderizarLista();
+      document.getElementById('aviso').textContent = 'Cliente removido.';
     }
 
-    function renderRetorno(codigoResposta) {
-      const alvo = document.getElementById("retorno-cliente");
-      if (!pedidoAtual) { alvo.innerHTML = "<div class='retorno-box'>Nenhum retorno carregado ainda.</div>"; return; }
-      const p = pedidoAtual;
+    function limparCampos() {
+      ['nomeCliente', 'whatsCliente', 'origem', 'paradas', 'destino', 'whatsDestino'].forEach(id => {
+        document.getElementById(id).value = '';
+      });
+      document.getElementById('modal').value = 'Bicicleta';
+      document.getElementById('valorEstimado').value = '10.00';
+      document.getElementById('aviso').textContent = 'Campos limpos.';
+    }
 
-      if (p.etapa === "recusado_entregador") {
-        alvo.innerHTML = `<div class="retorno-box"><div class="status-vermelho">ENTREGADOR NÃO VAI FAZER ESTA ENTREGA</div></div>`;
-        falarTexto("O entregador informou que não vai fazer esta entrega.");
+    function renderizarLista() {
+      const alvo = document.getElementById('listaClientesSalvos');
+      const lista = obterClientes();
+
+      if (!lista.length) {
+        alvo.innerHTML = '<div class="sub" style="margin-top:8px; margin-bottom:0;">Nenhum cliente salvo neste aparelho.</div>';
         return;
       }
 
-      if (p.etapa === "valor_enviado") {
-        alvo.innerHTML = `
-          <div class="retorno-box">
-            <div class="status-amarelo">VALOR DA ENTREGA: ${moeda(p.valorFinal)}${p.dinamica20 ? " (DINÂMICA +20%)" : ""}</div>
-            <div><strong>Pegar em:</strong> ${p.pegar}</div>
-            <div><strong>Levar para:</strong> ${p.levar}</div>
-            <div class="grade-2">
-              <button type="button" class="btn btn-verde" onclick="responderAceite(true)">ACEITO</button>
-              <button type="button" class="btn btn-vermelho" onclick="responderAceite(false)">NÃO ACEITO</button>
-            </div>
-          </div>`;
-        falarTexto(`O entregador informou o valor de ${moeda(p.valorFinal)}. Toque em aceito ou não aceito.`);
+      alvo.innerHTML = lista.map(c => `
+        <div class="saved-item">
+          <div>
+            <strong>${c.nome}</strong><br />
+            <span style="color:#8b949e;">${c.origem || 'Sem origem'} → ${c.destino || 'Sem destino'} (${c.modal})</span>
+          </div>
+          <div class="mini-btns">
+            <button class="mini-btn" style="background:#1f6feb;" onclick="usarCliente(${c.id})">Usar</button>
+            <button class="mini-btn" style="background:#da3633;" onclick="removerCliente(${c.id})">X</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function gerarPedido() {
+      const nome = document.getElementById('nomeCliente').value.trim();
+      const whatsCliente = document.getElementById('whatsCliente').value.trim();
+      const origem = document.getElementById('origem').value.trim();
+      const paradas = document.getElementById('paradas').value.trim();
+      const destino = document.getElementById('destino').value.trim();
+      const modal = document.getElementById('modal').value;
+      const valor = document.getElementById('valorEstimado').value;
+      const foneDestino = normalizarFone(document.getElementById('whatsDestino').value);
+      const aviso = document.getElementById('aviso');
+
+      if (!nome || !origem || !destino) {
+        aviso.textContent = 'Preencha Nome do Cliente, Origem e Destino.';
         return;
       }
 
-      if (p.etapa === "aceito_cliente" || p.etapa === "recusado_cliente") {
-        const cod = codigoResposta || codificarObj(p);
-        alvo.innerHTML = `
-          <div class="retorno-box">
-            <div class="${p.etapa === "aceito_cliente" ? "status-verde" : "status-vermelho"}">
-              ${p.etapa === "aceito_cliente" ? "VOCÊ MARCOU: ACEITO" : "VOCÊ MARCOU: NÃO ACEITO"} (${moeda(p.valorFinal)})
-            </div>
-            <div>Envie o código abaixo para o entregador no WhatsApp:</div>
-            <div class="codigo-box">${cod}</div>
-            <button type="button" class="btn btn-amarelo" onclick="copiarTexto('${cod}', 'Código de resposta copiado!')">COPIAR CÓDIGO DE RESPOSTA</button>
-          </div>`;
-        return;
+      const texto = [
+        '*32 ENTREGAS - NOVO PEDIDO*',
+        `Cliente: ${nome}`,
+        whatsCliente ? `WhatsApp Cliente: ${whatsCliente}` : null,
+        `Origem: ${origem}`,
+        `Lojas/Paradas: ${paradas || 'Sem paradas extras'}`,
+        `Destino: ${destino}`,
+        `Modal: ${modal}`,
+        `Valor: R$ ${formatarValor(valor)}`
+      ].filter(Boolean).join('\n');
+
+      document.getElementById('textoPedido').textContent = texto;
+      document.getElementById('boxEnvio').style.display = 'block';
+
+      const link = document.getElementById('linkWhats');
+      if (foneDestino) {
+        link.href = `https://wa.me/${foneDestino}?text=${encodeURIComponent(texto)}`;
+        link.style.pointerEvents = 'auto';
+        link.style.opacity = '1';
+        aviso.textContent = 'Pedido pronto para enviar no WhatsApp.';
+      } else {
+        link.href = '#';
+        link.style.pointerEvents = 'none';
+        link.style.opacity = '0.5';
+        aviso.textContent = 'Informe o WhatsApp de envio (com DDD) para habilitar o link.';
       }
-
-      if (p.etapa === "tempo_enviado") {
-        alvo.innerHTML = `
-          <div class="retorno-box">
-            <div class="status-verde">VIAGEM CONFIRMADA — CHEGADA EM ${p.tempoChegada}</div>
-            <div><strong>Cliente:</strong> ${p.cliente} (${p.bairro})</div>
-            <div><strong>Pegar em:</strong> ${p.pegar}</div>
-            <div><strong>Levar para:</strong> ${p.levar}</div>
-            <div><strong>Valor:</strong> ${moeda(p.valorFinal)} • <strong>Pix:</strong> ${CHAVE_PIX}</div>
-            <button type="button" class="btn btn-escuro" onclick="copiarTexto('${CHAVE_PIX}', 'Pix 53999089980 copiado!')">COPIAR PIX: 53999089980</button>
-          </div>`;
-        falarTexto(`Viagem confirmada. O entregador chega em ${p.tempoChegada}. Valor ${moeda(p.valorFinal)}.`);
-      }
     }
 
-    function limparTudo() {
-      pedidoAtual = null;
-      document.getElementById("onde-levar").value = "";
-      document.getElementById("entrada-retorno").value = "";
-      document.getElementById("area-codigo-pedido").innerHTML = "";
-      aplicarPreEstabelecido(false);
-      renderRetorno();
-      mostrarAviso("Pedido atual limpo.");
+    function copiarPedido() {
+      const txt = document.getElementById('textoPedido').textContent;
+      if (!txt) return;
+      navigator.clipboard?.writeText(txt);
+      document.getElementById('aviso').textContent = 'Mensagem copiada.';
     }
 
-    aplicarPreEstabelecido(false);
-    atualizarResumoPadrao();
-
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", function () { navigator.serviceWorker.register("./sw.js").catch(function () {}); });
-    }
+    renderizarLista();
   </script>
 </body>
 </html>
