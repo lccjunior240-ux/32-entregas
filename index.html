@@ -2,1153 +2,369 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>32 Entregas &amp; 32 Bike</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes" />
+  <meta name="theme-color" content="#ffffff" />
+  <link rel="manifest" href="manifest-passageiro.json?v=40" />
+  <link rel="icon" type="image/png" href="icon-512.png" />
+  <link rel="apple-touch-icon" href="icon-512.png" />
+  <title>32 Entrega — Cliente V40</title>
   <style>
     :root {
-      --fundo: #070D1D;
-      --card: #101A33;
-      --card-escuro: #0B1326;
-      --borda: #283B66;
-      --amarelo: #F5C400;
-      --texto: #FFFFFF;
-      --suave: #B4C3E0;
-      --verde: #26D07C;
-      --vermelho: #FF5C5C;
+      --bg: #ffffff;
+      --card: #f8fafc;
+      --navy-header: linear-gradient(145deg, #0b192c 0%, #13294b 75%, #0c1e38 100%);
+      --border: #cbd5e1;
+      --text: #0f172a;
+      --muted: #334155;
+      --accent: #f59e0b;
+      --green: #059669;
+      --blue: #0369a1;
+      --f-base: 19px;
+      --f-label: 18px;
+      --f-btn: 19px;
+      --f-title: 22px;
     }
-
-    * {
-      box-sizing: border-box;
-      font-family: Arial, Helvetica, sans-serif;
+    body.fonte-grande {
+      --f-base: 23px;
+      --f-label: 22px;
+      --f-btn: 22px;
+      --f-title: 26px;
     }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      margin: 0;
-      padding: 14px;
-      background: var(--fundo);
-      color: var(--texto);
-      font-size: 16px;
-      line-height: 1.4;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-size: var(--f-base);
+      line-height: 1.5;
     }
-
-    .app {
-      max-width: 520px;
-      margin: 0 auto;
-      padding-bottom: 48px;
-    }
-
-    .topo-amarelo {
-      background: var(--amarelo);
-      color: #091124;
-      border-radius: 16px;
-      border: 3px solid #091124;
-      padding: 12px 14px;
+    header {
+      background: var(--navy-header);
+      border-bottom: 4px solid var(--accent);
+      padding: 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      margin-bottom: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      color: #ffffff;
     }
-
-    .topo-esq {
-      display: flex;
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand img {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      border: 2px solid var(--accent);
+      background: #ffffff;
+      flex-shrink: 0;
+    }
+    h1 { font-size: 21px; font-weight: 900; color: var(--accent); }
+    .subtitle { font-size: 15px; color: #e2e8f0; font-weight: 600; }
+    .header-acoes { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .btn-colar-topo {
+      background: #ffffff;
+      color: #0f172a;
+      border: 2px solid var(--accent);
+      border-radius: 10px;
+      padding: 8px 11px;
+      font-size: 15px;
+      font-weight: 900;
+      cursor: pointer;
+      display: inline-flex;
       align-items: center;
-      gap: 10px;
+      gap: 5px;
+      white-space: nowrap;
     }
-
-    .logo-circulo {
-      width: 60px;
-      height: 60px;
-      min-width: 60px;
-      border-radius: 50%;
-      background: var(--amarelo);
-      border: 4px solid #091124;
+    .btn-colar-topo:active {
+      background: var(--accent);
+      color: #0f172a;
+    }
+    .btn-acess {
+      background: #ffffff;
+      color: #0f172a;
+      border: 2px solid var(--accent);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 16px;
+      font-weight: 900;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .btn-acess.ativo {
+      background: var(--accent);
+      color: #0f172a;
+    }
+    main {
+      flex: 1;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      box-shadow: 2px 2px 0px #091124;
-    }
-
-    .logo-circulo svg {
-      width: 26px;
-      height: 16px;
-      stroke: #091124;
-      fill: none;
-      stroke-width: 2.6;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .logo-circulo span {
-      font-size: 0.62rem;
-      font-weight: 900;
-      line-height: 1.05;
-      margin-top: 2px;
-    }
-
-    .marca-texto h1 {
-      margin: 0;
-      font-size: 1.2rem;
-      font-weight: 900;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .marca-texto h1 .tag-32 {
-      background: #091124;
-      color: var(--amarelo);
-      border: 2px solid #091124;
-      padding: 2px 7px;
-      border-radius: 7px;
-      font-size: 1.05rem;
-    }
-
-    .marca-texto p {
-      margin: 3px 0 0;
-      font-size: 0.82rem;
-      font-weight: 800;
-      color: #111A2E;
-    }
-
-    .badge-lat {
-      background: #091124;
-      color: var(--amarelo);
-      border: 2px solid #091124;
-      font-size: 0.76rem;
-      font-weight: 900;
-      padding: 7px 9px;
-      border-radius: 9px;
-      white-space: nowrap;
-    }
-
-    .abas {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .aba-btn {
-      padding: 12px 6px;
-      border-radius: 12px;
-      border: 2px solid var(--borda);
-      background: var(--card);
-      color: var(--texto);
-      font-weight: 900;
-      font-size: 0.92rem;
-      cursor: pointer;
-    }
-
-    .aba-btn.ativa {
-      background: var(--amarelo);
-      color: #091124;
-      border-color: var(--amarelo);
-    }
-
-    .aviso-acao {
-      background: var(--card);
-      border: 2px solid var(--amarelo);
-      color: var(--amarelo);
-      border-radius: 12px;
-      padding: 11px 13px;
-      font-size: 0.94rem;
-      font-weight: 800;
-      margin-bottom: 14px;
-      min-height: 44px;
-      display: flex;
-      align-items: center;
-    }
-
-    .card {
-      background: var(--card);
-      border: 2px solid var(--borda);
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 14px;
-    }
-
-    .card h2 {
-      margin: 0 0 12px;
-      font-size: 1.2rem;
-      font-weight: 900;
-      color: var(--amarelo);
-    }
-
-    .card h3 {
-      margin: 18px 0 8px;
-      font-size: 1.05rem;
-      font-weight: 900;
-      color: var(--amarelo);
-    }
-
-    label {
-      display: block;
-      font-size: 0.98rem;
-      font-weight: 800;
-      color: #FFFFFF;
-      margin-top: 12px;
-      margin-bottom: 6px;
-    }
-
-    input, select {
+      gap: 18px;
+      max-width: 720px;
       width: 100%;
-      padding: 13px;
-      border-radius: 10px;
-      border: 2px solid var(--borda);
-      background: var(--card-escuro);
-      color: var(--texto);
-      font-size: 1rem;
-      font-weight: 700;
+      margin: 0 auto;
     }
-
-    .linha-acao {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .grade-tempo {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .btn-tempo {
-      padding: 12px 6px;
-      border-radius: 10px;
-      border: 2px solid var(--borda);
-      background: var(--card-escuro);
-      color: var(--texto);
-      font-size: 0.92rem;
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .btn-tempo.escolhido {
-      background: var(--verde);
-      color: #06130C;
-      border-color: var(--verde);
-    }
-
-    .btn {
-      width: 100%;
-      padding: 14px;
-      border-radius: 11px;
-      border: none;
-      font-size: 1rem;
-      font-weight: 900;
-      cursor: pointer;
-      margin-top: 12px;
-    }
-
-    .btn-amarelo {
-      background: var(--amarelo);
-      color: #091124;
-    }
-
-    .btn-escuro {
-      background: var(--card-escuro);
-      color: var(--texto);
-      border: 2px solid var(--borda);
-    }
-
-    .btn-verde {
-      background: var(--verde);
-      color: #06130C;
-    }
-
-    .btn-vermelho {
-      background: var(--vermelho);
-      color: #160404;
-    }
-
-    .btn-dinamica {
-      background: var(--card-escuro);
-      color: var(--amarelo);
-      border: 2px solid var(--amarelo);
-    }
-
-    .btn-dinamica.ligada {
-      background: var(--amarelo);
-      color: #091124;
-    }
-
-    .btn-pequeno {
-      margin-top: 0;
-      width: auto;
-      padding: 13px;
-      font-size: 0.88rem;
-      white-space: nowrap;
-    }
-
-    .info-gps {
-      font-size: 0.88rem;
-      color: var(--suave);
-      margin-top: 6px;
-      font-weight: 700;
-    }
-
-    .selo-padrao {
-      margin-top: 8px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      background: #081022;
-      border: 1px solid #3B5387;
-      font-size: 0.86rem;
-      color: var(--suave);
-    }
-
-    .selo-padrao strong {
-      color: var(--verde);
-    }
-
-    .retorno-cliente-box {
-      margin-top: 10px;
+    .box-colar-rapido {
+      display: none;
+      background: #f8fafc;
+      border: 2px solid var(--accent);
+      border-radius: 14px;
       padding: 12px;
-      border-radius: 12px;
-      background: var(--card-escuro);
-      border: 2px solid var(--borda);
-      font-size: 0.95rem;
+      flex-direction: column;
+      gap: 8px;
     }
-
-    .retorno-status {
-      font-weight: 900;
-      font-size: 1rem;
-      margin-bottom: 6px;
+    .box-colar-rapido.ativo {
+      display: flex;
     }
-
-    .status-verde { color: var(--verde); }
-    .status-vermelho { color: var(--vermelho); }
-    .status-amarelo { color: var(--amarelo); }
-
-    .caixa-empresa {
-      margin-top: 16px;
-      padding: 13px;
-      border-radius: 12px;
-      background: var(--card-escuro);
-      border: 2px solid var(--borda);
-      font-size: 0.92rem;
-      color: var(--suave);
+    .box-colar-rapido textarea {
+      width: 100%;
+      min-height: 90px;
+      padding: 12px;
+      border-radius: 10px;
+      border: 2px solid #64748b;
+      background: #ffffff;
+      color: #0f172a;
+      font-size: 15px;
+      font-family: monospace;
+      resize: vertical;
     }
-
-    .caixa-empresa strong {
-      color: var(--amarelo);
-      font-size: 1rem;
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    .chamado-item {
-      background: var(--card-escuro);
-      border: 2px solid var(--borda);
+    .aviso-firebase {
+      display: none;
+      background: #fffbeb;
+      border: 2px solid #d97706;
+      color: #78350f;
       border-radius: 14px;
       padding: 14px;
-      margin-top: 12px;
+      font-size: var(--f-label);
+      font-weight: 700;
     }
-
-    .chamado-item.amarrado {
-      border-color: var(--verde);
+    .card {
+      background: var(--card);
+      border: 2px solid var(--border);
+      border-radius: 18px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 3px 10px rgba(15, 23, 42, 0.06);
     }
-
-    .grade-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 10px;
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
     }
-
-    .caixa-divisao {
-      margin-top: 12px;
-      padding: 12px;
-      border-radius: 10px;
-      border: 2px dashed #4E679A;
-      background: #081022;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      text-align: center;
-    }
-
-    .caixa-divisao small {
-      display: block;
-      font-size: 0.78rem;
-      color: var(--suave);
-      margin-bottom: 3px;
-    }
-
-    .caixa-divisao strong {
-      font-size: 1.02rem;
+    .card-title { font-size: var(--f-title); font-weight: 900; color: #0f172a; }
+    label.campo-lbl {
+      font-size: var(--f-label);
       font-weight: 900;
+      color: #0f172a;
+      margin-bottom: 6px;
+      display: block;
     }
-
-    .cor-branco { color: var(--texto); }
-    .cor-verde { color: var(--verde); }
-    .cor-amarelo { color: var(--amarelo); }
-
-    .msg-box {
-      margin-top: 12px;
-      padding: 12px;
+    input, select {
+      width: 100%;
+      min-height: 56px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 2px solid #64748b;
+      background: #ffffff;
+      color: #0f172a;
+      font-size: var(--f-base);
+      font-weight: 700;
+    }
+    input::placeholder { color: #64748b; }
+    .btn {
+      width: 100%;
+      min-height: 58px;
+      padding: 15px 18px;
+      border: none;
+      border-radius: 14px;
+      font-size: var(--f-btn);
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .btn-sm {
+      min-height: 46px;
+      padding: 10px 14px;
+      font-size: 16px;
+      width: auto;
+    }
+    .btn-outline {
+      background: #ffffff;
+      color: #0f172a;
+      border: 2px solid #64748b;
+    }
+    .btn-accent {
+      background: var(--accent);
+      color: #0f172a;
+      border: 2px solid #b45309;
+    }
+    .btn-green {
+      background: #059669;
+      color: #ffffff;
+    }
+    .status-msg { font-size: var(--f-label); font-weight: 900; color: #047857; text-align: center; min-height: 24px; }
+    .erro-msg { font-size: var(--f-label); font-weight: 900; color: #b91c1c; text-align: center; min-height: 20px; }
+    .corrida-box {
+      background: #ffffff;
+      border: 2px solid #94a3b8;
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      color: #0f172a;
+    }
+    .alerta-aceita {
+      background: #ecfdf5;
+      border: 2px solid #059669;
+      color: #064e3b;
+      border-radius: 12px;
+      padding: 14px;
+      font-weight: 900;
+      font-size: var(--f-label);
+    }
+    .chegada-destaque {
+      background: #fffbeb;
+      border: 2px solid #d97706;
+      color: #78350f;
+      border-radius: 12px;
+      padding: 14px;
+      font-weight: 900;
+      font-size: var(--f-label);
+    }
+    .pix-box {
+      background: #f0f9ff;
+      border: 2px solid #0284c7;
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      color: #0c4a6e;
+    }
+    .pix-chave-linha {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      background: #ffffff;
+      border: 2px solid #0284c7;
       border-radius: 10px;
-      background: #081022;
-      border: 2px solid var(--borda);
-      font-size: 0.92rem;
-      line-height: 1.45;
-      white-space: pre-line;
-      color: #FFFFFF;
-    }
-
-    .oculto {
-      display: none;
+      padding: 12px;
+      font-weight: 900;
+      word-break: break-all;
+      color: #0f172a;
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <header class="topo-amarelo">
-      <div class="topo-esq">
-        <div class="logo-circulo" aria-label="32 Bike">
-          <svg viewBox="0 0 32 20">
-            <circle cx="7" cy="14" r="4.5"></circle>
-            <circle cx="25" cy="14" r="4.5"></circle>
-            <path d="M7 14 L13 14 L18 7 L25 14"></path>
-            <path d="M13 14 L16 6 L19 6"></path>
-            <path d="M18 7 L17 4 L21 4"></path>
-          </svg>
-          <span>32 BIKE</span>
-        </div>
-        <div class="marca-texto">
-          <h1><span class="tag-32">32</span> ENTREGAS</h1>
-          <p>32 Bike &amp; Local • Cassino &amp; Rio Grande</p>
-        </div>
+  <header>
+    <div class="brand">
+      <img src="icon-512.png" alt="32 Entrega" />
+      <div>
+        <h1>32 Entrega — Cliente</h1>
+        <div class="subtitle">V40 • Cassino &amp; Rio Grande</div>
       </div>
-      <div class="badge-lat">LAT 32° S</div>
-    </header>
+    </div>
+    <div class="header-acoes">
+      <button class="btn-colar-topo" type="button" id="btn-colar-topo" title="Colar texto ou código">
+        <span>📥</span>
+        <span id="txt-colar-topo">Colar</span>
+      </button>
+      <button class="btn-acess" type="button" id="btn-fonte-grande" aria-pressed="false">
+        Letra A+
+      </button>
+    </div>
+  </header>
 
-    <nav class="abas">
-      <button type="button" class="aba-btn ativa" id="tab-1" onclick="irPainel(1)">1. Cliente</button>
-      <button type="button" class="aba-btn" id="tab-2" onclick="irPainel(2)">2. Entregador</button>
-      <button type="button" class="aba-btn" id="tab-3" onclick="irPainel(3)">3. Turno/Caixa</button>
-    </nav>
-
-    <div class="aviso-acao" id="aviso-acao">Pronto. Pode ouvir o resumo em voz alta antes de confirmar o pedido.</div>
-
-    <section id="sec-1" class="card">
-      <h2>Painel do Cliente / Estabelecimento</h2>
-
-      <div class="selo-padrao" id="resumo-padrao-cliente">
-        <strong>Perfil salvo:</strong> nenhum dado pré-estabelecido ainda. Preencha e clique em Salvar Pré-estabelecido.
+  <main>
+    <div class="box-colar-rapido" id="box-colar-rapido">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+        <strong style="font-size:15px;color:#b45309;">Área para Colar</strong>
+        <button class="btn btn-outline btn-sm" type="button" id="btn-fechar-colar">Fechar</button>
       </div>
+      <textarea id="area-colar-texto" placeholder="Cole aqui o texto ou código da área de transferência..."></textarea>
+    </div>
 
-      <label for="nome-cliente">Nome / Estabelecimento</label>
-      <input type="text" id="nome-cliente" placeholder="Ex: Farmácia / Lanchonete / Loja / Seu nome" />
+    <div class="aviso-firebase" id="aviso-firebase"></div>
 
-      <label for="onde-pegar">Onde pegar a mercadoria (pode mudar no pedido)</label>
-      <div class="linha-acao">
-        <input type="text" id="onde-pegar" placeholder="Rua, número e CEP (ou ponto fixo)" />
-        <button type="button" class="btn btn-amarelo btn-pequeno" onclick="buscarEnderecoGPS()">GPS Atual</button>
-      </div>
-      <div class="info-gps" id="status-gps-pegar">GPS: preenche rua, número e CEP de onde pegar.</div>
-
-      <label for="bairro-pedido">Bairro</label>
-      <select id="bairro-pedido">
-        <option value="Cassino" selected>Cassino</option>
-        <option value="Centro">Centro</option>
-        <option value="Cidade Nova">Cidade Nova</option>
-        <option value="Vila Maria">Vila Maria</option>
-        <option value="Parque Marinha">Parque Marinha</option>
-        <option value="BGV">BGV</option>
-        <option value="Porto / Vila Santa Tereza">Porto / Vila Santa Tereza</option>
-        <option value="Outro bairro">Outro bairro</option>
-      </select>
-
-      <label for="onde-levar">Para onde levar a mercadoria</label>
-      <input type="text" id="onde-levar" placeholder="Digite o endereço de entrega (rua, número e CEP)" />
-
-      <label for="tipo-mercadoria">Tipo de mercadoria (pode mudar no pedido)</label>
-      <input type="text" id="tipo-mercadoria" placeholder="Ex: Peça na caixa, sacola, lanche, encomenda" />
-
-      <label for="tamanho-carga">Tamanho da carga</label>
-      <select id="tamanho-carga">
-        <option value="Pequena / Leve" selected>Pequena / Leve</option>
-        <option value="Média">Média</option>
-        <option value="Maior / Caixa ou Peça">Maior / Caixa ou Peça</option>
-      </select>
-
-      <div class="grade-2">
-        <button type="button" class="btn btn-verde" onclick="salvarPreEstabelecido()">SALVAR PRÉ-ESTABELECIDO</button>
-        <button type="button" class="btn btn-escuro" onclick="aplicarPreEstabelecido(true)">PUXAR DADOS SALVOS</button>
+    <section class="card">
+      <div class="card-header">
+        <div class="card-title">1. Pedir Entrega</div>
+        <button class="btn btn-outline btn-sm" type="button" id="btn-ler-voz">
+          Ouvir Resumo
+        </button>
       </div>
 
-      <div class="grade-2">
-        <button type="button" class="btn btn-verde" onclick="ouvirResumoPedidoCliente()">OUVIR PEDIDO (VOZ)</button>
-        <button type="button" class="btn btn-escuro" onclick="pararVoz()">PARAR VOZ</button>
+      <div>
+        <label class="campo-lbl" for="pas-nome">Seu Nome</label>
+        <input id="pas-nome" type="text" placeholder="Como podemos te chamar?" />
       </div>
 
-      <button type="button" class="btn btn-amarelo" onclick="mandarPedidoCliente()">ENVIAR PEDIDO DE ENTREGA (ALARME)</button>
-      <button type="button" class="btn btn-escuro" onclick="limparPedidoCliente(true)">LIMPAR PEDIDO ATUAL</button>
-
-      <h3>Retorno do Entregador &amp; Confirmação</h3>
-      <div id="retorno-cliente">Painel zerado — nenhum pedido ativo no momento.</div>
-
-      <div class="caixa-empresa">
-        <strong>32 Entregas &amp; 32 Bike</strong>
-        Diferencial de atendimento recorrente e acessível em Cassino e Rio Grande (32° S): ouça o pedido e o retorno em voz alta para confirmar com tranquilidade.
+      <div>
+        <label class="campo-lbl" for="pas-origem">Onde buscar a entrega?</label>
+        <input id="pas-origem" type="text" placeholder="Digite a rua, número e bairro" />
       </div>
+
+      <div>
+        <label class="campo-lbl" for="pas-destino">Onde entregar?</label>
+        <input id="pas-destino" type="text" placeholder="Digite o endereço de entrega (rua, número, bairro)" />
+      </div>
+
+      <div>
+        <label class="campo-lbl" for="pas-pagamento">Como você vai pagar?</label>
+        <select id="pas-pagamento">
+          <option value="Pix">Pix</option>
+          <option value="Dinheiro">Dinheiro</option>
+          <option value="Cartão">Cartão</option>
+        </select>
+      </div>
+
+      <div class="erro-msg" id="erro-rota"></div>
+
+      <button class="btn btn-accent" type="button" id="btn-solicitar-corrida">
+        Chamar Entregador
+      </button>
+      <div class="status-msg" id="msg-passageiro"></div>
     </section>
 
-    <section id="sec-2" class="card oculto">
-      <h2>Painel do Entregador</h2>
-      <div class="grade-2">
-        <button type="button" class="btn btn-escuro" onclick="limparPedidoCliente(true)">LIMPAR CHAMADO ATUAL</button>
-        <button type="button" class="btn btn-verde" onclick="finalizarTurnoCaixa()">FINALIZAR TURNO / FECHAR CAIXA</button>
+    <section class="card">
+      <div class="card-header">
+        <div class="card-title">2. Sua Entrega</div>
+        <button class="btn btn-outline btn-sm" type="button" id="btn-limpar-corrida">
+          Limpar Tela
+        </button>
       </div>
-      <div id="lista-entregador">Nenhum pedido chegou ainda.</div>
-    </section>
-
-    <section id="sec-3" class="card oculto">
-      <h2>Painel do Turno &amp; Caixa (80% / 20%)</h2>
-      <div class="info-gps" id="status-turno">Turno aberto — somando entregas finalizadas.</div>
-
-      <div class="caixa-divisao">
-        <div>
-          <small>Bruto do Turno</small>
-          <strong class="cor-branco" id="turno-total">R$ 0,00</strong>
-        </div>
-        <div>
-          <small>Entregador (80%)</small>
-          <strong class="cor-verde" id="turno-80">R$ 0,00</strong>
-        </div>
-        <div>
-          <small>32 Entregas (20%)</small>
-          <strong class="cor-amarelo" id="turno-20">R$ 0,00</strong>
-        </div>
-      </div>
-
-      <div class="msg-box" id="detalhe-turno">Nenhuma entrega finalizada neste turno ainda.</div>
-
-      <div class="grade-2">
-        <button type="button" class="btn btn-amarelo" onclick="copiarFechamentoTurno()">COPIAR FECHAMENTO DO TURNO</button>
-        <button type="button" class="btn btn-verde" onclick="finalizarTurnoCaixa()">FINALIZAR TURNO / ZERAR CAIXA</button>
+      <div id="box-corrida-ativa" class="corrida-box">
+        Nenhuma entrega solicitada ainda.
       </div>
     </section>
-  </div>
+  </main>
 
   <script>
-    const CHAVE_PIX = "53999089980";
-    const CHAVE_STORAGE = "app32_pre_estabelecido_v1";
-    let painelAtual = 1;
-    let pedidos = [];
-    let entregasTurno = [];
-    let turnoFechadoEm = "";
-    let audioCtx = null;
-    let perfilMemoria = null;
-
-    function moeda(v) {
-      return "R$ " + Number(v || 0).toFixed(2).replace(".", ",");
-    }
-
-    function mostrarAviso(msg) {
-      document.getElementById("aviso-acao").textContent = msg;
-    }
-
-    function falarTexto(texto, avisoInicio) {
-      try {
-        if (!("speechSynthesis" in window)) {
-          mostrarAviso("Leitura por voz não suportada neste navegador.");
-          return;
-        }
-        window.speechSynthesis.cancel();
-        const fala = new SpeechSynthesisUtterance(texto);
-        fala.lang = "pt-BR";
-        fala.rate = 0.96;
-        fala.pitch = 1.0;
-        window.speechSynthesis.speak(fala);
-        if (avisoInicio) mostrarAviso(avisoInicio);
-      } catch (e) {
-        mostrarAviso("Não foi possível reproduzir o áudio agora.");
-      }
-    }
-
-    function pararVoz() {
-      try {
-        if ("speechSynthesis" in window) {
-          window.speechSynthesis.cancel();
-        }
-      } catch (e) {}
-      mostrarAviso("Áudio interrompido.");
-    }
-
-    function ouvirResumoPedidoCliente() {
-      const cliente = document.getElementById("nome-cliente").value.trim() || "não informado";
-      const pegar = document.getElementById("onde-pegar").value.trim() || "não informado";
-      const bairro = document.getElementById("bairro-pedido").value || "não informado";
-      const levar = document.getElementById("onde-levar").value.trim() || "não informado";
-      const mercadoria = document.getElementById("tipo-mercadoria").value.trim() || "não informado";
-      const carga = document.getElementById("tamanho-carga").value || "não informado";
-
-      const textoFala = `Resumo do seu pedido. Nome ou estabelecimento: ${cliente}. Pegar em: ${pegar}. Bairro: ${bairro}. Levar para: ${levar}. Mercadoria: ${mercadoria}. Tamanho da carga: ${carga}. Confira se está tudo certo antes de enviar.`;
-      falarTexto(textoFala, "Lendo o resumo do pedido em voz alta...");
-    }
-
-    function ouvirRetornoCliente() {
-      if (pedidos.length === 0) {
-        falarTexto("Não há retorno ativo no momento.", "Sem retorno ativo para ouvir.");
-        return;
-      }
-      const p = pedidos[0];
-      const total = valorFinal(p);
-      let msg = "";
-
-      if (p.etapa === "pendente_valor") {
-        msg = "Seu pedido foi enviado e está aguardando o valor do entregador.";
-      } else if (p.etapa === "recusado_entregador") {
-        msg = "O entregador informou que não vai fazer esta entrega.";
-      } else if (p.etapa === "valor_enviado") {
-        const extra = p.dinamica20 ? " com dinâmica de mais vinte por cento" : "";
-        msg = `O entregador informou o valor de ${moeda(total)}${extra}. Pegar em ${p.pegar} e levar para ${p.levar}. Você pode apertar aceito ou não aceito.`;
-      } else if (p.etapa === "recusado_cliente") {
-        msg = `Você marcou não aceito para o valor de ${moeda(total)}.`;
-      } else if (p.etapa === "aceito_cliente") {
-        msg = `Você marcou aceito para ${moeda(total)}. Aguardando o entregador informar o tempo até a mercadoria.`;
-      } else if (p.etapa === "tempo_enviado") {
-        msg = `Viagem confirmada. O entregador vai chegar até a mercadoria em ${p.tempoChegada}. Valor da entrega: ${moeda(total)}.`;
-      }
-      falarTexto(msg, "Lendo o retorno em voz alta...");
-    }
-
-    function carregarPreEstabelecido() {
-      try {
-        const raw = localStorage.getItem(CHAVE_STORAGE);
-        if (raw) {
-          perfilMemoria = JSON.parse(raw);
-          return perfilMemoria;
-        }
-      } catch (e) {}
-      return perfilMemoria;
-    }
-
-    function atualizarResumoPadrao() {
-      const salvo = carregarPreEstabelecido();
-      const el = document.getElementById("resumo-padrao-cliente");
-      if (!salvo) {
-        el.innerHTML = "<strong>Perfil salvo:</strong> nenhum dado pré-estabelecido ainda. Preencha e clique em Salvar Pré-estabelecido.";
-        return;
-      }
-      el.innerHTML = `<strong>Perfil salvo:</strong> ${salvo.cliente || "-"} • <strong>Pegar:</strong> ${salvo.pegar || "-"} • <strong>Bairro:</strong> ${salvo.bairro || "-"} • <strong>Mercadoria:</strong> ${salvo.mercadoria || "-"}`;
-    }
-
-    function salvarPreEstabelecido() {
-      const dados = {
-        cliente: document.getElementById("nome-cliente").value.trim(),
-        pegar: document.getElementById("onde-pegar").value.trim(),
-        bairro: document.getElementById("bairro-pedido").value,
-        mercadoria: document.getElementById("tipo-mercadoria").value.trim(),
-        carga: document.getElementById("tamanho-carga").value
-      };
-      perfilMemoria = dados;
-      try {
-        localStorage.setItem(CHAVE_STORAGE, JSON.stringify(dados));
-      } catch (e) {}
-      atualizarResumoPadrao();
-      mostrarAviso("Dados pré-estabelecidos salvos! Você ainda pode alterar qualquer campo quando precisar.");
-    }
-
-    function aplicarPreEstabelecido(comAviso) {
-      const salvo = carregarPreEstabelecido();
-      if (!salvo) {
-        if (comAviso) mostrarAviso("Não há dados pré-estabelecidos salvos ainda.");
-        return;
-      }
-      if (salvo.cliente) document.getElementById("nome-cliente").value = salvo.cliente;
-      if (salvo.pegar) document.getElementById("onde-pegar").value = salvo.pegar;
-      if (salvo.bairro) document.getElementById("bairro-pedido").value = salvo.bairro;
-      if (salvo.mercadoria) document.getElementById("tipo-mercadoria").value = salvo.mercadoria;
-      if (salvo.carga) document.getElementById("tamanho-carga").value = salvo.carga;
-      atualizarResumoPadrao();
-      if (comAviso) mostrarAviso("Dados pré-estabelecidos aplicados nos campos.");
-    }
-
-    function limparCamposPedidoMantendoPadrao() {
-      const salvo = carregarPreEstabelecido();
-      document.getElementById("nome-cliente").value = salvo && salvo.cliente ? salvo.cliente : "";
-      document.getElementById("onde-pegar").value = salvo && salvo.pegar ? salvo.pegar : "";
-      document.getElementById("bairro-pedido").value = salvo && salvo.bairro ? salvo.bairro : "Cassino";
-      document.getElementById("onde-levar").value = "";
-      document.getElementById("tipo-mercadoria").value = salvo && salvo.mercadoria ? salvo.mercadoria : "";
-      document.getElementById("tamanho-carga").value = salvo && salvo.carga ? salvo.carga : "Pequena / Leve";
-      document.getElementById("status-gps-pegar").textContent = "GPS: preenche rua, número e CEP de onde pegar.";
-    }
-
-    function limparPedidoCliente(comAviso) {
-      limparCamposPedidoMantendoPadrao();
-      pedidos = [];
-      renderRetornoCliente();
-      renderEntregador();
-      if (comAviso) mostrarAviso("Pedido atual limpo. Dados pré-estabelecidos continuam salvos.");
-    }
-
-    function irPainel(num) {
-      painelAtual = num;
-      [1, 2, 3].forEach((i) => {
-        document.getElementById(`sec-${i}`).classList.toggle("oculto", i !== num);
-        document.getElementById(`tab-${i}`).classList.toggle("ativa", i === num);
-      });
-      renderRetornoCliente();
-      renderEntregador();
-      renderTurno();
-      if (num === 1) mostrarAviso("Painel do Cliente / Estabelecimento aberto.");
-      if (num === 2) mostrarAviso("Painel do Entregador aberto.");
-      if (num === 3) mostrarAviso("Painel do Turno & Caixa aberto (80% entregador / 20% 32 Entregas).");
-    }
-
-    function tocarAlerta(tipo) {
-      try {
-        if (!audioCtx) {
-          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-          audioCtx = new AudioContextClass();
-        }
-        if (audioCtx.state === "suspended") {
-          audioCtx.resume();
-        }
-        const agora = audioCtx.currentTime;
-        const tons = tipo === "amarrado" ? [660, 880, 1046] : [587, 784, 587];
-        tons.forEach((freq, i) => {
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.type = "triangle";
-          osc.frequency.value = freq;
-          gain.gain.setValueAtTime(0.2, agora + i * 0.14);
-          gain.gain.exponentialRampToValueAtTime(0.001, agora + i * 0.14 + 0.12);
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          osc.start(agora + i * 0.14);
-          osc.stop(agora + i * 0.14 + 0.13);
-        });
-      } catch (e) {}
-    }
-
-    function buscarEnderecoGPS() {
-      const statusEl = document.getElementById("status-gps-pegar");
-      if (!navigator.geolocation) {
-        statusEl.textContent = "GPS não disponível neste aparelho. Digite rua, número e CEP.";
-        mostrarAviso("GPS indisponível neste aparelho.");
-        return;
-      }
-      statusEl.textContent = "Buscando endereço por GPS...";
-      mostrarAviso("Consultando endereço por GPS...");
-
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const lat = pos.coords.latitude;
-          const lon = pos.coords.longitude;
-          const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}`;
-          fetch(url)
-            .then((resp) => resp.json())
-            .then((data) => {
-              const addr = data.address || {};
-              const rua = addr.road || addr.pedestrian || addr.suburb || "";
-              const numero = addr.house_number ? `, ${addr.house_number}` : "";
-              const cep = addr.postcode ? ` - CEP ${addr.postcode}` : "";
-              const bairro = addr.suburb ? ` (${addr.suburb})` : "";
-              const enderecoFormatado = `${rua}${numero}${bairro}${cep}`.trim();
-
-              if (enderecoFormatado) {
-                document.getElementById("onde-pegar").value = enderecoFormatado;
-                statusEl.textContent = "Endereço de retirada preenchido pelo GPS.";
-                mostrarAviso(`Endereço atualizado: ${enderecoFormatado}`);
-              } else {
-                statusEl.textContent = "Não veio nome de rua neste ponto. Digite rua, número e CEP.";
-                mostrarAviso("Rua não encontrada no ponto; digite manualmente.");
-              }
-            })
-            .catch(() => {
-              statusEl.textContent = "Sem rede para buscar rua/CEP. Digite rua, número e CEP.";
-              mostrarAviso("Sem internet para buscar rua/CEP.");
-            });
-        },
-        () => {
-          statusEl.textContent = "GPS sem sinal ou permissão. Digite rua, número e CEP.";
-          mostrarAviso("Permissão de GPS negada ou sem sinal.");
-        }
-      );
-    }
-
-    function copiarTexto(texto, msg) {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(texto).catch(() => {});
-      }
-      mostrarAviso(msg);
-    }
-
-    function mandarPedidoCliente() {
-      const cliente = document.getElementById("nome-cliente").value.trim() || "Cliente";
-      const pegar = document.getElementById("onde-pegar").value.trim() || "A confirmar";
-      const bairro = document.getElementById("bairro-pedido").value;
-      const levar = document.getElementById("onde-levar").value.trim() || "A confirmar";
-      const mercadoria = document.getElementById("tipo-mercadoria").value.trim() || "Mercadoria";
-      const carga = document.getElementById("tamanho-carga").value;
-
-      turnoFechadoEm = "";
-      pedidos.unshift({
-        id: Date.now(),
-        cliente,
-        pegar,
-        bairro,
-        levar,
-        mercadoria,
-        carga,
-        valorBase: 20,
-        dinamica20: false,
-        tempoChegada: "",
-        etapa: "pendente_valor"
-      });
-
-      tocarAlerta("chegada");
-      renderEntregador();
-      renderRetornoCliente();
-      irPainel(2);
-      mostrarAviso("Pedido enviado ao entregador com alerta sonoro.");
-    }
-
-    function valorFinal(p) {
-      const v = Number(p.valorBase) || 0;
-      return p.dinamica20 ? v * 1.2 : v;
-    }
-
-    function registrarNoTurno(p) {
-      const total = valorFinal(p);
-      entregasTurno.push({
-        id: p.id,
-        cliente: p.cliente,
-        bairro: p.bairro,
-        mercadoria: p.mercadoria,
-        valor: total,
-        parte80: total * 0.8,
-        parte20: total * 0.2
-      });
-      renderTurno();
-    }
-
-    function renderTurno() {
-      let somaTotal = 0;
-      let soma80 = 0;
-      let soma20 = 0;
-
-      entregasTurno.forEach((item) => {
-        somaTotal += item.valor;
-        soma80 += item.parte80;
-        soma20 += item.parte20;
-      });
-
-      document.getElementById("turno-total").textContent = moeda(somaTotal);
-      document.getElementById("turno-80").textContent = moeda(soma80);
-      document.getElementById("turno-20").textContent = moeda(soma20);
-
-      const statusEl = document.getElementById("status-turno");
-      statusEl.textContent = turnoFechadoEm
-        ? `Último turno fechado às ${turnoFechadoEm} — pronto para novo turno.`
-        : "Turno aberto — somando entregas finalizadas (80% entregador / 20% 32 Entregas).";
-
-      if (entregasTurno.length === 0) {
-        document.getElementById("detalhe-turno").textContent = "Nenhuma entrega finalizada neste turno ainda.";
-      } else {
-        const linhas = entregasTurno.map((e, i) =>
-          `${i + 1}. ${e.cliente} (${e.bairro} • ${e.mercadoria}): ${moeda(e.valor)} [80%: ${moeda(e.parte80)} | 20% 32E: ${moeda(e.parte20)}]`
-        );
-        document.getElementById("detalhe-turno").textContent = `Entregas no turno: ${entregasTurno.length}\n${linhas.join("\n")}`;
-      }
-    }
-
-    function montarTextoTurno() {
-      let somaTotal = 0;
-      entregasTurno.forEach((item) => {
-        somaTotal += item.valor;
-      });
-      return [
-        "*32 ENTREGAS — FECHAMENTO DO TURNO*",
-        `Entregas finalizadas: ${entregasTurno.length}`,
-        `Bruto do turno: ${moeda(somaTotal)}`,
-        `80% Entregador / Parceiro: ${moeda(somaTotal * 0.8)}`,
-        `20% 32 Entregas: ${moeda(somaTotal * 0.2)}`,
-        `Pix 32 Entregas: ${CHAVE_PIX}`
-      ].join("\n");
-    }
-
-    function copiarFechamentoTurno() {
-      copiarTexto(montarTextoTurno(), "Fechamento do turno (80% / 20%) copiado.");
-    }
-
-    function finalizarTurnoCaixa() {
-      const agora = new Date();
-      const horaStr = agora.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
-      copiarTexto(montarTextoTurno(), `Turno finalizado às ${horaStr}! Fechamento copiado e caixa zerado para o próximo turno.`);
-      entregasTurno = [];
-      turnoFechadoEm = horaStr;
-      renderTurno();
-    }
-
-    function selecionarTabelaValor(idx, val) {
-      pedidos[idx].valorBase = parseFloat(val) || 10;
-      renderEntregador();
-    }
-
-    function digitarValorAjustado(idx, val) {
-      const num = parseFloat(val);
-      if (!isNaN(num) && num >= 0) {
-        pedidos[idx].valorBase = num;
-        renderEntregador();
-      }
-    }
-
-    function alternarDinamica(idx) {
-      pedidos[idx].dinamica20 = !pedidos[idx].dinamica20;
-      renderEntregador();
-      mostrarAviso(pedidos[idx].dinamica20 ? "Dinâmica +20% ativada." : "Dinâmica +20% desativada.");
-    }
-
-    function entregadorEnviaValor(idx) {
-      pedidos[idx].etapa = "valor_enviado";
-      tocarAlerta("chegada");
-      renderEntregador();
-      renderRetornoCliente();
-      mostrarAviso(`Valor ${moeda(valorFinal(pedidos[idx]))} enviado ao cliente. Abra 1. Cliente para marcar ACEITO ou NÃO ACEITO.`);
-    }
-
-    function entregadorRecusa(idx) {
-      pedidos[idx].etapa = "recusado_entregador";
-      renderEntregador();
-      renderRetornoCliente();
-      mostrarAviso("Entrega não aceita pelo entregador.");
-    }
-
-    function clienteMarcarAceito(idx) {
-      pedidos[idx].etapa = "aceito_cliente";
-      tocarAlerta("amarrado");
-      renderEntregador();
-      renderRetornoCliente();
-      mostrarAviso("Cliente marcou ACEITO! Volte em 2. Entregador e envie o tempo até a mercadoria.");
-    }
-
-    function clienteMarcarNaoAceito(idx) {
-      pedidos[idx].etapa = "recusado_cliente";
-      renderEntregador();
-      renderRetornoCliente();
-      mostrarAviso("Cliente marcou NÃO ACEITO.");
-    }
-
-    function entregadorEnviaTempo(idx, tempo) {
-      pedidos[idx].tempoChegada = tempo;
-      pedidos[idx].etapa = "tempo_enviado";
-      tocarAlerta("amarrado");
-      renderEntregador();
-      renderRetornoCliente();
-      mostrarAviso(`Tempo de deslocamento enviado (${tempo}). Viagem aceita! Ao concluir, clique em ENTREGA FINALIZADA.`);
-    }
-
-    function entregaFinalizadaZerar(idx) {
-      registrarNoTurno(pedidos[idx]);
-      tocarAlerta("amarrado");
-      limparCamposPedidoMantendoPadrao();
-      pedidos = [];
-      renderRetornoCliente();
-      renderEntregador();
-      mostrarAviso("ENTREGA FINALIZADA! Painéis 1 e 2 zerados; valor somado no painel 3. Turno/Caixa (80% / 20%).");
-    }
-
-    function montarResumoViagem(p) {
-      const total = valorFinal(p);
-      return [
-        "*32 ENTREGAS — VIAGEM CONFIRMADA*",
-        `Cliente: ${p.cliente}`,
-        `Bairro: ${p.bairro}`,
-        `Mercadoria: ${p.mercadoria}`,
-        `Pegar em: ${p.pegar}`,
-        `Levar para: ${p.levar}`,
-        `Valor da entrega: ${moeda(total)}${p.dinamica20 ? " (Dinâmica +20%)" : ""}`,
-        `Tempo até a mercadoria: ${p.tempoChegada || "A confirmar"}`,
-        `Pix: ${CHAVE_PIX}`
-      ].join("\n");
-    }
-
-    function renderRetornoCliente() {
-      const alvo = document.getElementById("retorno-cliente");
-      if (pedidos.length === 0) {
-        alvo.innerHTML = "<div class='retorno-cliente-box'>Painel zerado — nenhum pedido ativo no momento.</div>";
-        return;
-      }
-
-      const p = pedidos[0];
-      const total = valorFinal(p);
-      const botaoOuvirRetorno = `<button type='button' class='btn btn-verde' onclick='ouvirRetornoCliente()'>OUVIR RETORNO (VOZ)</button>`;
-
-      if (p.etapa === "pendente_valor") {
-        alvo.innerHTML = `
-          <div class='retorno-cliente-box'>
-            <div class='retorno-status status-amarelo'>PEDIDO ENVIADO — AGUARDANDO VALOR DO ENTREGADOR</div>
-            <div><strong>Cliente:</strong> ${p.cliente} (${p.bairro})</div>
-            <div><strong>Mercadoria:</strong> ${p.mercadoria}</div>
-            <div><strong>Pegar em:</strong> ${p.pegar}</div>
-            <div><strong>Levar para:</strong> ${p.levar}</div>
-            ${botaoOuvirRetorno}
-          </div>`;
-        return;
-      }
-
-      if (p.etapa === "recusado_entregador") {
-        alvo.innerHTML = `
-          <div class='retorno-cliente-box'>
-            <div class='retorno-status status-vermelho'>ENTREGADOR NÃO VAI FAZER ESTA ENTREGA</div>
-            <div><strong>Cliente:</strong> ${p.cliente}</div>
-            <div><strong>Mercadoria:</strong> ${p.mercadoria}</div>
-            ${botaoOuvirRetorno}
-          </div>`;
-        return;
-      }
-
-      if (p.etapa === "valor_enviado") {
-        const tagDin = p.dinamica20 ? " (DINÂMICA +20%)" : "";
-        alvo.innerHTML = `
-          <div class='retorno-cliente-box'>
-            <div class='retorno-status status-amarelo'>VALOR DA ENTREGA: ${moeda(total)}${tagDin}</div>
-            <div><strong>Cliente:</strong> ${p.cliente} (${p.bairro})</div>
-            <div><strong>Mercadoria:</strong> ${p.mercadoria}</div>
-            <div><strong>Pegar em:</strong> ${p.pegar}</div>
-            <div><strong>Levar para:</strong> ${p.levar}</div>
-            ${botaoOuvirRetorno}
-            <div class='grade-2'>
-              <button type='button' class='btn btn-verde' onclick='clienteMarcarAceito(0)'>ACEITO</button>
-              <button type='button' class='btn btn-vermelho' onclick='clienteMarcarNaoAceito(0)'>NÃO ACEITO</button>
-            </div>
-          </div>`;
-        return;
-      }
-
-      if (p.etapa === "recusado_cliente") {
-        alvo.innerHTML = `
-          <div class='retorno-cliente-box'>
-            <div class='retorno-status status-vermelho'>VOCÊ MARCOU: NÃO ACEITO (${moeda(total)})</div>
-            ${botaoOuvirRetorno}
-            <div class='grade-2'>
-              <button type='button' class='btn btn-verde' onclick='clienteMarcarAceito(0)'>MUDAR PARA ACEITO</button>
-              <button type='button' class='btn btn-escuro' onclick='limparPedidoCliente(true)'>LIMPAR PEDIDO</button>
-            </div>
-          </div>`;
-        return;
-      }
-
-      if (p.etapa === "aceito_cliente") {
-        alvo.innerHTML = `
-          <div class='retorno-cliente-box'>
-            <div class='retorno-status status-verde'>VOCÊ MARCOU: ACEITO (${moeda(total)})</div>
-            <div>Retornou ao entregador. Aguardando o tempo que ele vai levar até a mercadoria.</div>
-            ${botaoOuvirRetorno}
-          </div>`;
-        return;
-      }
-
-      if (p.etapa === "tempo_enviado") {
-        alvo.innerHTML = `
-          <div class='retorno-cliente-box'>
-            <div class='retorno-status status-verde'>VIAGEM ACEITA — CHEGADA ATÉ A MERCADORIA EM ${p.tempoChegada}</div>
-            <div><strong>Cliente:</strong> ${p.cliente} (${p.bairro})</div>
-            <div><strong>Mercadoria:</strong> ${p.mercadoria}</div>
-            <div><strong>Pegar em:</strong> ${p.pegar}</div>
-            <div><strong>Levar para:</strong> ${p.levar}</div>
-            <div><strong>Tempo até a mercadoria:</strong> ${p.tempoChegada}</div>
-            <div><strong>Valor:</strong> ${moeda(total)}</div>
-            <div><strong>Pix:</strong> ${CHAVE_PIX}</div>
-            ${botaoOuvirRetorno}
-            <button type='button' class='btn btn-escuro' onclick='copiarTexto(CHAVE_PIX, "Pix 53999089980 copiado.")'>COPIAR PIX: 53999089980</button>
-            <button type='button' class='btn btn-amarelo' onclick='copiarTexto(montarResumoViagem(pedidos[0]), "Resumo copiado para o WhatsApp.")'>COPIAR RESUMO PARA WHATSAPP</button>
-          </div>`;
-      }
-    }
-
-    function renderEntregador() {
-      const alvo = document.getElementById("lista-entregador");
-      if (pedidos.length === 0) {
-        alvo.innerHTML = "Nenhum pedido chegou ainda.";
-        return;
-      }
-
-      const valoresTabela = [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60];
-      const temposBotoes = ["2 min", "5 min", "8 min", "10 min", "12 min", "15 min", "18 min", "20 min"];
-
-      alvo.innerHTML = "";
-      pedidos.forEach((p, idx) => {
-        const total = valorFinal(p);
-        const repasse80 = total * 0.8;
-        const parte20 = total * 0.2;
-
-        const opcoesSelect = valoresTabela
-          .map((v) => `<option value='${v}'${Number(p.valorBase) === v ? " selected" : ""}>${moeda(v)}</option>`)
-          .join("");
-
-        let statusTopo = "NOVO PEDIDO — MANDE O VALOR DA ENTREGA";
-        if (p.etapa === "valor_enviado") statusTopo = `VALOR ENVIADO (${moeda(total)}) — AGUARDANDO CLIENTE MARCAR ACEITO / NÃO ACEITO`;
-        if (p.etapa === "recusado_entregador") statusTopo = "ENTREGA RECUSADA PELO ENTREGADOR";
-        if (p.etapa === "recusado_cliente") statusTopo = "CLIENTE MARCOU: NÃO ACEITO";
-        if (p.etapa === "aceito_cliente") statusTopo = "CLIENTE MARCOU: ACEITO — ENVIE O TEMPO ATÉ A MERCADORIA";
-        if (p.etapa === "tempo_enviado") statusTopo = `VIAGEM ACEITA — DESLOCAMENTO EM ${p.tempoChegada}`;
-
-        let botoesTempoHtml = "";
-        if (p.etapa === "aceito_cliente" || p.etapa === "tempo_enviado") {
-          const botoes = temposBotoes
-            .map((t) => `<button type='button' class='btn-tempo ${p.tempoChegada === t ? "escolhido" : ""}' onclick='entregadorEnviaTempo(${idx}, "${t}")'>${t}</button>`)
-            .join("");
-          botoesTempoHtml = `<label>Tempo que vai levar para chegar até a mercadoria (2 a 20 min)</label><div class='grade-tempo'>${botoes}</div>`;
-        }
-
-        const blocoFinal = p.etapa === "tempo_enviado"
-          ? `<div class='msg-box'>${montarResumoViagem(p)}</div>
-             <button type='button' class='btn btn-escuro' onclick='copiarTexto(montarResumoViagem(pedidos[${idx}]), "Resumo copiado para o WhatsApp.")'>COPIAR RESUMO PARA WHATSAPP</button>
-             <button type='button' class='btn btn-verde' onclick='entregaFinalizadaZerar(${idx})'>ENTREGA FINALIZADA (ZERAR OS 2 PAINÉIS)</button>`
-          : "";
-
-        alvo.innerHTML += `
-          <div class='chamado-item ${p.etapa === "tempo_enviado" ? "amarrado" : ""}'>
-            <div style='font-weight:900; color:var(--amarelo); font-size:0.95rem;'>${statusTopo}</div>
-            <div style='margin-top:6px;'><strong>Cliente:</strong> ${p.cliente} • <strong>Bairro:</strong> ${p.bairro}</div>
-            <div><strong>Mercadoria:</strong> ${p.mercadoria} • <strong>Carga:</strong> ${p.carga}</div>
-            <div><strong>Pegar em:</strong> ${p.pegar}</div>
-            <div><strong>Levar para:</strong> ${p.levar}</div>
-
-            <label for='tab-val-${idx}'>Tabela de valores (R$ 10 a R$ 60 de R$ 5 em R$ 5)</label>
-            <select id='tab-val-${idx}' onchange='selecionarTabelaValor(${idx}, this.value)'>${opcoesSelect}</select>
-
-            <label for='aj-val-${idx}'>Ajustar valor na mão (R$)</label>
-            <input type='number' id='aj-val-${idx}' step='0.50' min='0' value='${Number(p.valorBase).toFixed(2)}' onchange='digitarValorAjustado(${idx}, this.value)' />
-
-            <button type='button' class='btn btn-dinamica ${p.dinamica20 ? "ligada" : ""}' onclick='alternarDinamica(${idx})'>
-              ${p.dinamica20 ? "DINÂMICA +20%: ATIVADA" : "DINÂMICA +20%: DESATIVADA"}
-            </button>
-
-            <div class='caixa-divisao'>
-              <div><small>Valor Final</small><strong class='cor-branco'>${moeda(total)}</strong></div>
-              <div><small>80% Entregador</small><strong class='cor-verde'>${moeda(repasse80)}</strong></div>
-              <div><small>20% 32E</small><strong class='cor-amarelo'>${moeda(parte20)}</strong></div>
-            </div>
-
-            <div class='grade-2'>
-              <button type='button' class='btn btn-amarelo' onclick='entregadorEnviaValor(${idx})'>ENVIAR VALOR AO CLIENTE</button>
-              <button type='button' class='btn btn-vermelho' onclick='entregadorRecusa(${idx})'>NÃO FAZER ENTREGA</button>
-            </div>
-
-            ${botoesTempoHtml}
-            ${blocoFinal}
-          </div>`;
-      });
-    }
-
-    aplicarPreEstabelecido(false);
-    atualizarResumoPadrao();
-    renderRetornoCliente();
-    renderTurno();
-  </script>
-</body>
-</html>
+    (function () {
+      const avisoFirebase = document.getElementById("aviso-firebase");
+      const msgPassageiro = document.getElementById("msg-passageiro");
+      const erroRota = document.getElementById("erro-rota");
+      const boxCorridaAtiva = document.getElementById("box-corrida-ativa");
+      const elNome = document.getElementById("pas-nome");
+      const elOrigem = document.getElementById("pas-origem");
+      const elDestino = document.getElementById("pas-destino");
+      const elPagamento = document.getElementById("pas-pagamento");
+      const btnSolicitar = document.getElementById("btn-solicitar-corrida");
+      const btnLimparCorrida = document.getElementById("btn-limpar-corrida");
+      const btnFonteGrande = document.getElementById("btn-fonte-grande");
+      const btnLerVoz = document.getElementById("btn-ler-voz");
+      const btnColarTopo = document.getElementById("btn-colar-topo");
+      const txtColarTopo = document.getElementById("txt-colar-topo");
+      const boxColarRapido = document.getElementById("box-colar-rapido");
+      
