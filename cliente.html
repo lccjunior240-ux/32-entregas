@@ -3,40 +3,191 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>32 Entregas — Cliente</title>
+  <title>32 Entregas — Painel do Cliente</title>
   <style>
+    :root {
+      --azul-marinho: #07192f;
+      --azul-card: #0c2442;
+      --azul-borda: #183b66;
+      --amarelo: #ffd400;
+      --amarelo-hover: #f2c500;
+      --texto: #ffffff;
+      --texto-suave: #b8cde6;
+      --verde: #198754;
+      --vermelho: #dc3545;
+    }
+
     * { box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { margin: 0; padding: 14px; background: #0d1117; color: #f0f6fc; display: flex; justify-content: center; }
-    .app { width: 100%; max-width: 520px; background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 16px; }
-    .top-bar { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 10px; }
-    .badge { font-size: 0.75rem; font-weight: bold; padding: 4px 8px; border-radius: 999px; background: #1f6feb; color: #fff; }
-    .voltar { font-size: 0.82rem; color: #79c0ff; text-decoration: none; font-weight: bold; }
-    h1 { margin: 0 0 4px; font-size: 1.25rem; }
-    .sub { color: #8b949e; font-size: 0.82rem; margin-bottom: 12px; }
-    label { display: block; margin-top: 10px; margin-bottom: 4px; font-size: 0.84rem; color: #c9d1d9; font-weight: bold; }
-    input, select { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #30363d; background: #0d1117; color: #f0f6fc; font-size: 0.95rem; }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .btn { width: 100%; padding: 11px; border: none; border-radius: 8px; font-weight: bold; font-size: 0.94rem; cursor: pointer; margin-top: 10px; text-decoration: none; display: block; text-align: center; }
-    .btn-green { background: #238636; color: #fff; }
-    .btn-blue { background: #1f6feb; color: #fff; }
-    .btn-gray { background: #21262d; color: #f0f6fc; border: 1px solid #30363d; }
-    .card { margin-top: 14px; padding: 12px; border-radius: 8px; background: #0d1117; border: 1px solid #30363d; }
-    .msg-box { margin-top: 8px; padding: 10px; border-radius: 8px; background: #161b22; border: 1px dashed #484f58; font-size: 0.85rem; white-space: pre-line; color: #e6edf3; }
-    .notice { margin-top: 8px; font-size: 0.82rem; color: #79c0ff; min-height: 18px; }
-    .saved-item { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px; margin-top: 8px; border-radius: 8px; background: #161b22; border: 1px solid #30363d; font-size: 0.84rem; }
-    .mini-btns { display: flex; gap: 6px; }
-    .mini-btn { padding: 6px 8px; border: none; border-radius: 6px; font-size: 0.78rem; font-weight: bold; cursor: pointer; color: #fff; }
+    body {
+      margin: 0;
+      padding: 14px;
+      background: var(--azul-marinho);
+      color: var(--texto);
+      display: flex;
+      justify-content: center;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 520px;
+      background: var(--azul-card);
+      border: 2px solid var(--amarelo);
+      border-radius: 14px;
+      padding: 16px;
+    }
+
+    .header-brand {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--amarelo);
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 1.3rem;
+      color: var(--amarelo);
+      font-weight: bold;
+    }
+
+    .brand-tag {
+      background: var(--amarelo);
+      color: var(--azul-marinho);
+      font-weight: bold;
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+    }
+
+    .sub {
+      color: var(--texto-suave);
+      font-size: 0.84rem;
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      margin-bottom: 4px;
+      font-size: 0.85rem;
+      color: var(--amarelo);
+      font-weight: bold;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--azul-borda);
+      background: var(--azul-marinho);
+      color: var(--texto);
+      font-size: 0.95rem;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--amarelo);
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      cursor: pointer;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .btn-amarelo {
+      background: var(--amarelo);
+      color: var(--azul-marinho);
+    }
+
+    .btn-amarelo:hover {
+      background: var(--amarelo-hover);
+    }
+
+    .btn-verde {
+      background: var(--verde);
+      color: #ffffff;
+    }
+
+    .btn-azul {
+      background: #12355e;
+      color: var(--texto);
+      border: 1px solid var(--amarelo);
+    }
+
+    .card {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 10px;
+      background: var(--azul-marinho);
+      border: 1px solid var(--azul-borda);
+    }
+
+    .card-titulo {
+      color: var(--amarelo);
+      font-weight: bold;
+      font-size: 0.92rem;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .notice {
+      margin-top: 8px;
+      font-size: 0.84rem;
+      color: var(--amarelo);
+      min-height: 18px;
+    }
+
+    .saved-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      margin-top: 8px;
+      border-radius: 8px;
+      background: var(--azul-card);
+      border: 1px solid var(--azul-borda);
+      font-size: 0.84rem;
+    }
+
+    .mini-btns {
+      display: flex;
+      gap: 6px;
+    }
+
+    .mini-btn {
+      padding: 6px 9px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: bold;
+      cursor: pointer;
+      color: #fff;
+    }
   </style>
 </head>
 <body>
   <div class="app">
-    <div class="top-bar">
-      <span class="badge">PAINEL DO CLIENTE</span>
-      <a class="voltar" href="./index.html">← Voltar ao Início</a>
+    <div class="header-brand">
+      <div class="brand-title">32 ENTREGAS</div>
+      <span class="brand-tag">32 BIKE • CLIENTE</span>
     </div>
-
-    <h1>32 Entregas</h1>
-    <div class="sub">Rio Grande / Cassino • Solicitação de entrega</div>
+    <div class="sub">Solicitação de entrega e envio para o painel do entregador</div>
 
     <label for="nomeCliente">Nome do Cliente</label>
     <input id="nomeCliente" type="text" placeholder="Ex: Tati" />
@@ -63,105 +214,81 @@
         </select>
       </div>
       <div>
-        <label for="valorEstimado">Valor da Entrega (R$)</label>
-        <input id="valorEstimado" type="number" step="0.50" value="10.00" />
+        <label for="valorEntrega">Valor da Entrega (R$)</label>
+        <input id="valorEntrega" type="number" step="0.50" value="10.00" />
       </div>
     </div>
 
-    <label for="whatsDestino">WhatsApp de Envio (Admin / Central)</label>
-    <input id="whatsDestino" type="tel" placeholder="53999089980" />
-
-    <button class="btn btn-blue" onclick="salvarCliente()">Salvar Cadastro do Cliente</button>
-    <button class="btn btn-gray" onclick="limparCampos()">Limpar Campos</button>
+    <button type="button" class="btn btn-amarelo" id="btnSalvarCliente">Salvar Dados do Cliente</button>
+    <button type="button" class="btn btn-azul" id="btnLimparCampos">Limpar Campos</button>
+    <button type="button" class="btn btn-verde" id="btnEnviarEntregador">Enviar para o Painel do Entregador</button>
     <div class="notice" id="aviso"></div>
 
     <div class="card">
-      <strong>Clientes Salvos neste Aparelho</strong>
+      <span class="card-titulo">Clientes Salvos neste Aparelho</span>
       <div id="listaClientesSalvos"></div>
-    </div>
-
-    <button class="btn btn-green" onclick="gerarPedido()">Gerar Pedido e Liberar WhatsApp</button>
-
-    <div class="card" id="boxEnvio" style="display:none;">
-      <div class="msg-box" id="textoPedido"></div>
-      <a class="btn btn-green" id="linkWhats" href="#" target="_blank" rel="noopener">
-        Enviar Pedido no WhatsApp
-      </a>
-      <button class="btn btn-gray" onclick="copiarPedido()">Copiar Mensagem</button>
     </div>
   </div>
 
   <script>
-    const STORAGE_KEY = 'cliente32Entregas_repo_v1';
+    const CHAVE_CLIENTES = 'clientes32Entregas_azulAmarelo_v2';
+    const CHAVE_CHAMADO = 'chamadoEntregador32Entregas_v2';
 
-    function obterClientes() {
+    function lerClientes() {
       try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        return JSON.parse(localStorage.getItem(CHAVE_CLIENTES) || '[]');
       } catch (e) {
         return [];
       }
     }
 
-    function salvarListaClientes(lista) {
+    function gravarClientes(lista) {
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(lista));
+        localStorage.setItem(CHAVE_CLIENTES, JSON.stringify(lista));
       } catch (e) {}
     }
 
-    function normalizarFone(num) {
-      const digitos = (num || '').replace(/\D/g, '');
-      if (!digitos) return '';
-      return digitos.startsWith('55') ? digitos : '55' + digitos;
+    function mostrarAviso(texto) {
+      document.getElementById('aviso').textContent = texto || '';
     }
 
-    function formatarValor(v) {
-      return Number(v || 0).toFixed(2).replace('.', ',');
+    function pegarDadosFormulario() {
+      return {
+        nome: document.getElementById('nomeCliente').value.trim(),
+        whatsCliente: document.getElementById('whatsCliente').value.trim(),
+        origem: document.getElementById('origem').value.trim(),
+        paradas: document.getElementById('paradas').value.trim(),
+        destino: document.getElementById('destino').value.trim(),
+        modal: document.getElementById('modal').value,
+        valorEntrega: document.getElementById('valorEntrega').value
+      };
     }
 
     function salvarCliente() {
-      const nome = document.getElementById('nomeCliente').value.trim();
-      const whatsCliente = document.getElementById('whatsCliente').value.trim();
-      const origem = document.getElementById('origem').value.trim();
-      const paradas = document.getElementById('paradas').value.trim();
-      const destino = document.getElementById('destino').value.trim();
-      const modal = document.getElementById('modal').value;
-      const valorEstimado = document.getElementById('valorEstimado').value;
-      const whatsDestino = document.getElementById('whatsDestino').value.trim();
-      const aviso = document.getElementById('aviso');
-
-      if (!nome) {
-        aviso.textContent = 'Preencha o nome do cliente para salvar.';
+      const dados = pegarDadosFormulario();
+      if (!dados.nome) {
+        mostrarAviso('Informe o nome do cliente para salvar.');
         return;
       }
 
-      const lista = obterClientes();
-      const dados = {
-        id: Date.now(),
-        nome,
-        whatsCliente,
-        origem,
-        paradas,
-        destino,
-        modal,
-        valorEstimado,
-        whatsDestino
-      };
+      const lista = lerClientes();
+      const registro = Object.assign({ id: Date.now() }, dados);
+      const idx = lista.findIndex(c => c.nome.toLowerCase() === dados.nome.toLowerCase());
 
-      const existente = lista.findIndex(item => item.nome.toLowerCase() === nome.toLowerCase());
-      if (existente >= 0) {
-        lista[existente] = dados;
-        aviso.textContent = `Cadastro de "${nome}" atualizado.`;
+      if (idx >= 0) {
+        lista[idx] = registro;
+        mostrarAviso(`Cliente "${dados.nome}" atualizado.`);
       } else {
-        lista.unshift(dados);
-        aviso.textContent = `Cliente "${nome}" salvo.`;
+        lista.unshift(registro);
+        mostrarAviso(`Cliente "${dados.nome}" salvo.`);
       }
 
-      salvarListaClientes(lista);
+      gravarClientes(lista);
       renderizarLista();
     }
 
-    function usarCliente(id) {
-      const item = obterClientes().find(c => c.id === id);
+    function carregarCliente(id) {
+      const item = lerClientes().find(c => c.id === id);
       if (!item) return;
 
       document.getElementById('nomeCliente').value = item.nome || '';
@@ -170,100 +297,80 @@
       document.getElementById('paradas').value = item.paradas || '';
       document.getElementById('destino').value = item.destino || '';
       document.getElementById('modal').value = item.modal || 'Bicicleta';
-      document.getElementById('valorEstimado').value = item.valorEstimado ?? '10.00';
-      document.getElementById('whatsDestino').value = item.whatsDestino || '';
-      document.getElementById('aviso').textContent = `Dados de "${item.nome}" carregados.`;
+      document.getElementById('valorEntrega').value = item.valorEntrega ?? '10.00';
+      mostrarAviso(`Dados de "${item.nome}" carregados.`);
     }
 
-    function removerCliente(id) {
-      const lista = obterClientes().filter(c => c.id !== id);
-      salvarListaClientes(lista);
+    function excluirCliente(id) {
+      const lista = lerClientes().filter(c => c.id !== id);
+      gravarClientes(lista);
       renderizarLista();
-      document.getElementById('aviso').textContent = 'Cliente removido.';
+      mostrarAviso('Cadastro removido.');
     }
 
     function limparCampos() {
-      ['nomeCliente', 'whatsCliente', 'origem', 'paradas', 'destino', 'whatsDestino'].forEach(id => {
+      ['nomeCliente', 'whatsCliente', 'origem', 'paradas', 'destino'].forEach(id => {
         document.getElementById(id).value = '';
       });
       document.getElementById('modal').value = 'Bicicleta';
-      document.getElementById('valorEstimado').value = '10.00';
-      document.getElementById('aviso').textContent = 'Campos limpos.';
+      document.getElementById('valorEntrega').value = '10.00';
+      mostrarAviso('Campos limpos.');
+    }
+
+    function enviarParaPainelEntregador() {
+      const dados = pegarDadosFormulario();
+      if (!dados.nome || !dados.origem || !dados.destino) {
+        mostrarAviso('Preencha Nome do Cliente, Origem e Destino antes de enviar.');
+        return;
+      }
+
+      const chamado = Object.assign({}, dados, {
+        status: 'Enviado ao entregador',
+        atualizadoEm: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+      });
+
+      try {
+        localStorage.setItem(CHAVE_CHAMADO, JSON.stringify(chamado));
+        mostrarAviso(`Pedido enviado para o painel do entregador (${chamado.atualizadoEm}).`);
+      } catch (e) {
+        mostrarAviso('Não foi possível salvar no navegador deste aparelho.');
+      }
     }
 
     function renderizarLista() {
       const alvo = document.getElementById('listaClientesSalvos');
-      const lista = obterClientes();
+      const lista = lerClientes();
 
       if (!lista.length) {
-        alvo.innerHTML = '<div class="sub" style="margin-top:8px; margin-bottom:0;">Nenhum cliente salvo neste aparelho.</div>';
+        alvo.innerHTML = '<div class="sub" style="margin:6px 0 0;">Nenhum cliente salvo ainda.</div>';
         return;
       }
 
       alvo.innerHTML = lista.map(c => `
         <div class="saved-item">
           <div>
-            <strong>${c.nome}</strong><br />
-            <span style="color:#8b949e;">${c.origem || 'Sem origem'} → ${c.destino || 'Sem destino'} (${c.modal})</span>
+            <strong style="color:#ffd400;">${c.nome}</strong><br />
+            <span style="color:#b8cde6;">${c.origem || 'Sem origem'} → ${c.destino || 'Sem destino'} (${c.modal})</span>
           </div>
           <div class="mini-btns">
-            <button class="mini-btn" style="background:#1f6feb;" onclick="usarCliente(${c.id})">Usar</button>
-            <button class="mini-btn" style="background:#da3633;" onclick="removerCliente(${c.id})">X</button>
+            <button type="button" class="mini-btn" style="background:#198754;" data-usar="${c.id}">Usar</button>
+            <button type="button" class="mini-btn" style="background:#dc3545;" data-excluir="${c.id}">X</button>
           </div>
         </div>
       `).join('');
+
+      alvo.querySelectorAll('[data-usar]').forEach(btn => {
+        btn.addEventListener('click', () => carregarCliente(Number(btn.getAttribute('data-usar'))));
+      });
+
+      alvo.querySelectorAll('[data-excluir]').forEach(btn => {
+        btn.addEventListener('click', () => excluirCliente(Number(btn.getAttribute('data-excluir'))));
+      });
     }
 
-    function gerarPedido() {
-      const nome = document.getElementById('nomeCliente').value.trim();
-      const whatsCliente = document.getElementById('whatsCliente').value.trim();
-      const origem = document.getElementById('origem').value.trim();
-      const paradas = document.getElementById('paradas').value.trim();
-      const destino = document.getElementById('destino').value.trim();
-      const modal = document.getElementById('modal').value;
-      const valor = document.getElementById('valorEstimado').value;
-      const foneDestino = normalizarFone(document.getElementById('whatsDestino').value);
-      const aviso = document.getElementById('aviso');
-
-      if (!nome || !origem || !destino) {
-        aviso.textContent = 'Preencha Nome do Cliente, Origem e Destino.';
-        return;
-      }
-
-      const texto = [
-        '*32 ENTREGAS - NOVO PEDIDO*',
-        `Cliente: ${nome}`,
-        whatsCliente ? `WhatsApp Cliente: ${whatsCliente}` : null,
-        `Origem: ${origem}`,
-        `Lojas/Paradas: ${paradas || 'Sem paradas extras'}`,
-        `Destino: ${destino}`,
-        `Modal: ${modal}`,
-        `Valor: R$ ${formatarValor(valor)}`
-      ].filter(Boolean).join('\n');
-
-      document.getElementById('textoPedido').textContent = texto;
-      document.getElementById('boxEnvio').style.display = 'block';
-
-      const link = document.getElementById('linkWhats');
-      if (foneDestino) {
-        link.href = `https://wa.me/${foneDestino}?text=${encodeURIComponent(texto)}`;
-        link.style.pointerEvents = 'auto';
-        link.style.opacity = '1';
-        aviso.textContent = 'Pedido pronto para enviar no WhatsApp.';
-      } else {
-        link.href = '#';
-        link.style.pointerEvents = 'none';
-        link.style.opacity = '0.5';
-        aviso.textContent = 'Informe o WhatsApp de envio (com DDD) para habilitar o link.';
-      }
-    }
-
-    function copiarPedido() {
-      const txt = document.getElementById('textoPedido').textContent;
-      if (!txt) return;
-      navigator.clipboard?.writeText(txt);
-      document.getElementById('aviso').textContent = 'Mensagem copiada.';
-    }
+    document.getElementById('btnSalvarCliente').addEventListener('click', salvarCliente);
+    document.getElementById('btnLimparCampos').addEventListener('click', limparCampos);
+    document.getElementById('btnEnviarEntregador').addEventListener('click', enviarParaPainelEntregador);
 
     renderizarLista();
   </script>
