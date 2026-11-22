@@ -211,28 +211,28 @@
       align-items: center;
     }
 
-    .pag-opcoes {
+    .grade-tempo {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(4, 1fr);
       gap: 8px;
-      margin-top: 6px;
+      margin-top: 8px;
     }
 
-    .btn-pag {
-      padding: 12px 8px;
+    .btn-tempo {
+      padding: 12px 6px;
       border-radius: 10px;
       border: 2px solid var(--borda);
       background: var(--card-escuro);
       color: var(--texto);
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       font-weight: 900;
       cursor: pointer;
     }
 
-    .btn-pag.selecionado {
-      background: var(--amarelo);
-      color: #091124;
-      border-color: var(--amarelo);
+    .btn-tempo.escolhido {
+      background: var(--verde);
+      color: #06130C;
+      border-color: var(--verde);
     }
 
     .btn {
@@ -299,18 +299,18 @@
       border-radius: 12px;
       background: var(--card-escuro);
       border: 2px solid var(--borda);
-      font-size: 0.94rem;
+      font-size: 0.95rem;
     }
 
     .retorno-status {
       font-weight: 900;
-      font-size: 0.98rem;
+      font-size: 1rem;
       margin-bottom: 6px;
     }
 
-    .status-aceito { color: var(--verde); }
-    .status-recusado { color: var(--vermelho); }
-    .status-pendente { color: var(--amarelo); }
+    .status-verde { color: var(--verde); }
+    .status-vermelho { color: var(--vermelho); }
+    .status-amarelo { color: var(--amarelo); }
 
     .caixa-empresa {
       margin-top: 16px;
@@ -337,16 +337,11 @@
       margin-top: 12px;
     }
 
-    .chamado-item.aceito {
+    .chamado-item.amarrado {
       border-color: var(--verde);
     }
 
-    .chamado-item.recusado {
-      border-color: var(--vermelho);
-      opacity: 0.85;
-    }
-
-    .grade-aceite {
+    .grade-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
@@ -425,9 +420,9 @@
       <button type="button" class="aba-btn" id="tab-2" onclick="irPainel(2)">2. Entregador</button>
     </nav>
 
-    <div class="aviso-acao" id="aviso-acao">Pronto. Preencha o pedido no painel do cliente.</div>
+    <div class="aviso-acao" id="aviso-acao">Pronto. Cliente pede, entregador envia valor, cliente aceita e entregador amarra o tempo.</div>
 
-    <!-- PAINEL 1: CLIENTE (SEM VALOR DA ENTREGA, GPS SÓ EM "ONDE PEGAR", RECEBE ACEITE/RECUSA) -->
+    <!-- PAINEL 1: CLIENTE -->
     <section id="sec-1" class="card">
       <h2>Painel do Cliente</h2>
 
@@ -449,9 +444,9 @@
 
       <label for="tamanho-carga">Tamanho da carga</label>
       <select id="tamanho-carga">
-        <option value="Pequena / Leve" selected>Pequena / Leve (lanche, sacola, envelope)</option>
-        <option value="Média">Média (caixa média, encomenda)</option>
-        <option value="Maior / Caixa ou Peça">Maior / Caixa ou Peça (peça embalada, volume maior)</option>
+        <option value="Pequena / Leve" selected>Pequena / Leve</option>
+        <option value="Média">Média</option>
+        <option value="Maior / Caixa ou Peça">Maior / Caixa ou Peça</option>
       </select>
 
       <label for="faixa-distancia">Distância do trajeto</label>
@@ -461,37 +456,32 @@
         <option value="Mais longe / Outro ponto">Mais longe / Outro ponto</option>
       </select>
 
-      <label>Forma de pagamento</label>
-      <div class="pag-opcoes">
-        <button type="button" class="btn-pag selecionado" id="pag-Dinheiro" onclick="escolherPagamento('Dinheiro')">Dinheiro</button>
-        <button type="button" class="btn-pag" id="pag-PIX" onclick="escolherPagamento('PIX')">PIX</button>
-        <button type="button" class="btn-pag" id="pag-Cartão" onclick="escolherPagamento('Cartão')">Cartão</button>
-      </div>
+      <button type="button" class="btn btn-amarelo" onclick="mandarPedidoCliente()">ENVIAR PEDIDO DE ENTREGA (ALARME)</button>
+      <button type="button" class="btn btn-escuro" onclick="limparPainelCliente(true)">LIMPAR PAINEL DO CLIENTE</button>
 
-      <button type="button" class="btn btn-escuro" onclick="copiarPix()">COPIAR E COLAR PIX: 53999089980</button>
-      <button type="button" class="btn btn-amarelo" onclick="mandarMensagemEntregador()">MANDAR MENSAGEM PARA O ENTREGADOR (ALARME)</button>
-
-      <h3>Resposta do Entregador (Aceite / Não Aceite)</h3>
+      <h3>Retorno do Entregador &amp; Confirmação</h3>
       <div id="retorno-cliente">Nenhum pedido enviado ainda.</div>
 
       <div class="caixa-empresa">
         <strong>32 Entregas &amp; 32 Bike</strong>
-        Entrega local de mercadorias e deslocamento em Cassino e Rio Grande (32° S), guiado pela distância e pelo tamanho da carga. Opções de bike, moto ou carro com proteção para carga. Repasse: 80% entregador / 20% 32 Entregas.
+        Entrega local de mercadorias e deslocamento em Cassino e Rio Grande (32° S). O valor sai do entregador, o cliente aceita ou recusa, e o entregador confirma o tempo até o local da mercadoria.
       </div>
     </section>
 
-    <!-- PAINEL 2: ENTREGADOR (DEFINE VALOR POR DISTÂNCIA/CARGA, DINÂMICA +20% E ACEITA/RECUSA) -->
+    <!-- PAINEL 2: ENTREGADOR -->
     <section id="sec-2" class="card oculto">
       <h2>Painel do Entregador</h2>
-      <div id="lista-entregador">Nenhuma mensagem de pedido chegou ainda.</div>
+      <button type="button" class="btn btn-escuro" onclick="limparPainelEntregador(true)">LIMPAR PAINEL DO ENTREGADOR</button>
+      <div id="lista-entregador">Nenhum pedido chegou ainda.</div>
     </section>
   </div>
 
   <script>
     const CHAVE_PIX = "53999089980";
-    let formaPagamento = "Dinheiro";
+    let painelAtual = 1;
     let pedidos = [];
     let audioCtx = null;
+    let timerFinalizacao = null;
 
     function moeda(v) {
       return "R$ " + Number(v || 0).toFixed(2).replace(".", ",");
@@ -501,23 +491,62 @@
       document.getElementById("aviso-acao").textContent = msg;
     }
 
+    function limparCamposCliente() {
+      document.getElementById("nome-cliente").value = "";
+      document.getElementById("onde-pegar").value = "";
+      document.getElementById("onde-levar").value = "";
+      document.getElementById("tipo-mercadoria").value = "";
+      document.getElementById("tamanho-carga").value = "Pequena / Leve";
+      document.getElementById("faixa-distancia").value = "Perto / Mesmo bairro";
+      document.getElementById("status-gps-pegar").textContent = "GPS: preenche rua, número e CEP de onde pegar.";
+    }
+
+    function limparPainelCliente(comAviso) {
+      if (timerFinalizacao) {
+        clearTimeout(timerFinalizacao);
+        timerFinalizacao = null;
+      }
+      limparCamposCliente();
+      pedidos = [];
+      renderRetornoCliente();
+      renderEntregador();
+      if (comAviso) mostrarAviso("Painel do cliente limpo.");
+    }
+
+    function limparPainelEntregador(comAviso) {
+      if (timerFinalizacao) {
+        clearTimeout(timerFinalizacao);
+        timerFinalizacao = null;
+      }
+      pedidos = [];
+      renderEntregador();
+      renderRetornoCliente();
+      if (comAviso) mostrarAviso("Painel do entregador limpo.");
+    }
+
     function irPainel(num) {
+      const anterior = painelAtual;
+      if (anterior !== num) {
+        if (anterior === 1) {
+          limparCamposCliente();
+        } else if (anterior === 2) {
+          pedidos = [];
+          renderEntregador();
+          renderRetornoCliente();
+        }
+      }
+      painelAtual = num;
       [1, 2].forEach((i) => {
         document.getElementById("sec-" + i).classList.toggle("oculto", i !== num);
         document.getElementById("tab-" + i).classList.toggle("ativa", i === num);
       });
       if (num === 1) {
         renderRetornoCliente();
+        mostrarAviso("Painel do Cliente aberto.");
+      } else {
+        renderEntregador();
+        mostrarAviso("Painel do Entregador aberto.");
       }
-      mostrarAviso(num === 1 ? "Painel do Cliente aberto." : "Painel do Entregador aberto.");
-    }
-
-    function escolherPagamento(tipo) {
-      formaPagamento = tipo;
-      ["Dinheiro", "PIX", "Cartão"].forEach((item) => {
-        document.getElementById("pag-" + item).classList.toggle("selecionado", item === tipo);
-      });
-      mostrarAviso("Pagamento escolhido: " + tipo + ".");
     }
 
     function tocarAlerta(tipo) {
@@ -529,7 +558,7 @@
           audioCtx.resume();
         }
         const agora = audioCtx.currentTime;
-        const tons = tipo === "aceito" ? [660, 880, 1046] : [587, 784, 587];
+        const tons = tipo === "amarrado" ? [660, 880, 1046] : [587, 784, 587];
         tons.forEach((freq, i) => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
@@ -590,18 +619,6 @@
       );
     }
 
-    function sugerirValor(carga, distancia) {
-      let base = 10;
-      if (carga === "Média") base += 5;
-      if (carga === "Maior / Caixa ou Peça") base += 10;
-
-      if (distancia === "Média distância") base += 5;
-      if (distancia === "Mais longe / Outro ponto") base += 10;
-
-      const arredondado = Math.round(base / 5) * 5;
-      return Math.min(60, Math.max(10, arredondado));
-    }
-
     function copiarTexto(texto, msg) {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(texto).catch(() => {});
@@ -609,18 +626,13 @@
       mostrarAviso(msg);
     }
 
-    function copiarPix() {
-      copiarTexto(CHAVE_PIX, "PIX 53999089980 copiado para colar.");
-    }
-
-    function mandarMensagemEntregador() {
+    function mandarPedidoCliente() {
       const cliente = document.getElementById("nome-cliente").value.trim() || "Cliente";
       const pegar = document.getElementById("onde-pegar").value.trim() || "A confirmar";
       const levar = document.getElementById("onde-levar").value.trim() || "A confirmar";
       const mercadoria = document.getElementById("tipo-mercadoria").value.trim() || "Mercadoria";
       const carga = document.getElementById("tamanho-carga").value;
       const distancia = document.getElementById("faixa-distancia").value;
-      const valorSugerido = sugerirValor(carga, distancia);
 
       pedidos.unshift({
         id: Date.now(),
@@ -630,75 +642,116 @@
         mercadoria,
         carga,
         distancia,
-        pagamento: formaPagamento,
-        valorBase: valorSugerido,
+        valorBase: 20,
         dinamica20: false,
-        status: "pendente"
+        tempoChegada: "",
+        etapa: "pendente_valor"
       });
 
       tocarAlerta("chegada");
       renderEntregador();
       renderRetornoCliente();
       irPainel(2);
-      mostrarAviso("Mensagem enviada ao painel do entregador com alerta sonoro.");
+      mostrarAviso("Pedido enviado ao entregador com alerta sonoro.");
     }
 
-    function calcularValorFinal(p) {
-      const base = Number(p.valorBase) || 10;
-      return p.dinamica20 ? base * 1.2 : base;
+    function valorFinal(p) {
+      const v = Number(p.valorBase) || 0;
+      return p.dinamica20 ? v * 1.2 : v;
     }
 
-    function mudarValorBase(idx, novoValor) {
-      pedidos[idx].valorBase = parseFloat(novoValor) || 10;
+    function selecionarTabelaValor(idx, val) {
+      pedidos[idx].valorBase = parseFloat(val) || 10;
       renderEntregador();
-      renderRetornoCliente();
-      mostrarAviso("Valor alterado para " + moeda(pedidos[idx].valorBase) + ".");
+    }
+
+    function digitarValorAjustado(idx, val) {
+      const num = parseFloat(val);
+      if (!isNaN(num) && num >= 0) {
+        pedidos[idx].valorBase = num;
+        renderEntregador();
+      }
     }
 
     function alternarDinamica(idx) {
       pedidos[idx].dinamica20 = !pedidos[idx].dinamica20;
       renderEntregador();
-      renderRetornoCliente();
       mostrarAviso(
         pedidos[idx].dinamica20
-          ? "Dinâmica +20% ativada (chuva / horário de pico)."
+          ? "Dinâmica +20% ativada."
           : "Dinâmica +20% desativada."
       );
     }
 
-    function responderPedido(idx, decisao) {
-      pedidos[idx].status = decisao;
-      if (decisao === "aceito") {
-        tocarAlerta("aceito");
-        mostrarAviso("Pedido aceito — resposta enviada para o painel do cliente.");
-      } else {
-        mostrarAviso("Pedido recusado — resposta enviada para o painel do cliente.");
-      }
+    function entregadorEnviaValor(idx) {
+      pedidos[idx].etapa = "valor_enviado";
+      tocarAlerta("chegada");
       renderEntregador();
       renderRetornoCliente();
+      mostrarAviso("Mensagem enviada ao cliente: aceita fazer por " + moeda(valorFinal(pedidos[idx])) + ".");
     }
 
-    function montarMsgCliente(p) {
-      if (p.status === "recusado") {
-        return (
-          "*32 ENTREGAS — NÃO ACEITO NO MOMENTO*\n" +
-          "Cliente: " + p.cliente + "\n" +
-          "Mercadoria: " + p.mercadoria + "\n" +
-          "Pegar em: " + p.pegar + "\n" +
-          "Levar para: " + p.levar + "\n" +
-          "Status: Não foi possível aceitar este pedido agora."
-        );
+    function entregadorRecusa(idx) {
+      pedidos[idx].etapa = "recusado_entregador";
+      renderEntregador();
+      renderRetornoCliente();
+      mostrarAviso("Entrega não aceita pelo entregador.");
+    }
+
+    function clienteAceitaValor(idx) {
+      pedidos[idx].etapa = "aceito_cliente";
+      tocarAlerta("amarrado");
+      renderEntregador();
+      renderRetornoCliente();
+      mostrarAviso("Cliente aceitou! Aperte o botão do tempo (2 a 20 min) para amarrar o serviço.");
+    }
+
+    function clienteRecusaValor(idx) {
+      pedidos[idx].etapa = "recusado_cliente";
+      renderEntregador();
+      renderRetornoCliente();
+      mostrarAviso("Cliente recusou o valor.");
+    }
+
+    function amarrarTempoEntregador(idx, tempo) {
+      pedidos[idx].tempoChegada = tempo;
+      pedidos[idx].etapa = "amarrado";
+      tocarAlerta("amarrado");
+      renderEntregador();
+      renderRetornoCliente();
+      mostrarAviso("Serviço amarrado! Chegada até a mercadoria em " + tempo + ".");
+    }
+
+    function finalizarEntrega(idx) {
+      pedidos[idx].etapa = "finalizada";
+      tocarAlerta("amarrado");
+      renderEntregador();
+      renderRetornoCliente();
+      mostrarAviso("Entrega finalizada! Limpando painel em 4 segundos...");
+
+      if (timerFinalizacao) {
+        clearTimeout(timerFinalizacao);
       }
-      const total = calcularValorFinal(p);
+      timerFinalizacao = setTimeout(() => {
+        limparCamposCliente();
+        pedidos = [];
+        renderEntregador();
+        renderRetornoCliente();
+        mostrarAviso("Painel limpo após finalização.");
+      }, 4000);
+    }
+
+    function montarResumoAmarrado(p) {
+      const total = valorFinal(p);
       return (
-        "*32 ENTREGAS — PEDIDO ACEITO*\n" +
+        "*32 ENTREGAS — SERVIÇO AMARRADO*\n" +
         "Cliente: " + p.cliente + "\n" +
         "Mercadoria: " + p.mercadoria + "\n" +
         "Pegar em: " + p.pegar + "\n" +
         "Levar para: " + p.levar + "\n" +
-        "Pagamento: " + p.pagamento + "\n" +
-        "Dinâmica (+20%): " + (p.dinamica20 ? "Sim (chuva/pico)" : "Não") + "\n" +
-        "Valor da entrega: " + moeda(total)
+        "Valor da entrega: " + moeda(total) + (p.dinamica20 ? " (Dinâmica +20%)" : "") + "\n" +
+        "Tempo até a mercadoria: " + (p.tempoChegada || "A confirmar") + "\n" +
+        "Pix para pagamento: " + CHAVE_PIX
       );
     }
 
@@ -710,80 +763,136 @@
       }
 
       const p = pedidos[0];
-      let classeStatus = "status-pendente";
-      let textoStatus = "AGUARDANDO RESPOSTA DO ENTREGADOR";
-      let detalheExtra = "<div><strong>Mercadoria:</strong> " + p.mercadoria + " (" + p.pegar + " → " + p.levar + ")</div>";
+      const total = valorFinal(p);
 
-      if (p.status === "aceito") {
-        classeStatus = "status-aceito";
-        textoStatus = "ACEITO PELO ENTREGADOR";
-        detalheExtra =
-          "<div><strong>Mercadoria:</strong> " + p.mercadoria + "</div>" +
-          "<div><strong>Pegar em:</strong> " + p.pegar + "</div>" +
-          "<div><strong>Levar para:</strong> " + p.levar + "</div>" +
-          "<div><strong>Pagamento:</strong> " + p.pagamento + "</div>" +
-          "<div><strong>Valor:</strong> " + moeda(calcularValorFinal(p)) + (p.dinamica20 ? " (com dinâmica +20%)" : "") + "</div>";
-      } else if (p.status === "recusado") {
-        classeStatus = "status-recusado";
-        textoStatus = "NÃO ACEITO / RECUSADO PELO ENTREGADOR";
-        detalheExtra =
-          "<div><strong>Mercadoria:</strong> " + p.mercadoria + "</div>" +
-          "<div><strong>Status:</strong> Pedido recusado no momento.</div>";
+      if (p.etapa === "pendente_valor") {
+        alvo.innerHTML =
+          "<div class='retorno-cliente-box'>" +
+            "<div class='retorno-status status-amarelo'>AGUARDANDO VALOR DO ENTREGADOR</div>" +
+            "<div><strong>Cliente:</strong> " + p.cliente + "</div>" +
+            "<div><strong>Mercadoria:</strong> " + p.mercadoria + "</div>" +
+            "<div><strong>Pegar em:</strong> " + p.pegar + "</div>" +
+            "<div><strong>Levar para:</strong> " + p.levar + "</div>" +
+          "</div>";
+        return;
       }
 
-      alvo.innerHTML =
-        "<div class='retorno-cliente-box'>" +
-          "<div class='retorno-status " + classeStatus + "'>" + textoStatus + "</div>" +
-          "<div><strong>Cliente:</strong> " + p.cliente + "</div>" +
-          detalheExtra +
-          (p.status !== "pendente"
-            ? "<button type='button' class='btn btn-amarelo' onclick='copiarTexto(montarMsgCliente(pedidos[0]), \"Resposta do entregador copiada para o WhatsApp.\")'>COPIAR RESPOSTA PARA WHATSAPP</button>"
-            : "") +
-        "</div>";
+      if (p.etapa === "recusado_entregador") {
+        alvo.innerHTML =
+          "<div class='retorno-cliente-box'>" +
+            "<div class='retorno-status status-vermelho'>ENTREGADOR NÃO VAI FAZER ESTA ENTREGA</div>" +
+            "<div><strong>Cliente:</strong> " + p.cliente + "</div>" +
+            "<div><strong>Mercadoria:</strong> " + p.mercadoria + "</div>" +
+          "</div>";
+        return;
+      }
+
+      if (p.etapa === "valor_enviado") {
+        alvo.innerHTML =
+          "<div class='retorno-cliente-box'>" +
+            "<div class='retorno-status status-amarelo'>ENTREGADOR ACEITA FAZER POR " + moeda(total) + (p.dinamica20 ? " (DINÂMICA +20%)" : "") + "</div>" +
+            "<div><strong>Cliente:</strong> " + p.cliente + "</div>" +
+            "<div><strong>Mercadoria:</strong> " + p.mercadoria + "</div>" +
+            "<div><strong>Pegar em:</strong> " + p.pegar + "</div>" +
+            "<div><strong>Levar para:</strong> " + p.levar + "</div>" +
+            "<div class='grade-2'>" +
+              "<button type='button' class='btn btn-verde' onclick='clienteAceitaValor(0)'>ACEITAR ENTREGA</button>" +
+              "<button type='button' class='btn btn-vermelho' onclick='clienteRecusaValor(0)'>RECUSAR VALOR</button>" +
+            "</div>" +
+          "</div>";
+        return;
+      }
+
+      if (p.etapa === "recusado_cliente") {
+        alvo.innerHTML =
+          "<div class='retorno-cliente-box'>" +
+            "<div class='retorno-status status-vermelho'>VOCÊ RECUSOU O VALOR DE " + moeda(total) + "</div>" +
+          "</div>";
+        return;
+      }
+
+      if (p.etapa === "aceito_cliente") {
+        alvo.innerHTML =
+          "<div class='retorno-cliente-box'>" +
+            "<div class='retorno-status status-verde'>VOCÊ ACEITOU A ENTREGA POR " + moeda(total) + "</div>" +
+            "<div>Aguardando o entregador informar o tempo (2 a 20 min) até a mercadoria.</div>" +
+          "</div>";
+        return;
+      }
+
+      if (p.etapa === "amarrado" || p.etapa === "finalizada") {
+        alvo.innerHTML =
+          "<div class='retorno-cliente-box'>" +
+            "<div class='retorno-status status-verde'>" + (p.etapa === "finalizada" ? "ENTREGA FINALIZADA" : "SERVIÇO AMARRADO — CHEGADA EM " + p.tempoChegada) + "</div>" +
+            "<div><strong>Cliente:</strong> " + p.cliente + "</div>" +
+            "<div><strong>Mercadoria:</strong> " + p.mercadoria + "</div>" +
+            "<div><strong>Pegar em:</strong> " + p.pegar + "</div>" +
+            "<div><strong>Levar para:</strong> " + p.levar + "</div>" +
+            "<div><strong>Tempo até a mercadoria:</strong> " + p.tempoChegada + "</div>" +
+            "<div><strong>Valor combinado:</strong> " + moeda(total) + "</div>" +
+            "<div><strong>Pix:</strong> " + CHAVE_PIX + "</div>" +
+            "<button type='button' class='btn btn-escuro' onclick='copiarTexto(CHAVE_PIX, \"Pix 53999089980 copiado.\")'>COPIAR PIX: 53999089980</button>" +
+            "<button type='button' class='btn btn-amarelo' onclick='copiarTexto(montarResumoAmarrado(pedidos[0]), \"Resumo copiado para o WhatsApp.\")'>COPIAR RESUMO PARA WHATSAPP</button>" +
+          "</div>";
+      }
     }
 
     function renderEntregador() {
       const alvo = document.getElementById("lista-entregador");
       if (pedidos.length === 0) {
-        alvo.innerHTML = "Nenhuma mensagem de pedido chegou ainda.";
+        alvo.innerHTML = "Nenhum pedido chegou ainda.";
         return;
       }
 
+      const valoresTabela = [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60];
+      const temposBotoes = ["2 min", "5 min", "8 min", "10 min", "12 min", "15 min", "18 min", "20 min"];
+
       alvo.innerHTML = "";
       pedidos.forEach((p, idx) => {
-        const total = calcularValorFinal(p);
+        const total = valorFinal(p);
         const repasse80 = total * 0.8;
         const parte20 = total * 0.2;
-        const estadoTexto =
-          p.status === "aceito"
-            ? "ACEITO PELO ENTREGADOR"
-            : p.status === "recusado"
-            ? "NÃO ACEITO / RECUSADO"
-            : "NOVO PEDIDO (AGUARDANDO ACEITE)";
 
-        let htmlOpcoes = "";
-        [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60].forEach((v) => {
-          htmlOpcoes += "<option value='" + v + "'" + (Number(p.valorBase) === v ? " selected" : "") + ">" + moeda(v) + "</option>";
+        let opcoesSelect = "";
+        valoresTabela.forEach((v) => {
+          opcoesSelect += "<option value='" + v + "'" + (Number(p.valorBase) === v ? " selected" : "") + ">" + moeda(v) + "</option>";
         });
 
-        alvo.innerHTML +=
-          "<div class='chamado-item " + p.status + "'>" +
-            "<div style='font-weight:900; color:var(--amarelo); font-size:0.95rem;'>" + estadoTexto + "</div>" +
-            "<div style='margin-top:6px; font-size:1rem;'><strong>Cliente:</strong> " + p.cliente + "</div>" +
-            "<div style='font-size:0.95rem;'><strong>Mercadoria:</strong> " + p.mercadoria + "</div>" +
-            "<div style='font-size:0.95rem;'><strong>Carga:</strong> " + p.carga + "</div>" +
-            "<div style='font-size:0.95rem;'><strong>Distância:</strong> " + p.distancia + "</div>" +
-            "<div style='font-size:0.95rem;'><strong>Pegar em:</strong> " + p.pegar + "</div>" +
-            "<div style='font-size:0.95rem;'><strong>Levar para:</strong> " + p.levar + "</div>" +
-            "<div style='font-size:0.95rem;'><strong>Pagamento:</strong> " + p.pagamento + "</div>" +
+        let statusTopo = "NOVO PEDIDO — MANDE O VALOR QUE SAI A ENTREGA";
+        if (p.etapa === "valor_enviado") statusTopo = "VALOR ENVIADO — AGUARDANDO CLIENTE ACEITAR";
+        if (p.etapa === "recusado_entregador") statusTopo = "ENTREGA RECUSADA PELO ENTREGADOR";
+        if (p.etapa === "recusado_cliente") statusTopo = "CLIENTE RECUSOU O VALOR";
+        if (p.etapa === "aceito_cliente") statusTopo = "CLIENTE ACEITOU — APERTE O TEMPO (2 A 20 MIN)";
+        if (p.etapa === "amarrado") statusTopo = "SERVIÇO AMARRADO — CHEGADA EM " + p.tempoChegada;
+        if (p.etapa === "finalizada") statusTopo = "FINALIZADA — LIMPANDO PAINEL";
 
-            "<label for='val-" + idx + "'>Valor pela distância e carga (R$ 10 a R$ 60)</label>" +
-            "<select id='val-" + idx + "' onchange='mudarValorBase(" + idx + ", this.value)'>" + htmlOpcoes + "</select>" +
+        let botoesTempoHtml = "";
+        if (p.etapa === "aceito_cliente" || p.etapa === "amarrado" || p.etapa === "finalizada") {
+          botoesTempoHtml += "<label>Tempo até o local da mercadoria (2 a 20 min — amarra o serviço)</label><div class='grade-tempo'>";
+          temposBotoes.forEach((t) => {
+            const ativo = p.tempoChegada === t ? "escolhido" : "";
+            botoesTempoHtml += "<button type='button' class='btn-tempo " + ativo + "' onclick='amarrarTempoEntregador(" + idx + ", \"" + t + "\")'>" + t + "</button>";
+          });
+          botoesTempoHtml += "</div>";
+        }
+
+        alvo.innerHTML +=
+          "<div class='chamado-item " + (p.etapa === "amarrado" ? "amarrado" : "") + "'>" +
+            "<div style='font-weight:900; color:var(--amarelo); font-size:0.95rem;'>" + statusTopo + "</div>" +
+            "<div style='margin-top:6px;'><strong>Cliente:</strong> " + p.cliente + "</div>" +
+            "<div><strong>Mercadoria:</strong> " + p.mercadoria + "</div>" +
+            "<div><strong>Carga:</strong> " + p.carga + " • <strong>Distância:</strong> " + p.distancia + "</div>" +
+            "<div><strong>Pegar em:</strong> " + p.pegar + "</div>" +
+            "<div><strong>Levar para:</strong> " + p.levar + "</div>" +
+
+            "<label for='tab-val-" + idx + "'>Tabela de valores (R$ 10 a R$ 60 de R$ 5 em R$ 5)</label>" +
+            "<select id='tab-val-" + idx + "' onchange='selecionarTabelaValor(" + idx + ", this.value)'>" + opcoesSelect + "</select>" +
+
+            "<label for='aj-val-" + idx + "'>Ajustar valor na mão (R$)</label>" +
+            "<input type='number' id='aj-val-" + idx + "' step='0.50' min='0' value='" + Number(p.valorBase).toFixed(2) + "' onchange='digitarValorAjustado(" + idx + ", this.value)' />" +
 
             "<button type='button' class='btn btn-dinamica " + (p.dinamica20 ? "ligada" : "") + "' onclick='alternarDinamica(" + idx + ")'>" +
-              (p.dinamica20
-                ? "DINÂMICA +20% ATIVADA (CHUVA / PICO)"
-                : "DINÂMICA +20% DESLIGADA (CHUVA / PICO)") +
+              (p.dinamica20 ? "DINÂMICA +20%: ATIVADA" : "DINÂMICA +20%: DESATIVADA") +
             "</button>" +
 
             "<div class='caixa-divisao'>" +
@@ -792,14 +901,17 @@
               "<div><small>20% 32E</small><strong class='cor-amarelo'>" + moeda(parte20) + "</strong></div>" +
             "</div>" +
 
-            "<div class='grade-aceite'>" +
-              "<button type='button' class='btn btn-verde' onclick='responderPedido(" + idx + ", \"aceito\")'>ACEITAR</button>" +
-              "<button type='button' class='btn btn-vermelho' onclick='responderPedido(" + idx + ", \"recusado\")'>NÃO ACEITAR</button>" +
+            "<div class='grade-2'>" +
+              "<button type='button' class='btn btn-amarelo' onclick='entregadorEnviaValor(" + idx + ")'>ACEITO POR ESSE VALOR (ENVIAR)</button>" +
+              "<button type='button' class='btn btn-vermelho' onclick='entregadorRecusa(" + idx + ")'>NÃO FAZER ENTREGA</button>" +
             "</div>" +
 
-            (p.status !== "pendente"
-              ? "<div class='msg-box'>" + montarMsgCliente(p) + "</div>" +
-                "<button type='button' class='btn btn-amarelo' onclick='copiarTexto(montarMsgCliente(pedidos[" + idx + "]), \"Mensagem enviada ao painel do cliente e copiada.\")'>MANDAR PARA O CLIENTE (COPIAR)</button>"
+            botoesTempoHtml +
+
+            (p.etapa === "amarrado" || p.etapa === "finalizada"
+              ? "<div class='msg-box'>" + montarResumoAmarrado(p) + "</div>" +
+                "<button type='button' class='btn btn-escuro' onclick='copiarTexto(montarResumoAmarrado(pedidos[" + idx + "]), \"Resumo amarrado copiado para o WhatsApp.\")'>COPIAR RESUMO PARA WHATSAPP</button>" +
+                "<button type='button' class='btn btn-amarelo' onclick='finalizarEntrega(" + idx + ")'>FINALIZAR PARA O CLIENTE (LIMPA EM 4s)</button>"
               : "") +
           "</div>";
       });
