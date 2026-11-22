@@ -426,7 +426,7 @@
       <button type="button" class="aba-btn" id="tab-2" onclick="irPainel(2)">2. Entregador</button>
     </nav>
 
-    <div class="aviso-acao" id="aviso-acao">Pronto. Cliente pede, entregador envia valor, cliente aceita e entregador amarra o tempo.</div>
+    <div class="aviso-acao" id="aviso-acao">Pronto. Cliente pede, entregador envia valor, cliente aceita/recusa, entregador envia tempo e finaliza.</div>
 
     <section id="sec-1" class="card">
       <h2>Painel do Cliente</h2>
@@ -462,20 +462,20 @@
       </select>
 
       <button type="button" class="btn btn-amarelo" onclick="mandarPedidoCliente()">ENVIAR PEDIDO DE ENTREGA (ALARME)</button>
-      <button type="button" class="btn btn-escuro" onclick="limparPainelCliente(true)">LIMPAR PAINEL DO CLIENTE</button>
+      <button type="button" class="btn btn-escuro" onclick="limparTudoTeste(true)">LIMPAR / ZERAR PAINÉIS</button>
 
       <h3>Retorno do Entregador &amp; Confirmação</h3>
-      <div id="retorno-cliente">Painel limpo — nenhum pedido ativo no momento.</div>
+      <div id="retorno-cliente">Painel zerado — nenhum pedido ativo no momento.</div>
 
       <div class="caixa-empresa">
         <strong>32 Entregas &amp; 32 Bike</strong>
-        Entrega local de mercadorias e deslocamento em Cassino e Rio Grande (32° S). O valor sai do entregador, o cliente aceita ou recusa, e o entregador confirma o tempo até o local da mercadoria.
+        Entrega local de mercadorias e deslocamento em Cassino e Rio Grande (32° S). O valor sai do entregador, o cliente marca Aceito ou Não Aceito, e o entregador envia o tempo até a mercadoria e finaliza.
       </div>
     </section>
 
     <section id="sec-2" class="card oculto">
       <h2>Painel do Entregador</h2>
-      <button type="button" class="btn btn-escuro" onclick="limparPainelEntregador(true)">LIMPAR PAINEL DO ENTREGADOR</button>
+      <button type="button" class="btn btn-escuro" onclick="limparTudoTeste(true)">LIMPAR / ZERAR PAINÉIS</button>
       <div id="lista-entregador">Nenhum pedido chegou ainda.</div>
 
       <div class="bloco-acumulado">
@@ -494,7 +494,7 @@
             <strong class="cor-amarelo" id="acum-20">R$ 0,00</strong>
           </div>
         </div>
-        <div class="msg-box" id="detalhe-acumulado">Entregas amarradas no dia: 0</div>
+        <div class="msg-box" id="detalhe-acumulado">Entregas finalizadas no dia: 0</div>
         <div class="grade-2">
           <button type="button" class="btn btn-amarelo" onclick="copiarAcertoDia()">COPIAR ACERTO DO DIA</button>
           <button type="button" class="btn btn-escuro" onclick="zerarAcumuladoDia()">ZERAR ACUMULADO</button>
@@ -509,7 +509,6 @@
     var pedidos = [];
     var entregasDoDia = [];
     var audioCtx = null;
-    var timerFinalizacao = null;
 
     function moeda(v) {
       return "R$ " + Number(v || 0).toFixed(2).replace(".", ",");
@@ -529,53 +528,24 @@
       document.getElementById("status-gps-pegar").textContent = "GPS: preenche rua, número e CEP de onde pegar.";
     }
 
-    function limparPainelCliente(comAviso) {
-      if (timerFinalizacao) {
-        clearTimeout(timerFinalizacao);
-        timerFinalizacao = null;
-      }
+    function limparTudoTeste(comAviso) {
       limparCamposCliente();
       pedidos = [];
       renderRetornoCliente();
       renderEntregador();
-      if (comAviso) mostrarAviso("Painel do cliente limpo.");
-    }
-
-    function limparPainelEntregador(comAviso) {
-      if (timerFinalizacao) {
-        clearTimeout(timerFinalizacao);
-        timerFinalizacao = null;
-      }
-      pedidos = [];
-      renderEntregador();
-      renderRetornoCliente();
-      if (comAviso) mostrarAviso("Painel do entregador limpo (acumulado do dia mantido).");
+      if (comAviso) mostrarAviso("Painéis do cliente e do entregador zerados.");
     }
 
     function irPainel(num) {
-      var anterior = painelAtual;
-      if (anterior !== num) {
-        if (anterior === 1) {
-          limparCamposCliente();
-        } else if (anterior === 2) {
-          pedidos = [];
-          renderEntregador();
-          renderRetornoCliente();
-        }
-      }
       painelAtual = num;
       [1, 2].forEach(function (i) {
         document.getElementById("sec-" + i).classList.toggle("oculto", i !== num);
         document.getElementById("tab-" + i).classList.toggle("ativa", i === num);
       });
-      if (num === 1) {
-        renderRetornoCliente();
-        mostrarAviso("Painel do Cliente aberto.");
-      } else {
-        renderEntregador();
-        renderAcumuladoDia();
-        mostrarAviso("Painel do Entregador aberto.");
-      }
+      renderRetornoCliente();
+      renderEntregador();
+      renderAcumuladoDia();
+      mostrarAviso(num === 1 ? "Painel do Cliente aberto." : "Painel do Entregador aberto.");
     }
 
     function tocarAlerta(tipo) {
@@ -676,7 +646,6 @@
         valorBase: 20,
         dinamica20: false,
         tempoChegada: "",
-        contabilizadaNoDia: false,
         etapa: "pendente_valor"
       });
 
@@ -693,7 +662,6 @@
     }
 
     function registrarNoAcumuladoDia(p) {
-      if (p.contabilizadaNoDia) return;
       var total = valorFinal(p);
       entregasDoDia.push({
         id: p.id,
@@ -703,7 +671,6 @@
         repasse80: total * 0.8,
         parte20: total * 0.2
       });
-      p.contabilizadaNoDia = true;
       renderAcumuladoDia();
     }
 
@@ -723,14 +690,14 @@
       document.getElementById("acum-20").textContent = moeda(soma20);
 
       if (entregasDoDia.length === 0) {
-        document.getElementById("detalhe-acumulado").textContent = "Entregas amarradas no dia: 0";
+        document.getElementById("detalhe-acumulado").textContent = "Entregas finalizadas no dia: 0";
       } else {
         var linhas = entregasDoDia.map(function (e, i) {
           return (i + 1) + ". " + e.cliente + " (" + e.mercadoria + "): " + moeda(e.valor) +
             " [80%: " + moeda(e.repasse80) + " | 20%: " + moeda(e.parte20) + "]";
         });
         document.getElementById("detalhe-acumulado").textContent =
-          "Entregas amarradas no dia: " + entregasDoDia.length + "\n" + linhas.join("\n");
+          "Entregas finalizadas no dia: " + entregasDoDia.length + "\n" + linhas.join("\n");
       }
     }
 
@@ -787,7 +754,7 @@
       tocarAlerta("chegada");
       renderEntregador();
       renderRetornoCliente();
-      mostrarAviso("Mensagem enviada ao cliente: aceita fazer por " + moeda(valorFinal(pedidos[idx])) + ".");
+      mostrarAviso("Valor " + moeda(valorFinal(pedidos[idx])) + " enviado ao cliente. Abra o painel do cliente para marcar ACEITO ou NÃO ACEITO.");
     }
 
     function entregadorRecusa(idx) {
@@ -797,52 +764,44 @@
       mostrarAviso("Entrega não aceita pelo entregador.");
     }
 
-    function clienteAceitaValor(idx) {
+    function clienteMarcarAceito(idx) {
       pedidos[idx].etapa = "aceito_cliente";
       tocarAlerta("amarrado");
       renderEntregador();
       renderRetornoCliente();
-      mostrarAviso("Cliente aceitou! Aperte o botão do tempo (2 a 20 min) para amarrar o serviço.");
+      mostrarAviso("Cliente marcou ACEITO! Volte ao entregador e envie o tempo de deslocamento até a mercadoria.");
     }
 
-    function clienteRecusaValor(idx) {
+    function clienteMarcarNaoAceito(idx) {
       pedidos[idx].etapa = "recusado_cliente";
       renderEntregador();
       renderRetornoCliente();
-      mostrarAviso("Cliente recusou o valor.");
+      mostrarAviso("Cliente marcou NÃO ACEITO.");
     }
 
-    function amarrarTempoEntregador(idx, tempo) {
+    function entregadorEnviaTempo(idx, tempo) {
       pedidos[idx].tempoChegada = tempo;
-      pedidos[idx].etapa = "amarrado";
-      registrarNoAcumuladoDia(pedidos[idx]);
+      pedidos[idx].etapa = "tempo_enviado";
       tocarAlerta("amarrado");
       renderEntregador();
       renderRetornoCliente();
-      mostrarAviso("Serviço amarrado! Chegada em " + tempo + " e somado ao acumulado do dia.");
+      mostrarAviso("Tempo de deslocamento enviado (" + tempo + "). Viagem aceita/amarrada! Quando concluir, clique em ENTREGA FINALIZADA.");
     }
 
-    function mercadoriaEntregueFinalizar(idx) {
+    function entregaFinalizadaZerar(idx) {
       registrarNoAcumuladoDia(pedidos[idx]);
       tocarAlerta("amarrado");
       limparCamposCliente();
       pedidos = [];
       renderRetornoCliente();
-      mostrarAviso("Mercadoria entregue e finalizando! Painel do cliente apagado; limpando entregador...");
-
-      if (timerFinalizacao) {
-        clearTimeout(timerFinalizacao);
-      }
-      timerFinalizacao = setTimeout(function () {
-        renderEntregador();
-        mostrarAviso("Ciclo finalizado. Acumulado do dia atualizado.");
-      }, 2000);
+      renderEntregador();
+      mostrarAviso("ENTREGA FINALIZADA! Os dois painéis foram zerados e o valor entrou no acumulado do dia.");
     }
 
-    function montarResumoAmarrado(p) {
+    function montarResumoViagem(p) {
       var total = valorFinal(p);
       return [
-        "*32 ENTREGAS — SERVIÇO AMARRADO*",
+        "*32 ENTREGAS — VIAGEM CONFIRMADA*",
         "Cliente: " + p.cliente,
         "Mercadoria: " + p.mercadoria,
         "Pegar em: " + p.pegar,
@@ -856,7 +815,7 @@
     function renderRetornoCliente() {
       var alvo = document.getElementById("retorno-cliente");
       if (pedidos.length === 0) {
-        alvo.innerHTML = "<div class='retorno-cliente-box'>Painel limpo — nenhum pedido ativo no momento.</div>";
+        alvo.innerHTML = "<div class='retorno-cliente-box'>Painel zerado — nenhum pedido ativo no momento.</div>";
         return;
       }
 
@@ -866,7 +825,7 @@
       if (p.etapa === "pendente_valor") {
         alvo.innerHTML =
           "<div class='retorno-cliente-box'>" +
-            "<div class='retorno-status status-amarelo'>AGUARDANDO VALOR DO ENTREGADOR</div>" +
+            "<div class='retorno-status status-amarelo'>PEDIDO ENVIADO — AGUARDANDO VALOR DO ENTREGADOR</div>" +
             "<div><strong>Cliente:</strong> " + p.cliente + "</div>" +
             "<div><strong>Mercadoria:</strong> " + p.mercadoria + "</div>" +
             "<div><strong>Pegar em:</strong> " + p.pegar + "</div>" +
@@ -888,14 +847,14 @@
       if (p.etapa === "valor_enviado") {
         alvo.innerHTML =
           "<div class='retorno-cliente-box'>" +
-            "<div class='retorno-status status-amarelo'>ENTREGADOR ACEITA FAZER POR " + moeda(total) + (p.dinamica20 ? " (DINÂMICA +20%)" : "") + "</div>" +
+            "<div class='retorno-status status-amarelo'>VALOR DA ENTREGA: " + moeda(total) + (p.dinamica20 ? " (DINÂMICA +20%)" : "") + "</div>" +
             "<div><strong>Cliente:</strong> " + p.cliente + "</div>" +
             "<div><strong>Mercadoria:</strong> " + p.mercadoria + "</div>" +
             "<div><strong>Pegar em:</strong> " + p.pegar + "</div>" +
             "<div><strong>Levar para:</strong> " + p.levar + "</div>" +
             "<div class='grade-2'>" +
-              "<button type='button' class='btn btn-verde' onclick='clienteAceitaValor(0)'>ACEITAR ENTREGA</button>" +
-              "<button type='button' class='btn btn-vermelho' onclick='clienteRecusaValor(0)'>RECUSAR VALOR</button>" +
+              "<button type='button' class='btn btn-verde' onclick='clienteMarcarAceito(0)'>ACEITO</button>" +
+              "<button type='button' class='btn btn-vermelho' onclick='clienteMarcarNaoAceito(0)'>NÃO ACEITO</button>" +
             "</div>" +
           "</div>";
         return;
@@ -904,7 +863,11 @@
       if (p.etapa === "recusado_cliente") {
         alvo.innerHTML =
           "<div class='retorno-cliente-box'>" +
-            "<div class='retorno-status status-vermelho'>VOCÊ RECUSOU O VALOR DE " + moeda(total) + "</div>" +
+            "<div class='retorno-status status-vermelho'>VOCÊ MARCOU: NÃO ACEITO (" + moeda(total) + ")</div>" +
+            "<div class='grade-2'>" +
+              "<button type='button' class='btn btn-verde' onclick='clienteMarcarAceito(0)'>MUDAR PARA ACEITO</button>" +
+              "<button type='button' class='btn btn-escuro' onclick='limparTudoTeste(true)'>ZERAR TUDO</button>" +
+            "</div>" +
           "</div>";
         return;
       }
@@ -912,25 +875,25 @@
       if (p.etapa === "aceito_cliente") {
         alvo.innerHTML =
           "<div class='retorno-cliente-box'>" +
-            "<div class='retorno-status status-verde'>VOCÊ ACEITOU A ENTREGA POR " + moeda(total) + "</div>" +
-            "<div>Aguardando o entregador informar o tempo (2 a 20 min) até a mercadoria.</div>" +
+            "<div class='retorno-status status-verde'>VOCÊ MARCOU: ACEITO (" + moeda(total) + ")</div>" +
+            "<div>Retornou ao entregador. Aguardando o tempo que ele vai levar até a mercadoria.</div>" +
           "</div>";
         return;
       }
 
-      if (p.etapa === "amarrado") {
+      if (p.etapa === "tempo_enviado") {
         alvo.innerHTML =
           "<div class='retorno-cliente-box'>" +
-            "<div class='retorno-status status-verde'>SERVIÇO AMARRADO — CHEGADA EM " + p.tempoChegada + "</div>" +
+            "<div class='retorno-status status-verde'>VIAGEM ACEITA — CHEGADA ATÉ A MERCADORIA EM " + p.tempoChegada + "</div>" +
             "<div><strong>Cliente:</strong> " + p.cliente + "</div>" +
             "<div><strong>Mercadoria:</strong> " + p.mercadoria + "</div>" +
             "<div><strong>Pegar em:</strong> " + p.pegar + "</div>" +
             "<div><strong>Levar para:</strong> " + p.levar + "</div>" +
-            "<div><strong>Tempo até a mercadoria:</strong> " + p.tempoChegada + "</div>" +
-            "<div><strong>Valor combinado:</strong> " + moeda(total) + "</div>" +
+            "<div><strong>Tempo de deslocamento até a mercadoria:</strong> " + p.tempoChegada + "</div>" +
+            "<div><strong>Valor:</strong> " + moeda(total) + "</div>" +
             "<div><strong>Pix:</strong> " + CHAVE_PIX + "</div>" +
             "<button type='button' class='btn btn-escuro' onclick='copiarTexto(CHAVE_PIX, \"Pix 53999089980 copiado.\")'>COPIAR PIX: 53999089980</button>" +
-            "<button type='button' class='btn btn-amarelo' onclick='copiarTexto(montarResumoAmarrado(pedidos[0]), \"Resumo copiado para o WhatsApp.\")'>COPIAR RESUMO PARA WHATSAPP</button>" +
+            "<button type='button' class='btn btn-amarelo' onclick='copiarTexto(montarResumoViagem(pedidos[0]), \"Resumo copiado para o WhatsApp.\")'>COPIAR RESUMO PARA WHATSAPP</button>" +
           "</div>";
       }
     }
@@ -956,25 +919,25 @@
           opcoesSelect += "<option value='" + v + "'" + (Number(p.valorBase) === v ? " selected" : "") + ">" + moeda(v) + "</option>";
         });
 
-        var statusTopo = "NOVO PEDIDO — MANDE O VALOR QUE SAI A ENTREGA";
-        if (p.etapa === "valor_enviado") statusTopo = "VALOR ENVIADO — AGUARDANDO CLIENTE ACEITAR";
+        var statusTopo = "NOVO PEDIDO — MANDE O VALOR DA ENTREGA";
+        if (p.etapa === "valor_enviado") statusTopo = "VALOR ENVIADO (" + moeda(total) + ") — AGUARDANDO CLIENTE MARCAR ACEITO / NÃO ACEITO";
         if (p.etapa === "recusado_entregador") statusTopo = "ENTREGA RECUSADA PELO ENTREGADOR";
-        if (p.etapa === "recusado_cliente") statusTopo = "CLIENTE RECUSOU O VALOR";
-        if (p.etapa === "aceito_cliente") statusTopo = "CLIENTE ACEITOU — APERTE O TEMPO (2 A 20 MIN)";
-        if (p.etapa === "amarrado") statusTopo = "SERVIÇO AMARRADO — CHEGADA EM " + p.tempoChegada;
+        if (p.etapa === "recusado_cliente") statusTopo = "CLIENTE MARCOU: NÃO ACEITO";
+        if (p.etapa === "aceito_cliente") statusTopo = "CLIENTE MARCOU: ACEITO — ENVIE O TEMPO ATÉ A MERCADORIA";
+        if (p.etapa === "tempo_enviado") statusTopo = "VIAGEM ACEITA — DESLOCAMENTO EM " + p.tempoChegada;
 
         var botoesTempoHtml = "";
-        if (p.etapa === "aceito_cliente" || p.etapa === "amarrado") {
-          botoesTempoHtml += "<label>Tempo até o local da mercadoria (2 a 20 min — amarra o serviço)</label><div class='grade-tempo'>";
+        if (p.etapa === "aceito_cliente" || p.etapa === "tempo_enviado") {
+          botoesTempoHtml += "<label>Tempo que vai levar para chegar até a mercadoria (2 a 20 min)</label><div class='grade-tempo'>";
           temposBotoes.forEach(function (t) {
             var ativo = p.tempoChegada === t ? "escolhido" : "";
-            botoesTempoHtml += "<button type='button' class='btn-tempo " + ativo + "' onclick='amarrarTempoEntregador(" + idx + ", \"" + t + "\")'>" + t + "</button>";
+            botoesTempoHtml += "<button type='button' class='btn-tempo " + ativo + "' onclick='entregadorEnviaTempo(" + idx + ", \"" + t + "\")'>" + t + "</button>";
           });
           botoesTempoHtml += "</div>";
         }
 
         alvo.innerHTML +=
-          "<div class='chamado-item " + (p.etapa === "amarrado" ? "amarrado" : "") + "'>" +
+          "<div class='chamado-item " + (p.etapa === "tempo_enviado" ? "amarrado" : "") + "'>" +
             "<div style='font-weight:900; color:var(--amarelo); font-size:0.95rem;'>" + statusTopo + "</div>" +
             "<div style='margin-top:6px;'><strong>Cliente:</strong> " + p.cliente + "</div>" +
             "<div><strong>Mercadoria:</strong> " + p.mercadoria + "</div>" +
@@ -999,16 +962,16 @@
             "</div>" +
 
             "<div class='grade-2'>" +
-              "<button type='button' class='btn btn-amarelo' onclick='entregadorEnviaValor(" + idx + ")'>ACEITO POR ESSE VALOR (ENVIAR)</button>" +
+              "<button type='button' class='btn btn-amarelo' onclick='entregadorEnviaValor(" + idx + ")'>ENVIAR VALOR AO CLIENTE</button>" +
               "<button type='button' class='btn btn-vermelho' onclick='entregadorRecusa(" + idx + ")'>NÃO FAZER ENTREGA</button>" +
             "</div>" +
 
             botoesTempoHtml +
 
-            (p.etapa === "amarrado"
-              ? "<div class='msg-box'>" + montarResumoAmarrado(p) + "</div>" +
-                "<button type='button' class='btn btn-escuro' onclick='copiarTexto(montarResumoAmarrado(pedidos[" + idx + "]), \"Resumo amarrado copiado para o WhatsApp.\")'>COPIAR RESUMO PARA WHATSAPP</button>" +
-                "<button type='button' class='btn btn-verde' onclick='mercadoriaEntregueFinalizar(" + idx + ")'>MERCADORIA ENTREGUE (FINALIZAR E APAGAR CLIENTE)</button>"
+            (p.etapa === "tempo_enviado"
+              ? "<div class='msg-box'>" + montarResumoViagem(p) + "</div>" +
+                "<button type='button' class='btn btn-escuro' onclick='copiarTexto(montarResumoViagem(pedidos[" + idx + "]), \"Resumo copiado para o WhatsApp.\")'>COPIAR RESUMO PARA WHATSAPP</button>" +
+                "<button type='button' class='btn btn-verde' onclick='entregaFinalizadaZerar(" + idx + ")'>ENTREGA FINALIZADA (ZERAR OS 2 PAINÉIS)</button>"
               : "") +
           "</div>";
       });
